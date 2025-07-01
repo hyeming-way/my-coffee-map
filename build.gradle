@@ -1,0 +1,42 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.12'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.mycoffeemap'
+version = '0.0.1'
+
+java { 
+    sourceCompatibility = '21'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'  
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    implementation 'org.commonmark:commonmark:0.21.0'
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    //implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'    
+	
+    runtimeOnly 'com.mysql:mysql-connector-j'
+ 	compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
