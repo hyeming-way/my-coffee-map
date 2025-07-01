@@ -1,19 +1,17 @@
-package com.mycoffeemap;
+package com.mycoffeemap.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class MainController {
+public class UserController {
 	
-	//GET  http://localhost:8070/mycoffeemap
-	@GetMapping("/mycoffeemap")
-    public String index() {
-       return "index";
-    }
+	@GetMapping("/user/login")
+	public String login() {
+	    return "user/login"; 
+	}
 	
-
 }
 
 
