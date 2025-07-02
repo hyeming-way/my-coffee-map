@@ -1,16 +1,16 @@
 package com.mycoffeemap;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class MainController {
 	
 	//GET  http://localhost:8070/mycoffeemap
 	@GetMapping("/mycoffeemap")
-    public String index() {
-       return "index";
+    public String home(Model model) {
+	    return "index";
     }
 	
 
