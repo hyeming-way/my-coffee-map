@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>원두 등록</title>
+    <style>
+        .roast-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .flavor-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">원두 등록</h3>
+
+        <form th:action="@{/new}" th:object="${bean}" method="post">
+
+            <!-- 이름 -->
+            <div class="mb-3">
+                <label class="form-label">원두 이름</label>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="예: 과테말라 안티구아" required>
+            </div>
+
+            <!-- 설명 -->
+            <div class="mb-3">
+                <label class="form-label">설명</label>
+                <textarea th:field="*{description}" class="form-control" rows="3"
+                          placeholder="맛과 향미를 간단히 설명해주세요"></textarea>
+            </div>
+
+            <!-- 로스팅 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">로스팅 정도</label>
+                <div class="d-flex justify-content-start gap-4 flex-wrap">
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="LIGHT" id="roastLight" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="roastLight">
+                            <img src="/images/roast/roast_light.png" alt="Light" class="roast-img"><br/>
+                            Light
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="MEDIUM" id="roastMedium" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="roastMedium">
+                            <img src="/images/roast/roast_medium.png" alt="Medium" class="roast-img"><br/>
+                            Medium
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="DARK" id="roastDark" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="roastDark">
+                            <img src="/images/roast/roast_dark.png" alt="Dark" class="roast-img"><br/>
+                            Dark
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 향미 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">향미 (복수 선택 가능)</label>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="text-center" th:each="flavor, iterStat : ${flavorOptions}">
+                        <input type="checkbox" class="btn-check" name="flavorNotes" th:value="${flavor}"
+                               th:checked="${bean.flavorNotes != null and bean.flavorNotes.contains(flavor)}"
+                               th:id="'flavor'+${iterStat.index}">
+                        <label class="btn btn-outline-success p-2" th:for="'flavor'+${iterStat.index}">
+                            <img th:src="@{/images/flavor/__${flavor.toLowerCase()}__.png}" class="flavor-img" alt="flavor">
+                            <div class="small mt-1" th:text="${flavor}">Flavor</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 이미지 URL -->
+             <div class="mb-3">
+		        <label class="form-label fw-bold">이미지 선택</label>
+		        <div class="d-flex flex-wrap gap-3">
+		
+		            <div class="text-center" th:each="img : ${imageOptions}">
+		                <input type="radio" class="btn-check" name="imageUrl" th:id="${img}" th:value="${img}" th:checked="${bean.imageUrl == img}" autocomplete="off">
+		                <label class="btn p-1 border" th:for="${img}">
+		                    <img th:src="@{${img}}" class="img-thumbnail" style="width: 120px; height: 100px; object-fit: cover;">
+		                </label>
+		            </div>
+		
+		        </div>
+		    </div>
+
+            <!-- 버튼 -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-outline-success px-4">등록하기</button>
+                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">취소</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('imagePreview');
+
+    imageInput.addEventListener('input', function () {
+        const url = imageInput.value;
+        if (url && url.startsWith('http')) {
+            preview.src = url;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
