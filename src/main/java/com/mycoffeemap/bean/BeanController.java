@@ -3,7 +3,6 @@ package com.mycoffeemap.bean;
 import com.mycoffeemap.bean.Bean.RoastLevel;
 import com.mycoffeemap.cafe.Cafe;
 import com.mycoffeemap.cafe.CafeService;
-
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,24 +22,25 @@ public class BeanController {
     // 원두 등록 폼
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("bean", new Bean()); // 폼 바인딩용 빈 객체
+        model.addAttribute("bean", new Bean());
         model.addAttribute("roastLevels", RoastLevel.values());
-        return "bean/create"; // templates/bean/create.html
+        return "bean/create";
     }
 
     // 원두 등록 처리
     @PostMapping("/new")
     public String createBean(@ModelAttribute Bean bean) {
         beanService.save(bean);
-        return "redirect:/"; // 등록 후 메인으로
+        return "redirect:/";
     }
-    
-    @GetMapping("/search")
-    public String search(@RequestParam(required = false) String roast,
-                        @RequestParam(required = false) String flavor,
-                        Model model) {
 
-        // Enum 변환
+    // 커피 취향 검색 폼
+    @GetMapping("/search")
+    public String search(
+            @RequestParam(name = "roast", required = false) String roast,
+            @RequestParam(name = "flavor", required = false) String flavor,
+            Model model) {
+
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
         model.addAttribute("recommendedBeans", recommendedBeans);
@@ -52,17 +52,18 @@ public class BeanController {
         model.addAttribute("selectedFlavor", flavor);
 
         model.addAttribute("flavorOptions", List.of(
-                "Floral", "Nutty", "Fruity", "Spicy", "Chocolate",
-                "Citrus", "Earthy", "Caramel", "Smoky"
+                "Floral", "Nutty", "Fruity", "Spicy", "Chocolate","Earthy", "Caramel", "Smoky"
         ));
 
-        return "search";
+        return "fragments/search-content";
     }
 
+    // 결과 보기
     @GetMapping("/result")
-    public String result(@RequestParam(required = false) String roast,
-                         @RequestParam(required = false) List<String> flavor,
-                         Model model) {
+    public String result(
+            @RequestParam(name = "roast", required = false) String roast,
+            @RequestParam(name = "flavor", required = false) List<String> flavor,
+            Model model) {
 
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
@@ -74,13 +75,15 @@ public class BeanController {
         model.addAttribute("selectedRoast", roast);
         model.addAttribute("selectedFlavor", flavor);
 
-        return "result";
+        return "fragments/result-content";
     }
 
     // 문자열을 RoastLevel enum으로 변환
     private RoastLevel parseRoastLevel(String roast) {
         try {
-            return (roast != null && !roast.isBlank()) ? RoastLevel.valueOf(roast.toUpperCase()) : null;
+            return (roast != null && !roast.isBlank())
+                    ? RoastLevel.valueOf(roast.toUpperCase())
+                    : null;
         } catch (IllegalArgumentException e) {
             return null;
         }

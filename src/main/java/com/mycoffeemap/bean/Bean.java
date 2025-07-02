@@ -1,11 +1,9 @@
 package com.mycoffeemap.bean;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mycoffeemap.cafe.Cafe;
 import com.mycoffeemap.cafe.CafeBean;
 
 import jakarta.persistence.CascadeType;
@@ -53,8 +51,21 @@ public class Bean {
     private String description;
 
     private String imageUrl;
-
+  
     @OneToMany(mappedBy = "bean", cascade = CascadeType.ALL)
     private List<CafeBean> cafeBeans = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bean)) return false;
+        Bean bean = (Bean) o;
+        return id != null && id.equals(bean.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 	    
 }

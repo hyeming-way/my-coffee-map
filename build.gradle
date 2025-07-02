@@ -1,42 +1,59 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.12'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.12'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.mycoffeemap'
 version = '0.0.1'
-
-java { 
+java {
     sourceCompatibility = '21'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'  
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Thymeleaf Layout
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-    implementation 'org.commonmark:commonmark:0.21.0'
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
-    //implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'    
-	
-    runtimeOnly 'com.mysql:mysql-connector-j'
- 	compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
     
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // Markdown 처리용
+    implementation 'org.commonmark:commonmark:0.21.0'
+
+    // MySQL Driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 개발 편의 기능
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // 테스트 관련
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 보안 (필요 시 주석 해제)
+    // implementation 'org.springframework.boot:spring-boot-starter-security'
+    // implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
-
+// 컴파일 시 파라미터 이름 정보 유지 (Spring에서 @RequestParam 자동 추출 가능)
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-parameters']
+}
