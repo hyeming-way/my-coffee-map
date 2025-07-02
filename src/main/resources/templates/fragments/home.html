@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index}">
 <head>
-    <meta charset="UTF-8">
-    <title>MyCoffeeMap</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/main.css}" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Insert title here</title>
 </head>
 <body>
-
-<!-- 헤더 삽입 -->
-<div th:replace="fragments/header :: header"></div>
-
-<!-- 본문 -->
+<div th:fragment="content">
 <!-- 상단: 취향 선택 및 추천 -->
 <form action="/result" method="get">
 <div class="container mt-4">
@@ -102,10 +98,6 @@
 	        </div>
 	    </div>
 	</div>
- 
-<!-- 푸터 삽입 -->
-<div th:replace="fragments/footer :: footer"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>	
 </body>
 </html>
