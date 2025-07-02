@@ -8,103 +8,45 @@
 <body>
 
 <!-- 헤더 삽입 -->
-<div th:replace="fragments/header :: header"></div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<!-- 본문 -->
-<!-- 상단: 취향 선택 및 추천 -->
-<form action="/result" method="get">
+<!-- 상단: 커피나무 이미지와 내 취향 찾기 버튼 -->
+<div class="container mt-4 text-center">
+    <img src="/images/coffee_tree.jpg" alt="커피나무" class="img-fluid rounded"
+         style="max-height: 400px; object-fit: cover;">
+    <h2 class="mt-4">☕ 당신의 커피 취향을 찾아보세요!</h2>
+    <p class="lead">원두의 로스팅과 향미를 선택하면 어울리는 원두와 카페를 추천해드립니다.</p>
+    <a th:href="@{/beans/search}" class="btn btn-outline-primary btn-lg mt-3">내 취향 찾기</a>
+</div>
+
+<hr class="my-5" />
+
+<!-- 하단: 다른 사람의 게시글 카드 리스트 -->
 <div class="container mt-4">
-    <h2>👤나의 커피 취향은?</h2>
+    <h3>👥 다른 사람들의 커피 취향은?</h3>
+    <div class="row" th:if="${recentPosts != null}">
+        <div class="col-md-4 mb-4" th:each="post : ${recentPosts}">
+            <div class="card h-100">
+                <img th:src="${post.imageUrl}" class="card-img-top" alt="이미지"
+                     onerror="this.src='/images/default.png';">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${post.title}">글 제목</h5>
+                    <p class="card-text" th:text="${post.summary}">글 요약</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        작성자: <span th:text="${post.writer}"></span> |
+                        <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}"></span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-	<!-- 로스팅 선택 -->
-	<div class="mb-4">
-	  <label class="form-label fw-bold text-center d-block">☕ 원두의 로스팅 정도는?</label>
-	  <div class="d-flex justify-content-center gap-3 flex-wrap">
-	    <div class="text-center">
-	      <input type="radio" class="btn-check" name="roast" value="LIGHT" id="btnRoastLight"
-	             th:checked="${selectedRoast == 'LIGHT'}" autocomplete="off">
-	      <label class="btn btn-sm btn-outline-primary p-1" for="btnRoastLight">
-	        <img src="/images/roast/roast_light.png" alt="Light" class="img-fluid"
-	             style="width: 100px;">
-	        <div class="small mt-1">Light</div>
-	      </label>
-	    </div>
-	
-	    <div class="text-center">
-	      <input type="radio" class="btn-check" name="roast" value="MEDIUM" id="btnRoastMedium"
-	             th:checked="${selectedRoast == 'MEDIUM'}" autocomplete="off">
-	      <label class="btn btn-sm btn-outline-primary p-1" for="btnRoastMedium">
-	        <img src="/images/roast/roast_medium.png" alt="Medium" class="img-fluid"
-	             style="width: 100px;">
-	        <div class="small mt-1">Medium</div>
-	      </label>
-	    </div>
-	
-	    <div class="text-center">
-	      <input type="radio" class="btn-check" name="roast" value="DARK" id="btnRoastDark"
-	             th:checked="${selectedRoast == 'DARK'}" autocomplete="off">
-	      <label class="btn btn-sm btn-outline-primary p-1" for="btnRoastDark">
-	        <img src="/images/roast/roast_dark.png" alt="Dark" class="img-fluid"
-	             style="width: 100px;">
-	        <div class="small mt-1">Dark</div>
-	      </label>
-	    </div>
-	  </div>
-	</div>
-	
-		<!-- 향미 선택 -->
-		<div class="mb-4">
-		  <label class="form-label fw-bold text-center d-block">🌸 원두의 향미는? (여러개 선택 가능)</label>
-		  <div class="d-flex flex-wrap justify-content-center gap-2">
-		    <div class="text-center" th:each="flavor, iterStat : ${flavorOptions}">
-		      <input type="checkbox" class="btn-check" name="flavor"
-		             th:id="'btnFlavor' + ${iterStat.index}"
-		             th:value="${flavor}"
-		             th:checked="${selectedFlavor != null and selectedFlavor.contains(flavor)}" />
-		      <label class="btn btn-sm btn-outline-success p-1" th:for="'btnFlavor' + ${iterStat.index}">
-		        <img th:src="@{/images/flavor/__${flavor.toLowerCase()}__.png}"
-		             class="img-thumbnail"
-		             style="width: 100px; height: 100px; object-fit: cover;" alt="flavor">
-		        <div class="small mt-1" th:text="${flavor}">Floral</div>
-		      </label>
-		    </div>
-		  </div>
-		</div>
-		
-		<!-- 선택 완료 버튼 (중앙 정렬, 작게) -->
-		<div class="text-center mt-4">
-		  <button type="submit" class="btn btn-sm btn-outline-danger px-3">선택 완료</button>
-		</div>
-	</div>
-</form>
-	
-	<hr class="my-5" />
-	
-	<!-- 하단: 다른 사람의 게시글 카드 리스트 -->
-	<div class="container mt-4">
-	    <h3>👥 다른 사람들의 커피 취향은?</h3>
-	    <div class="row" th:if="${recentPosts != null}">
-	        <div class="col-md-4 mb-4" th:each="post : ${recentPosts}">
-	            <div class="card h-100">
-	                <img th:src="${post.imageUrl}" class="card-img-top" alt="이미지">
-	                <div class="card-body">
-	                    <h5 class="card-title" th:text="${post.title}">글 제목</h5>
-	                    <p class="card-text" th:text="${post.summary}">글 요약</p>
-	                </div>
-	                <div class="card-footer">
-	                    <small class="text-muted">
-	                        작성자: <span th:text="${post.writer}"></span> |
-	                        <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}"></span>
-	                    </small>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
- 
-<!-- 푸터 삽입 -->
-<div th:replace="fragments/footer :: footer"></div>
+<!-- 푸터 삽입-->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
