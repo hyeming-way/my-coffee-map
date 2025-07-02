@@ -8,10 +8,33 @@
 </head>
 <body>
 <!-- fragments/footer.html -->
+
 <div th:fragment="footer">
-    <footer class="text-center text-lg-start mt-5">
-        <div class="text-center p-3">
-            © 2025 MyCoffeeMap
+    <footer style="background-color: #f8f5f0;" class="pt-3 pb-3 text-secondary small">
+        <div class="container">
+
+            <!-- 소개 + 연락처 (양쪽 정렬) -->
+            <div class="row align-items-center text-center text-md-start mb-2" style="font-size: 0.85rem;">
+                <!-- 왼쪽: 소개 -->
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <strong class="text-dark">MyCoffeeMap</strong><br>
+                    <span>당신의 취향을 분석하고, 어울리는 원두와 카페를 추천합니다.</span>
+                </div>
+
+                <!-- 오른쪽: 연락처 -->
+                <div class="col-md-6 text-md-end">
+                    Email: <a href="#" class="text-decoration-none text-secondary">info@mycoffeemap.com</a><br>
+                    Instagram: <a href="#" class="text-decoration-underline text-secondary">@mycoffeemap</a>
+                </div>
+            </div>
+
+            <!-- 구분선 -->
+            <hr class="my-2" style="border-color: #ccc;">
+
+            <!-- 저작권 -->
+            <div class="text-center" style="font-size: 0.75rem; color: #999;">
+                &copy; 2025 MyCoffeeMap. All rights reserved.
+            </div>
         </div>
     </footer>
 </div>

@@ -82,23 +82,50 @@
         <p th:if="${recommendedBeans == null or recommendedBeans.isEmpty()}">
             추천된 원두가 없습니다.
         </p>
+        
+        <!-- 화면 테스트용 -->
+        <div class="text-end mt-3 mb-4">
+		    <a th:href="@{/beans/new}" class="btn btn-outline-dark btn-sm">
+		        원두 직접 등록하기
+		    </a>
+		</div>
+		
+<!--         로그인 사용자만 원두 등록 버튼 표시 -->
+<!-- 		<div class="text-end mt-3 mb-4" th:if="${loginUser != null}"> -->
+<!-- 		    <a th:href="@{/new}" class="btn btn-outline-dark btn-sm"> -->
+<!-- 		        원두 직접 등록하기 -->
+<!-- 		    </a> -->
+<!-- 		</div> -->
 
         <!-- 추천 카페 -->
-        <h4 class="mt-5 mb-3">🏠 이 원두를 사용하는 카페</h4>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${recommendedCafes != null and !recommendedCafes.isEmpty()}">
-            <div class="col" th:each="cafe : ${recommendedCafes}">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${cafe.name}">카페 이름</h5>
-                        <p class="card-text">
-                            <strong>지역:</strong> <span th:text="${cafe.location}">지역</span><br/>
-                            <strong>설명:</strong> <span th:text="${cafe.description}">카페 설명</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p th:if="${recommendedCafes == null or recommendedCafes.isEmpty()}">추천된 카페가 없습니다.</p>
+		<h4 class="mt-5 mb-3">🏠 이 원두를 사용하는 카페</h4>
+		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+		     th:if="${recommendedCafes != null and !recommendedCafes.isEmpty()}">
+		    
+		    <div class="col" th:each="cafe : ${recommendedCafes}">
+		        <div class="card h-100 text-white position-relative overflow-hidden">
+		            
+		            <!-- 이미지 -->
+		            <img th:src="@{${cafe.imageUrl}}" class="card-img" alt="카페 이미지"
+		                 style="height: 220px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+		
+		            <!-- 이미지 위 텍스트 오버레이 -->
+		            <div class="card-img-overlay d-flex flex-column justify-content-end p-3"
+		                 style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
+		                <h5 class="card-title mb-1" th:text="${cafe.name}">카페 이름</h5>
+		                <p class="card-text small mb-0">
+		                    <strong>주소:</strong> <span th:text="${cafe.address}">주소</span><br/>
+		                    <strong>설명:</strong> <span th:text="${cafe.description}">설명</span>
+		                </p>
+		            </div>
+		
+		        </div>
+		    </div>
+		</div>
+		
+		<p th:if="${recommendedCafes == null or recommendedCafes.isEmpty()}">
+		    추천된 카페가 없습니다.
+		</p>
 
         <!-- 버튼 -->
         <div class="text-center mt-5">
