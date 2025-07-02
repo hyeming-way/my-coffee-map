@@ -1,0 +1,106 @@
+@charset "UTF-8";
+
+table {
+    width: 280px;
+    height: 550px;
+    margin: auto;      
+}
+.email {
+    width: 127px;
+    height: 32px;
+    font-size: 15px;
+    border: 0;
+    border-color: lightgray;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(233,233,233);
+}
+.text {
+    width: 278px;
+    height: 32px;
+    font-size: 15px;
+    border: 0;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+    border: 1px solid #ccc;
+}
+select {
+    width: 100px;
+    height: 32px;
+    font-size: 15px;
+    border: 1;
+    border-color: lightgray;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+}
+.btn {
+    width: 278px;
+    height: 32px;
+    color: #ff6c57;
+    font-size: 15px;
+    border: 0;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+    background-color: #fdeae0;
+}
+
+.btn:hover {
+	background-color: #ff6c57;
+	color: #fff;
+}
+
+
+form span {
+	color: #ff6c57;
+}
+
+/* 프로필 이미지 */
+.profile-img-wrap {
+	position: relative;
+	display: flex;
+	justify-content: center;
+}
+
+#imgUpload {
+	display: none;
+}
+
+.profile-img{
+  	width: 120px;
+	height: 120px;
+	border-radius: 100%;
+	object-fit: cover;
+	display: flex;
+	justify-self: center;
+	   
+}
+.profile-camera.hidden {
+	display: none;
+}
+.profile-camera {
+	position: absolute;
+	bottom: 0;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	right: calc(50% - 60px + 5px);
+	background-color: #ccc;
+}
+.profile-camera img {
+	width: 20px;
+	filter: brightness(0) invert(1);
+}
+
+
+
+
+
+

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+<title>join</title>
+<link th:href="@{/css/user/join.css}" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+	<form action="login.html">
+	    <table>
+	    <tr>
+	        <td><h2>新規会員登録</h2></td>
+	    </tr>	
+	    <tr><td>プロフィール画像</td></tr>
+	    <tr><td>
+	    	<img id="profileImg" class="profile-img" th:src="@{/images/icon/basic_profile.jpg}" alt="プロフィール画像">
+			<input type="hidden" id="profileImgInput" value="${contextPath}/resources/icon/basic_profile.jpg">
+			<div class="profile-img-wrap">
+				<label for="imgUpload" class="profile-camera">
+					<img th:src="@{/images/icon/camera_icon.svg}" alt="写真アップロードアイコン">
+				</label>
+				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
+	   		</div>
+	    </td></tr>
+	    <tr><td><span>*</span>メールアドレス</td></tr>
+	    <tr><td><input type="text" class="text"></td></tr>
+	    <tr><td><span>*</span>パスワード</td></tr>
+	    <tr><td><input type="password" class="text"></td></tr>
+	    <tr><td><span>*</span>パスワード確認</td></tr>
+	    <tr><td><input type="password" class="text"></td></tr>
+	    <tr><td><span>*</span>ニックネーム</td></tr>
+	    <tr><td><input type="text" class="text"></td></tr>
+	    <tr><td><input type="submit" value="送信" class="btn" onclick="alert('가입 성공!')"></td></tr>
+	    </table>
+	</form>
+	
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		//프로필 사진 업로드
+		function uploadImg(input) {
+			const file = input.files[0];
+			if (!file) return;
+			
+			const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+			if (!allowedTypes.includes(file.type)) {
+			    alert("(JPG, PNG, GIF)ファイルのみアップロード可能です。");
+			    input.value = "";
+			    return;
+			}
+			
+			const reader = new FileReader();
+			reader.onload = function (e) {
+			    document.getElementById('profileImg').src = e.target.result;
+			    document.getElementById('profileImgInput').value = file.name;
+			}
+			reader.readAsDataURL(file);
+		}		
+		// uploadImg를 전역에서 쓸 수 있도록 window에 붙여주자
+		window.uploadImg = uploadImg;
+	});
+	</script>	
+</div>
+</body>
+</html>

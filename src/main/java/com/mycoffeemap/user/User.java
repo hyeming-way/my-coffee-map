@@ -1,7 +1,9 @@
 package com.mycoffeemap.user;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,25 +30,19 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(length = 200, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String pass;
 	
-	@Column(length = 200, nullable = false)
+	@Column(length = 20, nullable = false)
 	private String nick;
-	
-	@Column(length = 200, nullable = false)
-	private String name;
-	
-	@Column(nullable = false)
-	private Date birth;
-	
-	@Column(unique = true ,length = 200, nullable = false)
+
+	@Column(unique = true ,length = 100, nullable = false)
 	private String email;
 	
-	@Column(length = 200)
+	@Column(length = 255)
 	private String profileImg;
 	
-	@Column(length = 200)
-	private String address;
-		
+	@CreationTimestamp
+	private Timestamp joinDate;
+	
 }
