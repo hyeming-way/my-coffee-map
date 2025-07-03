@@ -1,9 +1,15 @@
 @charset "UTF-8";
 
 table {
-    width: 280px;
+    width: 300px;
     height: 550px;
-    margin: auto;      
+    margin: 50px auto;      
+}
+.join-title {
+	margin-bottom: 30px;
+}
+.join-txt {
+	margin: 5px 0 2px 0;
 }
 .email {
     width: 127px;
@@ -17,7 +23,7 @@ table {
     background-color: rgb(233,233,233);
 }
 .text {
-    width: 278px;
+    width: 100%;
     height: 32px;
     font-size: 15px;
     border: 0;
@@ -25,6 +31,9 @@ table {
     outline: none;
     padding-left: 10px;
     border: 1px solid #ccc;
+}
+.text:focus {
+	border-color: #ff6c57;
 }
 select {
     width: 100px;
@@ -37,7 +46,7 @@ select {
     padding-left: 10px;
 }
 .btn {
-    width: 278px;
+    width: 100%;
     height: 32px;
     color: #ff6c57;
     font-size: 15px;
@@ -46,11 +55,15 @@ select {
     outline: none;
     padding-left: 10px;
     background-color: #fdeae0;
+    margin-top: 10px;
 }
 
 .btn:hover {
 	background-color: #ff6c57;
 	color: #fff;
+}
+.btn:focus {
+	box-shadow: none;
 }
 
 
@@ -76,6 +89,7 @@ form span {
 	object-fit: cover;
 	display: flex;
 	justify-self: center;
+	margin: 10px 0 30px 0;
 	   
 }
 .profile-camera.hidden {
@@ -91,6 +105,7 @@ form span {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	top: calc(50% - 60px + 5px);
 	right: calc(50% - 60px + 5px);
 	background-color: #ccc;
 }
@@ -98,7 +113,15 @@ form span {
 	width: 20px;
 	filter: brightness(0) invert(1);
 }
-
+.join-error-msg {
+	color: #ff6c57;
+	font-size: 13px;
+	margin-left: 5px;
+}
+.join-msg {
+	font-size: 14px;
+	margin: 10px 0;
+}
 
 
 
