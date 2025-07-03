@@ -2,12 +2,15 @@
 
 body {
 	background-color: #fffdf9;
+	font-family: 'Noto Sans JP', sans-serif;
 }
 
 .header-logo {
 	height: 35px;
 }
 
-.login {
-	margin-right: 50px;
+
+.nav-link {
+  font-size: 1rem !important; 
+  margin-right: 50px;
 }
