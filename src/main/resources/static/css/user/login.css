@@ -3,11 +3,11 @@
 table {
     width: 280px;
     height: 250px;
-    margin: auto;
+    margin: 60px auto 200px;
     font-size: 15px;
     }
 input[type="text"], input[type="password"] {
-    width: 250px;
+    width: 100%;
     height: 32px;
     font-size: 15px;
     border: 0;
@@ -16,8 +16,11 @@ input[type="text"], input[type="password"] {
     padding-left: 10px;
     background-color: rgb(233,233,233);
 }
+input::placeholder {
+  font-size: 14px;
+}
 .btn {
-    width: 263px;
+    width: 100%;
     height: 32px;
     color: #ff6c57;
     font-size: 15px;
@@ -27,15 +30,9 @@ input[type="text"], input[type="password"] {
     padding-left: 10px;
     background-color: #fdeae0;
 }
-.btn:active {
-    width: 263px;
-    height: 32px;
-    font-size: 15px;
-    border: 0;
-    border-radius: 15px;
-    outline: none;
-    padding-left: 10px;
-    background-color: rgb(61, 135, 255);
+.btn:hover {
+	background-color: #ff6c57;
+	color: #fff;
 }
 a {
     font-size: 12px;
@@ -45,4 +42,10 @@ a {
 }
 .join {
     text-align: center;
+}
+.join a {
+	font-size: 15px;
+}
+.join a:hover {
+	color: #ff6c57;
 }
