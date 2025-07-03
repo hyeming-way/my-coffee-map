@@ -8,7 +8,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-	<form action="login.html">
+	<form action="#" th:object="${JoinForm}" method="post">
 	    <table>
 	    <tr>
 	        <td><h2>新規会員登録</h2></td>
@@ -25,14 +25,24 @@
 	   		</div>
 	    </td></tr>
 	    <tr><td><span>*</span>メールアドレス</td></tr>
-	    <tr><td><input type="text" class="text"></td></tr>
+	    <tr><td>
+	    	<input type="text" class="text" th:field="*{email}" id="email">
+	    </td></tr>
 	    <tr><td><span>*</span>パスワード</td></tr>
-	    <tr><td><input type="password" class="text"></td></tr>
+	    <tr><td>
+	    	<input type="password" class="text" th:field="*{pass}" id="pass">
+	    </td></tr>
 	    <tr><td><span>*</span>パスワード確認</td></tr>
-	    <tr><td><input type="password" class="text"></td></tr>
+	    <tr><td>
+	    	<input type="password" class="text" th:field="*{passCheck}" id="passCheck">
+	    </td></tr>
 	    <tr><td><span>*</span>ニックネーム</td></tr>
-	    <tr><td><input type="text" class="text"></td></tr>
-	    <tr><td><input type="submit" value="送信" class="btn" onclick="alert('가입 성공!')"></td></tr>
+	    <tr><td>
+	    	<input type="text" class="text" th:field="*{nick}" id="nick">
+	    </td></tr>
+	    <tr><td>
+	    	<input type="submit" value="送信" class="btn" onclick="alert('가입 성공!')">
+	    </td></tr>
 	    </table>
 	</form>
 	
