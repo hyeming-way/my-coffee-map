@@ -1,43 +1,32 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>MyCoffeeMap</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/main.css}" rel="stylesheet">
-</head>
-<body>
 <!-- fragments/footer.html -->
-
 <div th:fragment="footer">
-    <footer style="background-color: #f8f5f0;" class="pt-3 pb-3 text-secondary small">
+    <footer class="footer-custom text-secondary small">
         <div class="container">
 
-            <!-- 소개 + 연락처 (양쪽 정렬) -->
-            <div class="row align-items-center text-center text-md-start mb-2" style="font-size: 0.85rem;">
-                <!-- 왼쪽: 소개 -->
+            <!-- 소개 + 연락처 -->
+            <div class="row align-items-center text-center text-md-start mb-2 footer-info">
+            
+                <!-- 소개 -->
                 <div class="col-md-6 mb-2 mb-md-0">
-                    <strong class="text-dark">MyCoffeeMap</strong><br>
-                    <span>당신의 취향을 분석하고, 어울리는 원두와 카페를 추천합니다.</span>
+                    <strong class="text-dark">My Coffee Map</strong><br>
+                    <span>あなたのコーヒーの好みを分析して、あなたに合うコーヒー豆とカフェを提案します。<br>そして、自分のコーヒー ノートを作成してみてください。</span>
+                    <!-- 당신의 커피 취향을 분석하여 당신에게 맞는 원두와 카페를 제안합니다. 그리고 자신의 커피 노트를 작성해보세요. -->
                 </div>
 
-                <!-- 오른쪽: 연락처 -->
+                <!-- 연락처 -->
                 <div class="col-md-6 text-md-end">
-                    Email: <a href="#" class="text-decoration-none text-secondary">info@mycoffeemap.com</a><br>
-                    Instagram: <a href="#" class="text-decoration-underline text-secondary">@mycoffeemap</a>
+                    メール: <a href="#" class="text-decoration-none text-secondary">info@mycoffeemap.com</a><br>
+                    インスタグラム: <a href="#" class="text-decoration-none text-secondary">@mycoffeemap</a>
                 </div>
             </div>
 
             <!-- 구분선 -->
-            <hr class="my-2" style="border-color: #ccc;">
+            <hr class="footer-divider">
 
             <!-- 저작권 -->
-            <div class="text-center" style="font-size: 0.75rem; color: #999;">
-                &copy; 2025 MyCoffeeMap. All rights reserved.
+            <div class="text-center footer-copyright">
+                &copy; 2025 My Coffee Map. All rights reserved.
             </div>
         </div>
     </footer>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>

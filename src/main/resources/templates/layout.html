@@ -1,25 +1,39 @@
-<!-- layout.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
-    <title>MyCoffeeMap</title>
+    <title>MyCoffeeMap（マイコーヒーマップ）</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
 
-<!-- 헤더 삽입 -->
+<!-- ヘッダー -->
 <div th:replace="~{fragments/header :: header}"></div>
 
-<!-- 본문 영역 -->
-<section layout:fragment="content">
-    여기에 본문이 들어갑니다
-</section>
+<!-- 本文セクション（mainで囲む） -->
+<main>
+    <section layout:fragment="content">
+        本文がここに表示されます
+    </section>
+</main>
 
-
-<!-- 푸터 삽입 -->
+<!-- フッター -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

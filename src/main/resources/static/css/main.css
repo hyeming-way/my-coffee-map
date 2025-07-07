@@ -1,13 +1,133 @@
 @charset "UTF-8";
 
+/* 공통 배경과 텍스트 */
 body {
-	background-color: #fffdf9;
+    background-color: #fffdf9;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    color: #333;
+}
+
+/* 컨테이너 내부는 기본적으로 투명 배경 유지 */
+.container {
+    background-color: transparent;
+}
+
+/* 카드 기본 스타일 */
+.card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* 카드 텍스트 요약 줄 제한 */
+.card-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* 제목 폰트 */
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* 헤더 */
+.navbar {
+    background-color: #f8f5f0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.navbar-brand {
+    padding-left: 1rem;
 }
 
 .header-logo {
-	height: 35px;
+    height: 35px;
+}
+
+.navbar .nav-link {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.navbar .nav-link:hover {
+    color: #555;
 }
 
 .login {
-	margin-right: 50px;
+    margin-right: 50px;
+}
+
+/* 히어로 이미지 영역 */
+.coffee-hero img {
+    height: 400px;
+    object-fit: cover;
+    filter: brightness(60%);
+}
+
+.coffee-hero h2 {
+    font-size: 2rem;
+}
+
+.coffee-hero p {
+    font-size: 1.1rem;
+}
+
+/* 게시글 목록 제목 */
+.recent-posts h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* 푸터 */
+.footer-custom {
+    background-color: #f8f5f0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.footer-info {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.footer-divider {
+    margin: 0.5rem 0;
+    border-color: #ccc;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    color: #999;
+    text-align: center;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .login {
+        margin-right: 1rem;
+    }
+
+    .coffee-hero h2 {
+        font-size: 1.5rem;
+    }
+
+    .coffee-hero p {
+        font-size: 1rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 0.85rem;
+    }
 }

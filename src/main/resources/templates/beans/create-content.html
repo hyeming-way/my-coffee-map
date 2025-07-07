@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>コーヒー豆登録</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+        /* 공통 이미지 스타일 */
+        .option-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        /* 라벨 공통 */
+        .image-label,
+        .flavor-label,
+        .roast-label {
+            padding: 4px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .btn-check:checked + .image-label,
+        .btn-check:checked + .flavor-label,
+        .btn-check:checked + .roast-label {
+            border-color: #c8a974; /* 진베이지 */
+            box-shadow: 0 0 0 2px rgba(200, 169, 116, 0.3);
+        }
+
+        .image-label:hover,
+        .flavor-label:hover,
+        .roast-label:hover {
+            border-color: #c8a974;
+        }
+
+        /* 그룹 스타일 */
+        .roast-group,
+        .flavor-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">コーヒー豆の登録</h3>
+
+        <form th:action="@{/new}" th:object="${bean}" method="post">
+
+            <!-- 원두이름 -->
+            <div class="mb-3">
+                <label class="form-label">豆の名前</label>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="例：グアテマラ アンティグア" required>
+            </div>
+
+            <!-- 원두설명 -->
+            <div class="mb-3">
+                <label class="form-label">説明</label>
+                <textarea th:field="*{description}" class="form-control" rows="3"
+                          placeholder="味やフレーバーについて簡単に記載してください。"></textarea>
+            </div>
+
+            <!-- 로스팅 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">ローストレベル 🔥</label>
+                <div class="roast-group">
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="LIGHT" id="roastLight" autocomplete="off">
+                        <label class="roast-label" for="roastLight">
+                            <img src="/images/roast/roast_light.png" alt="ライト" class="option-img"><br/>
+                            <div class="small text-center">ライト</div>
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="MEDIUM" id="roastMedium" autocomplete="off">
+                        <label class="roast-label" for="roastMedium">
+                            <img src="/images/roast/roast_medium.png" alt="ミディアム" class="option-img"><br/>
+                            <div class="small text-center">ミディアム</div>
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" th:field="*{roastLevel}" value="DARK" id="roastDark" autocomplete="off">
+                        <label class="roast-label" for="roastDark">
+                            <img src="/images/roast/roast_dark.png" alt="ダーク" class="option-img"><br/>
+                            <div class="small text-center">ダーク</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 향미 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">フレーバー（複数選択可）🌸</label>
+                <div class="flavor-group">
+                    <div class="text-center" th:each="flavor, iterStat : ${flavorOptions}">
+                        <input type="checkbox" class="btn-check" name="flavorNotes" th:value="${flavor}"
+                               th:checked="${bean.flavorNotes != null and bean.flavorNotes.contains(flavor)}"
+                               th:id="'flavor'+${iterStat.index}">
+                        <label class="flavor-label" th:for="'flavor'+${iterStat.index}">
+                            <img th:src="@{/images/flavor/__${flavor.toLowerCase()}__.png}" class="option-img" alt="フレーバー">
+                            <div class="small mt-1" th:text="${flavor}">フレーバー</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 원두에 어울리는 이미지 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">イメージ選択</label>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="text-center" th:each="img : ${imageOptions}">
+                        <input type="radio" class="btn-check" name="imageUrl"
+                               th:id="'img' + ${img.hashCode()}" th:value="${img}"
+                               th:checked="${bean.imageUrl == img}" autocomplete="off">
+                        <label class="image-label" th:for="'img' + ${img.hashCode()}">
+                            <img th:src="@{${img}}" class="option-img" alt="イメージ">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 버튼 -->
+            <div class="text-center mt-5 mb-5">
+                <button type="submit" class="btn btn-outline-success px-4">登録する</button> <!-- 등록하기 -->
+                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">キャンセル</a> <!-- 취소 -->
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('imagePreview');
+
+    if (imageInput && preview) {
+        imageInput.addEventListener('input', function () {
+            const url = imageInput.value;
+            if (url && url.startsWith('http')) {
+                preview.src = url;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

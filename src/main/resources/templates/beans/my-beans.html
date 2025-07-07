@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>내 원두 목록</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">☕ 내가 등록한 원두</h3>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${myBeans != null and !myBeans.isEmpty()}">
+            <div class="col" th:each="bean : ${myBeans}">
+                <div class="card h-100 text-white position-relative overflow-hidden">
+                    <img th:src="@{${bean.imageUrl}}" class="card-img" alt="bean image"
+                         style="height: 150px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+
+                    <div class="card-img-overlay d-flex flex-column justify-content-end p-2"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
+                        <h5 class="card-title mb-1 text-truncate" th:text="${bean.name}">원두 이름</h5>
+                        <p class="card-text mb-0" style="font-size: 0.8rem;">
+                            <strong>로스팅:</strong> <span th:text="${bean.roastLevel}">MEDIUM</span><br/>
+                            <strong>향미:</strong> <span th:text="${bean.flavorNotes}">Nutty, Fruity</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-center" th:if="${myBeans == null or myBeans.isEmpty()}">
+            등록한 원두가 없습니다.
+        </p>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/beans/new}" class="btn btn-outline-primary btn-sm">원두 등록하기</a>
+        </div>
+    </div>
+</div>
+</html>

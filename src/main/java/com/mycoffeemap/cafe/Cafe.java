@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mycoffeemap.user.User;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,4 +46,10 @@ public class Cafe {
     // CafeBean 연결
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CafeBean> cafeBeans = new ArrayList<>();
+    
+    // 연관된 사용자 정보    
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
 }

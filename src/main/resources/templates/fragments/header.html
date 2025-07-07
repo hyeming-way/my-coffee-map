@@ -11,15 +11,19 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><img class="header-logo" th:src="@{/images/coffee_logo_text1.svg}" alt="로고"></a>
+            <a class="navbar-brand" href="/mycoffeemap">
+                <img class="header-logo" th:src="@{/images/coffee_logo_text1.svg}" alt="MyCoffeeMap ロゴ">
+            </a>
             <div class="collapse navbar-collapse login">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/user/login}">로그인</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/user/login}">ログイン</a>                        
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
