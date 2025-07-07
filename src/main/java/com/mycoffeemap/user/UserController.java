@@ -1,5 +1,10 @@
 package com.mycoffeemap.user;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -7,39 +12,122 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import com.mycoffeemap.EmailService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
 	
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private EmailService emailService;
+	
+	
+	//로그인 화면 보여주기
 	@GetMapping("/login")
 	public String login() {
 	    return "user/login"; 
 	}
 	
+	
+	//회원가입 폼 화면 보여주기
 	@GetMapping("/join")
 	public String join(Model model) {
 		model.addAttribute("JoinForm", new JoinForm());
 	    return "user/join"; 
 	}
 	
+	
+	//사용자가 회원가입 입력 폼에 값을 입력하고 '송신'버튼을 눌렀을 때 호출
 	@PostMapping("/join")
 	public String submit(@Valid @ModelAttribute("JoinForm") JoinForm joinForm,
 	                     BindingResult bindingResult, Model model) {
-				
-	    if (bindingResult.hasErrors()) {
-			if (!joinForm.getPass().equals(joinForm.getPassCheck())) {
-				bindingResult.rejectValue("passCheck", "NotMatched", "비밀번호가 일치하지 않습니다.");
-			}
-	    	model.addAttribute("submitted", true);
-	        return "user/join"; // 오류 났을 때 다시 폼으로 이동
+		
+		log.info("UserController의 submit 메소드 실행");
+		
+		//비밀번호 재확인 서버단에서 한번 더 검증
+	    if (!joinForm.getPass().equals(joinForm.getPassCheck())) {
+	        bindingResult.rejectValue("passCheck", "error.passCheck", "パスワードが一致しません。");
+	        return "user/join";
 	    }
+		//서버단에서 유효성 검사
+	    if (bindingResult.hasErrors()) {
+	    	model.addAttribute("submitted", true);
+	        return "user/join"; 
+	    }	    
 	    
-	    return null;
+	    //사용자 본인 인증용 토큰 생성
+	    String token = UUID.randomUUID().toString();
+	    
+	    //user 객체 생성 후 DB 저장
+	    User user = new User();
+	    user.setEmail(joinForm	.getEmail());
+	    user.setPass(passwordEncoder.encode(joinForm.getPass()));
+	    user.setNick(joinForm.getNick());
+	    user.setVerificationToken(token);
+	    user.setTokenExpiry(LocalDateTime.now().plusHours(24));  //인증 메일 24시간 유효하도록 설정
+	    user.setEnabled(false);
+	    
+	    userRepository.save(user);
+	    log.info("✔ 사용자 정보 DB 저장 완료");
+	    	    
+	    //본인 인증 이메일 보내기	    
+	    String verifyUrl = "http://localhost:8070/user/verify?token=" + token;
+	    emailService.sendVerificationEmail(user.getEmail(), verifyUrl);
+	    log.info("✉ 사용자 본인 인증 이메일 보내기 완료");
+	    	    
+	    return "user/login";
+	    
+	} //submit
+	
+	
+	//사용자 이메일 인증
+	@GetMapping("/verify")
+	public String verifyUser(@RequestParam("token") String token, Model model) {
+		
+		Optional<User> optionalUser = userRepository.findByVerificationToken(token);
+		
+		//인증 링크가 유효하지 않을 경우
+		if (optionalUser.isEmpty()) {
+			model.addAttribute("message", "無効な認証リンクです。");
+			return "user/verify-fail"; //인증 실패 뷰 반환
+		}
+		
+		User user = optionalUser.get();
+		
+		//인증 링크가 만료 시간을 경과했을 경우
+		if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {		
+			model.addAttribute("message", "認証リンクの有効期限が切れています。");
+			return "user/verify-fail"; //인증 실패 뷰 반환
+		}
+		
+		//이메일 인증 완료 처리
+		user.setEnabled(true);
+		user.setVerificationToken(null);
+		user.setTokenExpiry(null);
+		userRepository.save(user);
+		
+		return "user/verify-success"; //인증 성공 뷰 반환
+		
+	} //verifyUser
+	
+	
+	@GetMapping("/test")
+	public String test(Model model) {
+	    return "user/test"; 
 	}
+	
+	
+	
+	
+	
 	
 }
 

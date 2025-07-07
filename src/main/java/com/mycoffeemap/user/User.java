@@ -1,6 +1,7 @@
 package com.mycoffeemap.user;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,7 +31,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(length = 100, nullable = false)
+	@Column(length = 255, nullable = false)
 	private String pass;
 	
 	@Column(length = 20, nullable = false)
@@ -41,6 +42,13 @@ public class User {
 	
 	@Column(length = 255)
 	private String profileImg;
+	
+	private String verificationToken;	//이메일 인증용 토큰 저장
+	
+	private LocalDateTime tokenExpiry;	//토큰 만료일 저장
+	
+	@Column(nullable = false)
+	private boolean enabled = false;	//메일 인증 여부
 	
 	@CreationTimestamp
 	private Timestamp joinDate;

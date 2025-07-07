@@ -8,7 +8,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-	<form action="#" th:object="${JoinForm}" method="post" id="joinForm">
+	<form th:action="@{/user/join}" th:object="${JoinForm}" method="post" id="joinForm">
 	    <table>
 	    <tr>
 	        <td><h2 class="join-title">新規会員登録</h2></td>
@@ -16,7 +16,7 @@
 	    <tr><td><p class="join-txt">プロフィール画像</p></td></tr>
 	    <tr><td>
 	    	<img id="profileImg" class="profile-img" th:src="@{/images/icon/basic_profile.jpg}" alt="プロフィール画像">
-			<input type="hidden" id="profileImgInput" value="${contextPath}/resources/icon/basic_profile.jpg">
+			<input type="hidden" id="profileImgInput" th:value="@{/images/icon/basic_profile.jpg}">
 			<div class="profile-img-wrap">
 				<label for="imgUpload" class="profile-camera">
 					<img th:src="@{/images/icon/camera_icon.svg}" alt="写真アップロードアイコン">
@@ -45,7 +45,7 @@
 	    	<p id="nickError" class="join-error-msg"></p>
 	    </td></tr>
 	    <tr><td>
-	    	<input type="submit" value="送信" class="btn" onclick="alert('가입 성공!')">
+	    	<input type="submit" value="送信" class="btn">
 	    </td></tr>
 	    <tr><td>    
 	    	<p class="join-msg"><span>*</span>は必須項目です。すべて入力してください。</p>
@@ -53,9 +53,9 @@
 	    </table>
 	</form>
 	
-	<script>
-		//프로필 사진 업로드
+	<script>		
 		document.addEventListener('DOMContentLoaded', function () {	
+			//프로필 사진 업로드
 			function uploadImg(input) {
 				const file = input.files[0];
 				if (!file) return;
@@ -77,7 +77,7 @@
 			window.uploadImg = uploadImg;
 			
 			
-		//회원가입 유효성 검사	
+		//회원가입 유효성 검사 ---------------------------------------------------------------------
 		const email = document.getElementById("email");
 		const pass = document.getElementById("pass");
 		const passCheck = document.getElementById("passCheck");
@@ -88,93 +88,87 @@
 		passCheck.addEventListener("input", validatePassCheck);
 		nickname.addEventListener("input", validateNick);
 		
-		function validateEmail() {
-		  const emailValue = email.value.trim();
-		  const error = document.getElementById("emailError");
-		  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		
-		  if (!emailValue) {
-		    error.textContent = "メールアドレスを入力してください。";
-		  } else if (!emailRegex.test(emailValue)) {
-		    error.textContent = "メールアドレスの形式が正しくありません。";
-		  } else {
-		    error.textContent = "";
-		  }
-		}
-		
-		function validatePass() {
-		  const pw = pass.value.trim();
-		  const error = document.getElementById("passError");
-		
-		  if (!pw) {
-		    error.textContent = "パスワードを入力してください。";
-		  } else if (pw.length < 8 || pw.length > 20) {
-		    error.textContent = "パスワードは8〜20文字で入力してください。";
-		  } else {
-		    error.textContent = "";
-		  }
-		
-		  validatePassCheck();
-		}
-		
-		function validatePassCheck() {
-		  const pw = pass.value.trim();
-		  const pwCheck = passCheck.value.trim();
-		  const error = document.getElementById("passCheckError");
-		
-		  if (pw !== pwCheck) {
-		    error.textContent = "パスワードが一致しません。";
-		  } else if (!pwCheck) {
-		    error.textContent = "パスワードを確認してください。";
-		  }else {
-		    error.textContent = "";
-		  }
-		}
-		
-		function validateNick() {
-		  const nick = nickname.value.trim();
-		  const error = document.getElementById("nickError");
-		  const specialCharRegex = /^[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\u30FCa-zA-Z0-9]{2,10}$/;
-		  //닉네임
-		  // - 사용 가능 : 히라가나, 가타카나, 한자, 장음, 영문, 숫자 
-		  // - 사용 불가 : 공백, 특수문자, 한글
-		  if (!nick) {
-		    error.textContent = "ニックネームを入力してください。";
-		  } else if (nick.length < 2 || nick.length > 10) {
-		    error.textContent = "ニックネームは2〜10文字で入力してください。";
-		  } else if (!specialCharRegex.test(nick)) {
-		    error.textContent = "ニックネームに空白や記号は使えません。";
-		  } else {
-		    error.textContent = "";
-		  }
-		}
-		
-
-		const form = document.getElementById("joinForm");
-		form.addEventListener("submit", function (e) {
-		  validateEmail();
-		  validatePass();
-		  validatePassCheck();
-		  validateNick();
-		
-		  const hasError = document.querySelectorAll(".join-error-msg")
-		    ? Array.from(document.querySelectorAll(".join-error-msg")).some(p => p.textContent !== "")
-		    : false;
-		
-		  if (hasError) {
-		    e.preventDefault(); 
-		  }
-		});
+			//이메일 유효성 검사
+			function validateEmail() {
+			  const emailValue = email.value.trim();
+			  const error = document.getElementById("emailError");
+			  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			
+			  if (!emailValue) {
+			    error.textContent = "メールアドレスを入力してください。";
+			  } else if (!emailRegex.test(emailValue)) {
+			    error.textContent = "メールアドレスの形式が正しくありません。";
+			  } else {
+			    error.textContent = "";
+			  }
+			}
 			
+			//패스워드 유효성 검사
+			function validatePass() {
+			  const pw = pass.value.trim();
+			  const error = document.getElementById("passError");
 			
-		});
-		
+			  if (!pw) {
+			    error.textContent = "パスワードを入力してください。";
+			  } else if (pw.length < 8 || pw.length > 20) {
+			    error.textContent = "パスワードは8〜20文字で入力してください。";
+			  } else {
+			    error.textContent = "";
+			  }		
+			  validatePassCheck();
+			}
+			
+			//패스워드 재확인 유효성 검사
+			function validatePassCheck() {
+			  const pw = pass.value.trim();
+			  const pwCheck = passCheck.value.trim();
+			  const error = document.getElementById("passCheckError");
+			
+			  if (pw !== pwCheck) {
+			    error.textContent = "パスワードが一致しません。";
+			  } else if (!pwCheck) {
+			    error.textContent = "パスワードを確認してください。";
+			  }else {
+			    error.textContent = "";
+			  }
+			}
+			
+			//닉네임 유효성 검사
+			// - 히라가나, 가타카나, 한자, 장음, 영문, 숫자 사용 가능. 그 외 사용 불가
+			function validateNick() {
+			  const nick = nickname.value.trim();
+			  const error = document.getElementById("nickError");
+			  const specialCharRegex = /^[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\u30FCa-zA-Z0-9]{2,10}$/;
 	
-		
-		
-		
-		
+			  if (!nick) {
+			    error.textContent = "ニックネームを入力してください。";
+			  } else if (nick.length < 2 || nick.length > 10) {
+			    error.textContent = "ニックネームは2〜10文字で入力してください。";
+			  } else if (!specialCharRegex.test(nick)) {
+			    error.textContent = "ニックネームに空白や記号は使えません。";
+			  } else {
+			    error.textContent = "";
+			  }
+			}
+			
+		//submit
+		const form = document.getElementById("joinForm");
+			form.addEventListener("submit", function (e) {
+			  validateEmail();
+			  validatePass();
+			  validatePassCheck();
+			  validateNick();
+			
+			  const hasError = document.querySelectorAll(".join-error-msg") ? 
+					  			Array.from(document.querySelectorAll(".join-error-msg")).some(p => p.textContent !== "") : false;
+					  			//.some() : 배열 안에 조건을 만족하는 요소가 하나라도 있으면 true를 반환 
+			
+			  if (hasError) { e.preventDefault(); }
+					  			
+			});
+				
+		}); //document.addEventListener('DOMContentLoaded'
+			
 	</script>	
 </div>
 </body>
