@@ -8,7 +8,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-	<form th:action="@{/user/join}" th:object="${JoinForm}" method="post" id="joinForm">
+	<form th:action="@{/user/join}" th:object="${JoinForm}" method="post" id="joinForm" enctype="multipart/form-data">
 	    <table>
 	    <tr>
 	        <td><h2 class="join-title">新規会員登録</h2></td>

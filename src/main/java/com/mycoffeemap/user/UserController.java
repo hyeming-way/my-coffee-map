@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.mycoffeemap.EmailService;
+import org.springframework.web.multipart.MultipartFile;
+import com.mycoffeemap.common.EmailService;
+import com.mycoffeemap.common.FileStorageService;
+
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +31,8 @@ public class UserController {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+	private FileStorageService fileStorageService;
 	
 	
 	//로그인 화면 보여주기
@@ -48,6 +53,7 @@ public class UserController {
 	//사용자가 회원가입 입력 폼에 값을 입력하고 '송신'버튼을 눌렀을 때 호출
 	@PostMapping("/join")
 	public String submit(@Valid @ModelAttribute("JoinForm") JoinForm joinForm,
+						 @RequestParam("imgUpload") MultipartFile imgFile,
 	                     BindingResult bindingResult, Model model) {
 		
 		log.info("UserController의 submit 메소드 실행");
@@ -63,6 +69,11 @@ public class UserController {
 	        return "user/join"; 
 	    }	    
 	    
+	    String storedFilename = null;
+	    if (!imgFile.isEmpty()) {
+	    	storedFilename = fileStorageService.storeFile(imgFile);
+	    }
+	    
 	    //사용자 본인 인증용 토큰 생성
 	    String token = UUID.randomUUID().toString();
 	    
@@ -71,6 +82,7 @@ public class UserController {
 	    user.setEmail(joinForm	.getEmail());
 	    user.setPass(passwordEncoder.encode(joinForm.getPass()));
 	    user.setNick(joinForm.getNick());
+	    user.setProfileImg(storedFilename);
 	    user.setVerificationToken(token);
 	    user.setTokenExpiry(LocalDateTime.now().plusHours(24));  //인증 메일 24시간 유효하도록 설정
 	    user.setEnabled(false);
@@ -83,7 +95,7 @@ public class UserController {
 	    emailService.sendVerificationEmail(user.getEmail(), verifyUrl);
 	    log.info("✉ 사용자 본인 인증 이메일 보내기 완료");
 	    	    
-	    return "user/login";
+	    return "user/mail-sended";
 	    
 	} //submit
 	

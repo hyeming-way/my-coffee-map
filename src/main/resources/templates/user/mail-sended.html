@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+<title>verify-fail</title>
+<link th:href="@{/css/user/login.css}" rel="stylesheet">
+</head>
+<body>
+	<div layout:fragment="content">
+		<h1>✉ 본인 확인 메일을 보냈어요! 메일함을 확인해주세요! </h1>
+		<a href="/user/login">로그인하러 가기</a>
+	</div>
+</body>
+</html>

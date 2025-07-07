@@ -1,4 +1,4 @@
-package com.mycoffeemap;
+package com.mycoffeemap.common;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

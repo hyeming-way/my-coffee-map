@@ -51,6 +51,9 @@ dependencies {
     // 메일
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     
+    // 파일 저장
+    implementation 'commons-io:commons-io:2.11.0'
+    
 }
 
 tasks.named('test') {
