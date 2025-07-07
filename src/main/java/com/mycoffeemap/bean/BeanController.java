@@ -4,7 +4,6 @@ import com.mycoffeemap.bean.Bean.RoastLevel;
 import com.mycoffeemap.cafe.Cafe;
 import com.mycoffeemap.cafe.CafeService;
 import com.mycoffeemap.user.User;
-import com.mysql.cj.Session;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,7 @@ public class BeanController {
                 "Floral", "Nutty", "Fruity", "Spicy", "Chocolate","Earthy", "Caramel", "Smoky"
         ));
 
-        return "fragments/search-content";
+        return "beans/search-content";
     }
 
     // 결과 보기
@@ -52,7 +51,8 @@ public class BeanController {
     public String result(
             @RequestParam(name = "roast", required = false) String roast,
             @RequestParam(name = "flavor", required = false) List<String> flavor,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
@@ -61,11 +61,17 @@ public class BeanController {
         List<Cafe> recommendedCafes = cafeService.findByBeans(recommendedBeans);
         model.addAttribute("recommendedCafes", recommendedCafes);
 
+        // 모델에 저장
         model.addAttribute("selectedRoast", roast);
         model.addAttribute("selectedFlavor", flavor);
 
-        return "fragments/result-content";
+        // 세션에도 저장 (나중에 마이페이지에서 다시 보여줄 용도)
+        session.setAttribute("selectedRoast", roast);
+        session.setAttribute("selectedFlavor", flavor);
+
+        return "beans/result-content";
     }
+
 
     // 문자열을 RoastLevel enum으로 변환
     private RoastLevel parseRoastLevel(String roast) {
@@ -80,27 +86,38 @@ public class BeanController {
     
     // 원두 등록 폼
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
-    	model.addAttribute("bean", new Bean());
+    public String showCreateForm(Model model, HttpSession session) {
+        model.addAttribute("bean", new Bean());
         model.addAttribute("roastLevels", RoastLevel.values());
         model.addAttribute("flavorOptions", List.of("Floral", "Nutty", "Fruity", "Spicy", "Chocolate", "Earthy", "Caramel", "Smoky"));
-//        Object loginUser = Session.getAttribute("loginUser");
- //       model.addAttribute("loginUser", loginUser);
-        
-        // 선택 가능한 이미지 목록
-        List<String> imageOptions = List.of(
+
+        // 로그인 확인
+//        User loginUser = (User) session.getAttribute("loginUser");
+//        if (loginUser == null) {
+//            return "redirect:/user/login";
+//        }
+
+//        model.addAttribute("loginUser", loginUser);
+
+        // 이미지 옵션
+        model.addAttribute("imageOptions", List.of(
             "/images/beans/yirgacheffe.png",
             "/images/beans/guatemala.png",
             "/images/beans/peru.png",
             "/images/beans/mandheling.png",
             "/images/beans/mexico.png",
             "/images/beans/costarica.png",
-            "/images/beans/brazil.png",
+            "/images/beans/geisha.png",
+            "/images/beans/kenya.png",
+            "/images/beans/Kona.png",
+            "/images/beans/rwanda.png",
+            "/images/beans/tanzania.png",
             "/images/beans/colombia.png"
-        );
-        model.addAttribute("imageOptions", imageOptions);
-        return "fragments/create-content";
+        ));
+
+        return "beans/create-content";
     }
+
 
     // 원두 등록 처리
     @PostMapping("/new")
@@ -110,7 +127,7 @@ public class BeanController {
 //            return "redirect:/login"; // 또는 에러 처리
 //        }
         beanService.save(bean);
-        return "redirect:/";
+        return "redirect:/mycoffeemap";
     }
 
 }

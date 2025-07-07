@@ -3,51 +3,76 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
+
 <head>
     <title>My Coffee Map</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
 </head>
+
 <body>
-
 <div layout:fragment="content">
-    <!-- 상단: 커피나무 이미지와 내 취향 찾기 버튼 -->
-    <div class="container mt-4">
-        <div class="position-relative text-center">
-            <img src="/images/coffee_tree.jpg" alt="커피나무" class="img-fluid rounded w-100"
-                 style="max-height: 400px; object-fit: cover; filter: brightness(60%);">
 
-            <div class="position-absolute top-50 start-50 translate-middle text-white">
-                <h2 class="fw-bold">당신의 취향은?</h2>
-                <p class="lead">로스팅과 향미를 선택하면 어울리는 원두와 카페를 추천해드립니다.</p>
-                <a th:href="@{/beans/search}" class="btn btn-outline-light btn-lg mt-3">내 취향 찾기</a>
+    <!-- 상부：커피나무 이미지와 버튼 -->
+    <section class="coffee-hero">
+        <div class="position-relative text-center">
+            <img src="/images/coffee_tree.jpg" alt="コーヒーの木" class="img-fluid w-100"
+                 style="height: 400px; object-fit: cover; filter: brightness(60%);">
+
+            <div class="position-absolute top-50 start-50 translate-middle text-white text-center px-3">
+                <h2 class="fw-bold">あなたのコーヒーのお好みは？</h2> <!-- 당신의 커피 취향은? -->
+                <p class="lead">ローストとフレーバーを選ぶと、<br>あなたにぴったりのコーヒー豆とカフェを提案します。</p>
+                
+                <!-- 로스팅과 플레이버를 선택하면 당신에게 딱 맞는 원두와 카페를 제안합니다. -->
+                <a th:href="@{/beans/search}" class="btn btn-outline-light btn-lg mt-3">お好み探し！</a>
+                <!-- 취향 찾기! -->
             </div>
         </div>
-    </div>
+    </section>
 
     <hr class="my-5" />
 
-    <!-- 하단: 다른 사람의 게시글 카드 리스트 -->
-    <div class="container mt-4">
-        <h3>다른 사람들의 취향은?</h3>
-        <div class="row" th:if="${recentPosts != null}">
-            <div class="col-md-4 mb-4" th:each="post : ${recentPosts}">
-                <div class="card h-100">
-                    <img th:src="${post.imageUrl}" class="card-img-top" alt="이미지"
-                         onerror="this.src='/images/default.png';">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${post.title}">글 제목</h5>
-                        <p class="card-text" th:text="${post.summary}">글 요약</p>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">
-                            작성자: <span th:text="${post.writer}"></span> |
-                            <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}"></span>
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- 하단: 다른 사용자의 게시 목록 -->
+	<section class="recent-posts container mt-4">
+	    <h3>みんなのコーヒーのお好みは？</h3> <!-- 모두의 커피 취향은? -->
+	
+	    <!-- 게시물이 존재할 경우 -->
+	    <div class="row" th:if="${recentPosts != null and !#lists.isEmpty(recentPosts)}">
+	        <div class="col-md-4 mb-4" th:each="board : ${recentPosts}">
+	            <div class="card h-100">
+	                
+	                <!-- 게시물 이미지 -->
+	                <img th:src="${board.imageUrl}" class="card-img-top" alt="イメージ画像"
+	                     style="height: 180px; object-fit: cover;"
+	                     onerror="this.src='/images/default.png';">
+	
+	                <!-- 게시물 본문 -->
+	                <div class="card-body">
+	                    <h5 class="card-title" th:text="${board.title}">投稿タイトル</h5> <!-- 게시물 제목 -->
+	                    <p class="card-text"
+	                       style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+	                              -webkit-line-clamp: 3; -webkit-box-orient: vertical;"
+	                       th:text="${board.content}">投稿の概要</p> <!-- 게시물 개요 -->
+	                </div>
+	
+	                <!-- 게시물 작성자 및 날짜 -->
+	                <div class="card-footer">
+	                    <small class="text-muted">
+	                        投稿者：<span th:text="${board.nick}"></span> |
+	                        <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd')}"></span>
+	                    </small>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	
+	    <!-- 게시물이 존재하지 않는 경우 -->
+	    <div th:if="${recentPosts == null or #lists.isEmpty(recentPosts)}" class="text-muted text-center my-5">
+	        投稿はまだありません。<!-- 게시글이 아직 없습니다. -->
+	    </div>
+	</section>
 
+
+</div>
 </body>
 </html>

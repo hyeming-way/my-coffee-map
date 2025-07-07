@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>내 카페 목록</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">🏠 내가 등록한 카페</h3>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${myCafes != null and !myCafes.isEmpty()}">
+            <div class="col" th:each="cafe : ${myCafes}">
+                <div class="card h-100 text-white position-relative overflow-hidden">
+                    <img th:src="@{${cafe.imageUrl}}" class="card-img" alt="카페 이미지"
+                         style="height: 150px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+
+                    <div class="card-img-overlay d-flex flex-column justify-content-end p-2"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
+                        <h5 class="card-title mb-1 text-truncate" th:text="${cafe.name}">카페 이름</h5>
+                        <p class="card-text mb-0" style="font-size: 0.75rem;">
+                            <strong>위치:</strong> <span th:text="${cafe.address}">주소</span>
+                        </p>
+                    </div>
+
+                    <div class="position-absolute top-0 start-0 w-100 h-100 text-white p-3
+                                d-flex flex-column justify-content-center align-items-center cafe-description-hover"
+                         style="background-color: rgba(0, 0, 0, 0.6); opacity: 0; transition: 0.3s; pointer-events: none; border-radius: 0.5rem;">
+                        <p class="text-center fw-light" style="font-size: 0.85rem; white-space: pre-line;" th:text="${cafe.description}">
+                            카페 설명
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-center" th:if="${myCafes == null or myCafes.isEmpty()}">
+            등록한 카페가 없습니다.
+        </p>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/cafes/new}" class="btn btn-outline-primary btn-sm">카페 등록하기</a>
+        </div>
+    </div>
+</div>
+</html>

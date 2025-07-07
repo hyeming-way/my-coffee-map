@@ -4,24 +4,13 @@ import java.time.LocalDateTime;
 
 import com.mycoffeemap.bean.Bean;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "cafe_beans")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,7 +18,6 @@ public class CafeBean {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     // 카페
@@ -42,7 +30,15 @@ public class CafeBean {
     @JoinColumn(name = "bean_id")
     private Bean bean;
 
-    // 추가 정보
-    private String useType; // 예: "대표원두", "시즌원두"
+    // 사용 용도 (enum 사용)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UseType useType;
+
+    public enum UseType {
+        대표원두, 시즌원두, 한정판
+    }
+
+    // 등록 시각
     private LocalDateTime linkedAt;
 }

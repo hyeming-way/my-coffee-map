@@ -65,4 +65,9 @@ public class BeanService {
     public Bean save(Bean bean) {
         return beanRepository.save(bean);
     }
-}
+
+    // 내가 등록한 원두 목록 조회
+    public List<Bean> findByUserId(Integer userId) {
+        return beanRepository.findByUserId(userId);
+    }
+} 

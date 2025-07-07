@@ -6,6 +6,10 @@ import java.util.List;
 
 import com.mycoffeemap.cafe.CafeBean;
 
+import com.mycoffeemap.user.User;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,5 +71,11 @@ public class Bean {
     public int hashCode() {
         return getClass().hashCode();
     }
+    
+    // 연관된 사용자 정보
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
 	    
 }

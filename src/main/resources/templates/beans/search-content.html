@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>あなたのコーヒーの好みを探す</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+        .option-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .roast-label, .flavor-label {
+            padding: 4px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .btn-check:checked + .roast-label,
+        .btn-check:checked + .flavor-label {
+            border-color: #c8a974;
+            box-shadow: 0 0 0 2px rgba(200, 169, 116, 0.3);
+        }
+
+        .roast-label:hover,
+        .flavor-label:hover {
+            border-color: #c8a974;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <form th:action="@{/beans/result}" method="get">
+        <div class="container mt-5">
+            <h3 class="text-center mb-4">あなたの好みは？ ☕</h3>
+
+            <!-- ロースト選択 -->
+            <div class="mb-5">
+                <label class="form-label fw-bold text-center d-block">ローストレベル 🔥</label>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" name="roast" value="LIGHT" id="btnRoastLight"
+                               th:checked="${selectedRoast == 'LIGHT'}" autocomplete="off">
+                        <label class="roast-label" for="btnRoastLight">
+                            <img src="/images/roast/roast_light.png" alt="ライト" class="option-img">
+                            <div class="small mt-1">ライト</div>
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" name="roast" value="MEDIUM" id="btnRoastMedium"
+                               th:checked="${selectedRoast == 'MEDIUM'}" autocomplete="off">
+                        <label class="roast-label" for="btnRoastMedium">
+                            <img src="/images/roast/roast_medium.png" alt="ミディアム" class="option-img">
+                            <div class="small mt-1">ミディアム</div>
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" name="roast" value="DARK" id="btnRoastDark"
+                               th:checked="${selectedRoast == 'DARK'}" autocomplete="off">
+                        <label class="roast-label" for="btnRoastDark">
+                            <img src="/images/roast/roast_dark.png" alt="ダーク" class="option-img">
+                            <div class="small mt-1">ダーク</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- フレーバー選択 -->
+            <div class="mb-5">
+                <label class="form-label fw-bold text-center d-block">フレーバー（複数選択可）🌸</label>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <div class="text-center" th:each="flavor, iterStat : ${flavorOptions}">
+                        <input type="checkbox" class="btn-check" name="flavor"
+                               th:id="'btnFlavor' + ${iterStat.index}"
+                               th:value="${flavor}"
+                               th:checked="${selectedFlavor != null and selectedFlavor.contains(flavor)}" />
+                        <label class="flavor-label" th:for="'btnFlavor' + ${iterStat.index}">
+                            <img th:src="@{/images/flavor/__${flavor.toLowerCase()}__.png}" class="option-img" alt="フレーバー">
+                            <div class="small mt-1" th:text="${flavor}">フレーバー</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提出ボタン -->
+            <div class="text-center mb-5">
+                <button type="submit" class="btn btn-outline-danger btn-sm px-4">選択完了</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
