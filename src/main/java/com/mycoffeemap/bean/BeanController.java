@@ -51,7 +51,8 @@ public class BeanController {
     public String result(
             @RequestParam(name = "roast", required = false) String roast,
             @RequestParam(name = "flavor", required = false) List<String> flavor,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
@@ -60,11 +61,17 @@ public class BeanController {
         List<Cafe> recommendedCafes = cafeService.findByBeans(recommendedBeans);
         model.addAttribute("recommendedCafes", recommendedCafes);
 
+        // 모델에 저장
         model.addAttribute("selectedRoast", roast);
         model.addAttribute("selectedFlavor", flavor);
 
+        // 세션에도 저장 (나중에 마이페이지에서 다시 보여줄 용도)
+        session.setAttribute("selectedRoast", roast);
+        session.setAttribute("selectedFlavor", flavor);
+
         return "beans/result-content";
     }
+
 
     // 문자열을 RoastLevel enum으로 변환
     private RoastLevel parseRoastLevel(String roast) {
