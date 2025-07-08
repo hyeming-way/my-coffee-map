@@ -19,6 +19,11 @@ input[type="text"], input[type="password"] {
 input::placeholder {
   font-size: 14px;
 }
+input:focus {
+
+	border: 1px solid #ff6c57;
+}
+
 .btn {
     width: 100%;
     height: 32px;

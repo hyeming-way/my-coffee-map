@@ -8,25 +8,29 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<form>
+		<form th:action="@{/user/login.do}" method="post" id="loginForm">
 		    <table>
 		    <tr>
 		        <td><h2>ログイン</h2></td>
 		    </tr>
 		    <tr>
-		        <td><input type="text" placeholder="メールアドレス"></td>
+		        <td><input type="text" name="email" placeholder="メールアドレス"></td>
 		    </tr>
 		    <tr>
-		        <td><input type="password" placeholder=パスワード></td>
+		        <td><input type="password" name="pass" placeholder=パスワード></td>
 		    </tr>
 		    <tr>
-		        <td><input type="submit" value="ログイン" class="btn" onclick="alert('로그인 성공!')"></td>
+		        <td><input type="submit" value="ログイン" class="btn"></td>
 		    </tr>
 		    <tr>
 		        <td class="join"><a href="/user/join">新規会員登録</a></td>
 		    </tr>
 		    </table>
 		</form>
+		
+		<script th:if="${loginError != null}">
+			alert('[[${loginError}]]');
+		</script>	
 	</div>
 </body>
 </html>

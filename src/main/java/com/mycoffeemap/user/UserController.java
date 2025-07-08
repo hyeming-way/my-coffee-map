@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mycoffeemap.common.EmailService;
 import com.mycoffeemap.common.FileStorageService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -129,6 +130,42 @@ public class UserController {
 		return "user/verify-success"; //인증 성공 뷰 반환
 		
 	} //verifyUser
+	
+	
+	//로그인 처리
+	@PostMapping("/login.do")
+	public String doLogin (@RequestParam("email") String email, @RequestParam("pass") String pass,
+						   HttpSession session, Model model) {
+		
+		User user = userRepository.findByEmail(email);
+		
+		//이메일 또는 패스워드가 틀린 경우
+		if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
+			model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
+			return "user/login";
+		}
+		
+		//이메일 인증을 하지 않은 경우
+		if (!user.isEnabled()) {
+			model.addAttribute("loginError", "メール認証がまだ完了していません。");
+			return "user/login";
+		}
+		
+		session.setAttribute("user", user);
+			
+		return "fragments/main-content";
+		
+	} //doLogin
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	@GetMapping("/test")
