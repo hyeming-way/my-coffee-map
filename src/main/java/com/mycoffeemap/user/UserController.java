@@ -109,6 +109,14 @@ public class UserController {
 	}	
 	
 	
+	//닉네임 중복 검사
+	@GetMapping("/checkNick")
+	@ResponseBody
+	public boolean checkNick(@RequestParam("nick") String nick) {
+	    return !userRepository.existsByNick(nick);  // true : 사용 가능
+	}		
+	
+	
 	//사용자 이메일 인증
 	@GetMapping("/verify")
 	public String verifyUser(@RequestParam("token") String token, Model model) {
@@ -200,6 +208,20 @@ public class UserController {
 	} //logout
 	
 	
+	//프로필 수정
+	@GetMapping("/profile")
+	public String profile (HttpSession session, Model model) {
+		
+		User user = (User)session.getAttribute("user");		
+		if (user == null) {
+			model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
+			return "user/login";
+		}else {
+			model.addAttribute("UpdateProfile", new UpdateProfile());
+			return "user/profile"; //프로필 폼 이동
+		}
+		
+	}
 	
 	
 	

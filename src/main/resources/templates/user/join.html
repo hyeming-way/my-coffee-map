@@ -164,8 +164,25 @@
 			  } else if (!specialCharRegex.test(nick)) {
 			    error.textContent = "ニックネームに空白や記号は使えません。";
 			  } else {
-			    error.textContent = "";
+				checkNickDuplication(nick);
 			  }
+			}
+			
+			//실시간 닉네임 중복 검사
+			function checkNickDuplication(nick) {
+				fetch("/user/checkNick?nick=" + nick)
+					.then(response => response.json())
+					.then(isAvailable => {
+						const error = document.getElementById("nickError");
+						if (!isAvailable) {
+							error.textContent = "このニックネームは既に使用されています。";
+						} else {
+							error.textContent = "";
+						}
+					})
+					.catch(err => {				
+						console.error("닉네임 중복 확인 실패", err);
+					});
 			}
 			
 		//submit
