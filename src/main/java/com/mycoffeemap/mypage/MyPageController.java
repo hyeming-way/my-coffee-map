@@ -2,6 +2,8 @@ package com.mycoffeemap.mypage;
 
 import com.mycoffeemap.bean.Bean;
 import com.mycoffeemap.bean.BeanService;
+import com.mycoffeemap.board.Board;
+import com.mycoffeemap.board.BoardService;
 import com.mycoffeemap.cafe.Cafe;
 import com.mycoffeemap.cafe.CafeService;
 import com.mycoffeemap.user.User;
@@ -21,6 +23,7 @@ public class MyPageController {
 
     private final BeanService beanService;
     private final CafeService cafeService;
+    private final BoardService boardService;
 
     // 마이페이지 홈
     @GetMapping("/my")
@@ -89,5 +92,26 @@ public class MyPageController {
 
         return "beans/result-content";
     }
+    
+    // 내가 쓴 노트 목록
+    @GetMapping("/my/posts")
+    public String myPosts(HttpSession session, Model model) {
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
+
+        List<Board> myPosts = boardService.findByUserId(loginUser.getId().longValue());
+
+        // 게시글별 좋아요 수 세팅
+        for (Board board : myPosts) {
+            int likeCount = boardService.countLikes(board);
+            board.setLikeCount(likeCount);
+        }
+
+        model.addAttribute("myPosts", myPosts);
+        return "my/my-posts";
+    }
+
 
 }
