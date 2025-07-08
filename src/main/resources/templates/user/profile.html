@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+<title>my profile</title>
+<link th:href="@{/css/user/join.css}" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+	<div id="updateMsgDiv" th:text="${updateMsg}" style="display: none;"></div>
+	<form th:action="@{/user/updateProfile}" th:object="${UpdateProfile}" method="post" id="updateForm" enctype="multipart/form-data">
+	    <table>
+	    <tr>
+	        <td><h2 class="join-title">プロフィール編集</h2></td>
+	    </tr>	
+	    <tr><td><p class="join-txt">プロフィール画像</p></td></tr>
+	    <tr><td>	    	
+	    	<img id="profileImg" class="profile-img" th:src="@{${session.user.profileImg} != null ? '/profiles/' + ${session.user.profileImg} : '/images/icon/basic_profile.jpg'}" alt="プロフィール画像">
+			<input type="hidden" id="profileImgInput" name="profileImg" th:value="${session.user.profileImg}">
+			<div class="profile-img-wrap">
+				<label for="imgUpload" class="profile-camera">
+					<img th:src="@{/images/icon/camera_icon.svg}" alt="写真アップロードアイコン">
+				</label>
+				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
+	   		</div>
+	   		<button type="button" onclick="deleteImg()">プロフィール画像削除</button>
+	    </td></tr>
+	    <tr><td><p class="join-txt"><span>*</span>メールアドレス</p></td></tr>
+	    <tr><td>
+	    	<input type="text" class="text" id="email" th:value="${session.user.email}" disabled><p></p>   
+	    	<input type="hidden" name="email" th:value="${session.user.email}"/> 
+	    </td></tr>
+	    <tr><td><p class="join-txt">パスワード変更</p></td></tr>
+	    <tr><td>
+	    	<input type="password" class="text" th:field="*{pass}" id="pass">
+	    	<p id="passError" class="join-error-msg"></p>
+	    </td></tr>
+	    <tr><td><p class="join-txt">パスワード確認</p></td></tr>
+	    <tr><td>
+	    	<input type="password" class="text" th:field="*{passCheck}" id="passCheck">
+	    	<p id="passCheckError" class="join-error-msg"></p>
+	    </td></tr>
+	    <tr><td><p class="join-txt"><span>*</span>ニックネーム</p></td></tr>
+	    <tr><td>
+	    	<input type="text" class="text" id="nick" th:value="${session.user.nick}">
+	    	<input type="hidden" id="originalNick" th:value="${session.user.nick}">
+	    	<input type="hidden" id="updateNick" th:field="*{nick}">	    	
+	    	<p id="nickError" class="join-error-msg"></p>
+	    </td></tr>
+	    <tr><td>
+	    	<input type="submit" value="編集" class="btn">
+	    </td></tr>
+	    </table>
+	</form>
+	
+	<script>		
+		document.addEventListener('DOMContentLoaded', function () {
+			
+			//업데이트 성공시 alert 창
+			const msg = document.getElementById("updateMsgDiv").textContent.trim();
+			if(msg){ alert(msg); }
+						
+			//프로필 사진 업로드
+			function uploadImg(input) {
+				const file = input.files[0];
+				if (!file) return;
+				
+				const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+				if (!allowedTypes.includes(file.type)) {
+				    alert("(JPG, PNG, GIF)ファイルのみアップロード可能です。");
+				    input.value = "";
+				    return;
+				}
+				
+				const reader = new FileReader();
+				reader.onload = function (e) {
+				    document.getElementById('profileImg').src = e.target.result;
+				    document.getElementById('profileImgInput').value = file.name;
+				}
+				reader.readAsDataURL(file);
+			}		
+			window.uploadImg = uploadImg;
+			
+			//프로필 사진 삭제
+			window.deleteImg = function () {
+				document.getElementById('profileImg').src = "/images/icon/basic_profile.jpg";
+				document.getElementById('profileImgInput').value = "";			
+			}
+			
+			
+		//유효성 검사 ---------------------------------------------------------------------
+		const pass = document.getElementById("pass");
+		const passCheck = document.getElementById("passCheck");
+		const nickname = document.getElementById("nick");
+		const originalNick = document.getElementById("originalNick").value;
+		
+		pass.addEventListener("input", validatePass);
+		passCheck.addEventListener("input", validatePassCheck);
+		nickname.addEventListener("input", validateNick);
+		
+			//패스워드 유효성 검사
+			function validatePass() {
+			  const pw = pass.value.trim();
+			  const error = document.getElementById("passError");
+			
+			  if (pw.length < 8 || pw.length > 20) {
+			    error.textContent = "パスワードは8〜20文字で入力してください。";
+			  } else {
+			    error.textContent = "";
+			  }		
+			  validatePassCheck();
+			}
+			
+			//패스워드 재확인 유효성 검사
+			function validatePassCheck() {
+			  const pw = pass.value.trim();
+			  const pwCheck = passCheck.value.trim();
+			  const error = document.getElementById("passCheckError");
+			  
+				if (pw !== pwCheck) {
+					error.textContent = "パスワードが一致しません。";
+				}else {
+					error.textContent = "";
+				}		
+				
+			}
+			
+			//닉네임 유효성 검사
+			// - 히라가나, 가타카나, 한자, 장음, 영문, 숫자 사용 가능. 그 외 사용 불가
+			function validateNick() {	
+			  const nick = nickname.value.trim();
+			  const error = document.getElementById("nickError");
+			  const specialCharRegex = /^[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\u30FCa-zA-Z0-9]{2,10}$/;
+	
+			  if (!nick) {
+			    error.textContent = "ニックネームを入力してください。";
+			  } else if (nick.length < 2 || nick.length > 10) {
+			    error.textContent = "ニックネームは2〜10文字で入力してください。";
+			  } else if (!specialCharRegex.test(nick)) {
+			    error.textContent = "ニックネームに空白や記号は使えません。";
+			  } else if(nick != originalNick) {
+				checkNickDuplication(nick);
+			  }
+			}
+			
+			//실시간 닉네임 중복 검사
+			function checkNickDuplication(nick) {
+				fetch("/user/checkNick?nick=" + nick)
+					.then(response => response.json())
+					.then(isAvailable => {
+						const error = document.getElementById("nickError");
+						if (!isAvailable) {
+							error.textContent = "このニックネームは既に使用されています。";
+						} else {
+							error.textContent = "";
+						}
+					})
+					.catch(err => {				
+						console.error("닉네임 중복 확인 실패", err);
+					});
+			}
+			
+		//submit
+		const form = document.getElementById("updateForm");
+		const updateNick = document.getElementById("updateNick");
+		
+			form.addEventListener("submit", function (e) {
+				
+				if(nickname.value != originalNick){
+					updateNick.value = nickname.value;
+				}else {
+					updateNick.value = originalNick;
+				}
+
+				const hasError = document.querySelectorAll(".join-error-msg") ? 
+					  			Array.from(document.querySelectorAll(".join-error-msg")).some(p => p.textContent !== "") : false;
+					  			//.some() : 배열 안에 조건을 만족하는 요소가 하나라도 있으면 true를 반환 
+			
+			  if (hasError) { e.preventDefault(); }
+					  			
+			});
+				
+		}); //document.addEventListener('DOMContentLoaded')
+			
+	</script>	
+</div>
+</body>
+</html>
