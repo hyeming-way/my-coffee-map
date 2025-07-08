@@ -83,16 +83,6 @@ body {
 	display: inline;
 }
 
-.login-header a {
-	margin: 0 20px;
-    text-decoration: none;
-    color: rgba(0,0,0,.55);
-}
-
-.login-header a:hover {
-    color: #555;
-}
-
 /* 히어로 이미지 영역 */
 .coffee-hero img {
     height: 400px;
