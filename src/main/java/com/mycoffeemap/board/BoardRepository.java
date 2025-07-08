@@ -11,4 +11,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	
 	// 내가 작성한 노트 조회
 	List<Board> findByUserIdOrderByCreatedAtDesc(Long userId);
+	
+	// Top5 노트 조회
+	List<Board> findTop5ByOrderByCreatedAtDesc();
+	
 }

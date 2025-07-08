@@ -5,38 +5,50 @@
 
 <!-- HEAD 영역 -->
 <th:block layout:fragment="head">
-    <title>コーヒーノート一覧</title> <!-- 커피 노트 목록 -->
+    <title>コーヒーノート一覧</title>
     <link th:href="@{/css/main.css}" rel="stylesheet">
 </th:block>
 
 <!-- CONTENT 영역 -->
 <div layout:fragment="content">
-    <div class="container mt-5">
-        <h3 class="mb-4">コーヒーノート 📚</h3> <!-- 커피 노트 -->
+    <div class="container mt-5 mb-5"> <!-- ✅ 하단 여백 추가 -->
+        <h3 class="mb-4">コーヒーノート 📚</h3>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <!-- 각 게시글 카드 반복 -->
             <div class="col" th:each="board : ${boardList}">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 shadow-sm position-relative">
                     <!-- 이미지가 있으면 출력 -->
-                    <img th:if="${board.imageUrl != null}" th:src="@{'/uploads/' + ${board.imageUrl}}"
+                    <img th:if="${board.imageUrl != null}" th:src="${board.cafe != null} ? ${board.cafe.imageUrl} : '/images/default.png'"
                          class="card-img-top" style="height: 180px; object-fit: cover;"
-                         onerror="this.src='/images/default.png'" alt="画像"> <!-- 이미지 -->
+                         onerror="this.src='/images/default.png'" alt="画像">
 
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${board.title}">タイトル</h5> <!-- 제목 -->
-                        <p class="card-text" th:text="${#strings.abbreviate(board.content, 80)}">内容の要約</p> <!-- 내용 요약 -->
+                        <h5 class="card-title" th:text="${board.title}">タイトル</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(board.content, 80)}">内容の要約</p>
                     </div>
 
-                    <div class="card-footer small text-muted">
-                        <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd')}"></span> |
-                        <span th:text="${board.user.nick}">ニックネーム</span> <!-- 닉네임 -->
+                    <!-- 작성자 정보 -->
+                    <div class="card-footer small text-muted d-flex align-items-center gap-2">
+                        <img th:src="${board.user.profileImg != null} ? ${board.user.profileImg} : '/images/profile/default.png'"
+                             class="rounded-circle"
+                             alt="プロフィール画像"
+                             style="width: 30px; height: 30px; object-fit: cover;" />
+                        <div>
+                            <div th:text="${board.user.nick}">ニックネーム</div>
+                            <div class="text-muted" th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd')}">日付</div>
+                        </div>
                     </div>
 
                     <!-- 상세보기 링크 -->
-                    <a class="stretched-link" th:href="@{'/board/view/' + ${board.id}}"></a>
+                    <a class="stretched-link" th:href="@{'/board/' + ${board.id}}"></a>
                 </div>
             </div>
+        </div>
+
+        <!-- 메인화면으로 돌아가기 버튼 -->
+        <div class="text-end mt-5">
+            <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm">🏠 ホームに戻る</a>
         </div>
     </div>
 </div>

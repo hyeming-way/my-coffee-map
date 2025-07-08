@@ -104,11 +104,11 @@ public class BoardController {
     }
 
     // 커피노트 단건 보기
-    @GetMapping("/board/view/{id}")
+    @GetMapping("/board/{id}")
     public String viewBoard(@PathVariable("id") Long id, HttpSession session, Model model) {
         Board board = boardRepository.findById(id)
-        		.orElseThrow(() -> new IllegalArgumentException("該当する投稿が存在しません: " + id));
-        
+                .orElseThrow(() -> new IllegalArgumentException("該当する投稿が存在しません。 " + id));
+
         User loginUser = (User) session.getAttribute("user");
         boolean liked = false;
         if (loginUser != null) {
@@ -120,7 +120,8 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("liked", liked);
         model.addAttribute("likeCount", likeCount);
-        return "board/view";
+
+        return "board/view";  // 뷰 페이지 렌더링
     }
     
     // 커피노트 좋아요
