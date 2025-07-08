@@ -24,16 +24,12 @@
 					<p>
 						ようこそ <span th:text="${session.user.nick}" class="header-nick"></span> さん！ 
 					</p>
-                </li>
-                <!-- 마이페이지 -->
+                </li>              
                  <li th:if="${session.user != null}" class="nav-item me-2">
+                 	<!-- 마이페이지 -->
                     <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>
-                </li>
-                <!-- 로그아웃 -->
-                <li th:if="${session.user != null}" class="nav-item">
-                    <form th:action="@{/user/logout.do}" style="display: inline;">
-                        <button type="submit" class="btn btn-outline-danger btn-sm">ログアウト</button>
-                    </form>
+                    <!-- 로그아웃 -->
+                    <a class="btn btn-outline-danger btn-sm" th:href="@{/user/logout.do}">ログアウト</a>
                 </li>
             </ul>
         </div>
