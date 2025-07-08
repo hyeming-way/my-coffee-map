@@ -25,9 +25,9 @@ public class CafeController {
 
     @GetMapping("/new")
     public String showCreateCafeForm(Model model, HttpSession session) {
-        // 로그인 체크 (테스트용 비활성화 가능)
-        User loginUser = (User) session.getAttribute("loginUser");
-        // if (loginUser == null) return "redirect:/user/login";
+        // 로그인 체크
+        User loginUser = (User) session.getAttribute("user");
+        	if (loginUser == null) return "redirect:/user/login";
         
         // 카페 이미지 목록
         model.addAttribute("imageOptions", List.of(
@@ -64,14 +64,13 @@ public class CafeController {
             @RequestParam String description,
             @RequestParam String imageUrl,
             @RequestParam Long beanId,
-            @RequestParam CafeBean.UseType useType
-            /* , HttpSession session */
+            @RequestParam CafeBean.UseType useType, HttpSession session
     ) {
-        // 로그인 검사 제거
-        // User loginUser = (User) session.getAttribute("loginUser");
-        // if (loginUser == null) {
-        //     return "redirect:/user/login";
-        // }
+         // 로그인 검사
+         User loginUser = (User) session.getAttribute("user");
+         if (loginUser == null) {
+             return "redirect:/user/login";
+         }
 
         Bean bean = beanRepository.findById(beanId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
@@ -82,7 +81,7 @@ public class CafeController {
                 .description(description)
                 .imageUrl(imageUrl)
                 .createdAt(LocalDateTime.now())
-                // .user(loginUser)  // 사용자 연관 제거
+                .user(loginUser)
                 .build();
 
         Cafe savedCafe = cafeRepository.save(cafe);

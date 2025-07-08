@@ -23,6 +23,16 @@
                 <li th:if="${session.user != null}" class="nav-item">
                 	ようこそ <span th:text="${session.user.nick}"></span> さん！
                 </li>
+                <!-- 마이페이지 -->
+                 <li th:if="${session.user != null}" class="nav-item me-2">
+                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>
+                </li>
+                <!-- 로그아웃 -->
+                <li th:if="${session.user != null}" class="nav-item">
+                    <form th:action="@{/user/logout}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">ログアウト</button>
+                    </form>
+                </li>
             </ul>
         </div>
     </nav>

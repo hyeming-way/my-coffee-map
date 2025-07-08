@@ -25,17 +25,17 @@ public class MyPageController {
     // 마이페이지 홈
     @GetMapping("/my")
     public String myPage(HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
             return "redirect:/user/login";
         }
-        return "my/mypage";
+        return "my/my-page";
     }
 
     // 내가 등록한 원두 목록
     @GetMapping("/my/beans")
     public String myBeans(HttpSession session, Model model) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
             return "redirect:/user/login";
         }
@@ -47,7 +47,7 @@ public class MyPageController {
     // 내가 등록한 카페 목록
     @GetMapping("/my/cafes")
     public String myCafes(HttpSession session, Model model) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
             return "redirect:/user/login";
         }
@@ -60,15 +60,26 @@ public class MyPageController {
     @GetMapping("/my/preference")
     @SuppressWarnings("unchecked")
     public String myPreference(HttpSession session, Model model) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
             return "redirect:/user/login";
         }
 
+        // 세션에서 데이터 꺼냄 (먼저 선언)
         String roast = (String) session.getAttribute("selectedRoast");
         List<String> flavors = (List<String>) session.getAttribute("selectedFlavor");
 
-        List<Bean> recommendedBeans = beanService.findByPreference(roast != null ? Bean.RoastLevel.valueOf(roast) : null, flavors);
+        // 데이터가 없을 경우 안내 메시지
+        if (roast == null && (flavors == null || flavors.isEmpty())) {
+            model.addAttribute("message", "이전에 선택한 커피 취향이 없습니다.");
+            return "beans/result-content"; // 또는 "my/no-preference"
+        }
+
+        // 추천 결과 조회
+        List<Bean> recommendedBeans = beanService.findByPreference(
+            roast != null ? Bean.RoastLevel.valueOf(roast) : null,
+            flavors
+        );
         List<Cafe> recommendedCafes = cafeService.findByBeans(recommendedBeans);
 
         model.addAttribute("selectedRoast", roast);
@@ -78,4 +89,5 @@ public class MyPageController {
 
         return "beans/result-content";
     }
+
 }
