@@ -29,9 +29,7 @@
                 </li>
                 <!-- 로그아웃 -->
                 <li th:if="${session.user != null}" class="nav-item">
-                    <form th:action="@{/user/logout}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-outline-danger btn-sm">ログアウト</button>
-                    </form>
+                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/user/logout.do}">ログアウト</a>
                 </li>
             </ul>
         </div>
