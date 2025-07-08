@@ -92,12 +92,12 @@ public class BeanController {
         model.addAttribute("flavorOptions", List.of("Floral", "Nutty", "Fruity", "Spicy", "Chocolate", "Earthy", "Caramel", "Smoky"));
 
         // 로그인 확인
-//        User loginUser = (User) session.getAttribute("loginUser");
-//        if (loginUser == null) {
-//            return "redirect:/user/login";
-//        }
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
 
-//        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("loginUser", loginUser);
 
         // 이미지 옵션
         model.addAttribute("imageOptions", List.of(
@@ -122,10 +122,10 @@ public class BeanController {
     // 원두 등록 처리
     @PostMapping("/new")
     public String createBean(@ModelAttribute Bean bean, HttpSession session) {
-//        User loginUser = (User) session.getAttribute("loginUser");
-//        if (loginUser == null) {
-//            return "redirect:/login"; // 또는 에러 처리
-//        }
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login"; // 또는 에러 처리
+        }
         beanService.save(bean);
         return "redirect:/mycoffeemap";
     }
