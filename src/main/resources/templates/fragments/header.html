@@ -16,12 +16,15 @@
             </a>      
             <ul class="navbar-nav ms-auto">
             	<!-- 미로그인 -->
-                <li th:if="${session.user == null}" class="nav-item">
+                <li th:if="${session.user == null}">
                 	<a class="nav-link" th:href="@{/user/login}">ログイン</a>
                 </li>
                 <!-- 로그인 -->
-                <li th:if="${session.user != null}" class="nav-item">
-                	ようこそ <span th:text="${session.user.nick}"></span> さん！
+                <li th:if="${session.user != null}" class="login-header">
+					<p>
+						ようこそ <span th:text="${session.user.nick}" class="header-nick"></span> さん！ 
+						<a th:href="@{/user/logout}">ログアウト</a>
+					</p>
                 </li>
             </ul>
         </div>
