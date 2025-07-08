@@ -23,7 +23,7 @@
                 <li th:if="${session.user != null}" class="login-header">
 					<p>
 						ようこそ <span th:text="${session.user.nick}" class="header-nick"></span> さん！ 
-						<a th:href="@{/user/logout}">ログアウト</a>
+						<a th:href="@{/user/logout.do}">ログアウト</a>
 					</p>
                 </li>
             </ul>

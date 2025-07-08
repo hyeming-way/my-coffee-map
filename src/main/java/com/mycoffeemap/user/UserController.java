@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.mycoffeemap.common.EmailService;
 import com.mycoffeemap.common.FileStorageService;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -158,7 +157,14 @@ public class UserController {
 	} //doLogin
 	
 	
-	
+	//로그아웃 처리
+	@GetMapping("/logout.do")
+	public String logout (HttpSession session) {
+		log.info("로그아웃처리 중..........");
+	    session.invalidate(); 
+		log.info("로그아웃처리 완료");
+		return "fragments/main-content";
+	}
 	
 	
 	
