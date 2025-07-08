@@ -145,9 +145,16 @@ public class UserController {
 		}
 		
 		//이메일 인증을 하지 않은 경우
-		if (!user.isEnabled()) {
-			model.addAttribute("loginError", "メール認証がまだ完了していません。");
-			return "user/login";
+		if (!user.isEnabled()) {				
+			if (user.getTokenExpiry().isBefore(LocalDateTime.now())) { //이메일 토큰이 만료된 경우
+				model.addAttribute("loginError", "メール認証の有効期限が切れたため、認証メールを再送信しました。メールをご確認のうえ、認証を完了してください。");
+				//이메일 재전송
+				resendVerification(user);
+				return "user/login"; 		
+			} else {
+				model.addAttribute("loginError", "メール認証がまだ完了していません。");
+				return "user/login";
+			}
 		}
 		
 		session.setAttribute("user", user);
@@ -155,6 +162,32 @@ public class UserController {
 		return "fragments/main-content";
 		
 	} //doLogin
+	
+	
+	//본인 인증 이메일 재전송
+	public void resendVerification(User user) {
+
+        String newToken = UUID.randomUUID().toString();
+        
+        user.setVerificationToken(newToken);
+        user.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        userRepository.save(user);
+        
+	    //본인 인증 이메일 재발송    
+	    String verifyUrl = "http://localhost:8070/user/verify?token=" + newToken;
+	    emailService.sendVerificationEmail(user.getEmail(), verifyUrl);
+	    log.info("✉ 사용자 본인 인증 이메일 보내기 완료");
+	    	    
+	} //resendVerification
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	//로그아웃 처리
