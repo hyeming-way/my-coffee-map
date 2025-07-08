@@ -35,47 +35,62 @@ import lombok.Setter;
 @Builder
 public class Bean {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long id;
+	// id
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-   @Column(nullable = false)
-    private String name;
+	// 원두 이름
+	@Column(nullable = false)
+	private String name;
 
-    private String origin;
+	// 원두 산지
+	private String origin;
 
-    @Enumerated(EnumType.STRING)
-    private RoastLevel roastLevel;
-    
-    public enum RoastLevel {LIGHT, MEDIUM, DARK}
+	// 로스팅 레벤
+	@Enumerated(EnumType.STRING)
+	private RoastLevel roastLevel;
 
-    private String flavorNotes;
+	public enum RoastLevel {
+		LIGHT, MEDIUM, DARK
+	}
 
-    @Column(length = 1000)
-    private String description;
+	// 향미(플레이버)
+	private String flavorNotes;
 
-    private String imageUrl;
-  
-    @OneToMany(mappedBy = "bean", cascade = CascadeType.ALL)
-    private List<CafeBean> cafeBeans = new ArrayList<>();
+	// 설명
+	@Column(length = 1000)
+	private String description;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Bean)) return false;
-        Bean bean = (Bean) o;
-        return id != null && id.equals(bean.id);
-    }
+	// 이미지
+	private String imageUrl;
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-    
-    // 연관된 사용자 정보
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
-    private User user;
+	// 카페빈과 연결
+	@OneToMany(mappedBy = "bean", cascade = CascadeType.ALL)
+	private List<CafeBean> cafeBeans = new ArrayList<>();
 
+	// 두 개의 Bean 객체가 같은지 비교
+	// id 값이 같으면 같은 객체
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof Bean))
+			return false;
+		Bean bean = (Bean) o;
+		return id != null && id.equals(bean.id);
+	}
+
+	// 객체를 해시 기반 컬렉션(Set, Map 등)에 넣을 때 사용되는 고유 번호
+	// id를 기준으로 해시코드를 생성
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
+
+	// 연관된 사용자 정보
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = true)
+	private User user;
 	    
 }

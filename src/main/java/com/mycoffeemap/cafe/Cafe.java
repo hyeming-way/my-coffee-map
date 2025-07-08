@@ -29,18 +29,24 @@ import lombok.Setter;
 @Builder
 public class Cafe {
 
+	// id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 카페이름
     private String name;
 
+    // 카페주소
     private String address;
 
+    // 카페 설명
     private String description;
 
+    // 카페 이미지
     private String imageUrl;
 
+    // 등록일
     private LocalDateTime createdAt;
 
     // CafeBean 연결
