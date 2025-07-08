@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.mycoffeemap.common.EmailService;
 import com.mycoffeemap.common.FileStorageService;
@@ -100,6 +101,14 @@ public class UserController {
 	} //submit
 	
 	
+	//이메일 중복 검사
+	@GetMapping("/checkEmail")
+	@ResponseBody
+	public boolean checkEmail(@RequestParam("email") String email) {
+	    return !userRepository.existsByEmail(email);  // true : 사용 가능
+	}	
+	
+	
 	//사용자 이메일 인증
 	@GetMapping("/verify")
 	public String verifyUser(@RequestParam("token") String token, Model model) {
@@ -180,16 +189,7 @@ public class UserController {
 	    	    
 	} //resendVerification
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	//로그아웃 처리
 	@GetMapping("/logout.do")
 	public String logout (HttpSession session) {
@@ -197,7 +197,7 @@ public class UserController {
 	    session.invalidate(); 
 		log.info("로그아웃처리 완료");
 		return "fragments/main-content";
-	}
+	} //logout
 	
 	
 	

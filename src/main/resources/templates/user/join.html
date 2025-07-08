@@ -99,10 +99,27 @@
 			  } else if (!emailRegex.test(emailValue)) {
 			    error.textContent = "メールアドレスの形式が正しくありません。";
 			  } else {
-			    error.textContent = "";
+			    checkEmailDuplication(emailValue); //이메일 중복 검사 함수 호출
 			  }
 			}
 			
+			//실시간 이메일 중복 검사
+			function checkEmailDuplication(email) {
+				fetch("/user/checkEmail?email=" + email)
+					.then(response => response.json())
+					.then(isAvailable => {
+						const error = document.getElementById("emailError");
+						if (!isAvailable) {
+							error.textContent = "このメールアドレスは既に使用されています。";
+						} else {
+							error.textContent = "";
+						}
+					})
+					.catch(err => {				
+						console.error("이메일 중복 확인 실패", err);
+					});
+			}
+
 			//패스워드 유효성 검사
 			function validatePass() {
 			  const pw = pass.value.trim();
