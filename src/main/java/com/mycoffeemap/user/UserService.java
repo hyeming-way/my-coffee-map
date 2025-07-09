@@ -38,7 +38,7 @@ public class UserService {
 		
 		String storedFilename = null;
 		if (!imgFile.isEmpty()) {
-			storedFilename = fileStorageService.storeFile(imgFile);
+			storedFilename = fileStorageService.storeFile(imgFile, "profile");
 		}
 
 		//사용자 본인 인증용 토큰 생성
@@ -162,7 +162,7 @@ public class UserService {
 	    user.setNick(updateProfile.getNick());
 
 	    if (!imgFile.isEmpty()) {
-	        String storedFilename = fileStorageService.storeFile(imgFile);
+	        String storedFilename = fileStorageService.storeFile(imgFile, "profile");
 	        user.setProfileImg(storedFilename);
 	    } else if(profileImg != null && !profileImg.trim().isEmpty()) {
 	    	user.setProfileImg(profileImg);
