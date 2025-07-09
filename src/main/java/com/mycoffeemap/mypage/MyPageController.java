@@ -27,9 +27,10 @@ public class MyPageController {
 
     // 마이페이지 홈
     @GetMapping("/my")
-    public String myPage(HttpSession session) {
+    public String myPage(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
+        	model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
             return "redirect:/user/login";
         }
         return "my/my-page";
@@ -40,6 +41,7 @@ public class MyPageController {
     public String myBeans(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
+        	model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
             return "redirect:/user/login";
         }
         List<Bean> myBeans = beanService.findByUserId(loginUser.getId());
@@ -52,6 +54,7 @@ public class MyPageController {
     public String myCafes(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
+        	model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
             return "redirect:/user/login";
         }
         List<Cafe> myCafes = cafeService.findByUserId(loginUser.getId());
@@ -65,6 +68,7 @@ public class MyPageController {
     public String myPreference(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
+        	model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
             return "redirect:/user/login";
         }
 

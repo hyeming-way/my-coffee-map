@@ -31,10 +31,10 @@ public class User {
 	@Column(length = 255, nullable = false)
 	private String pass;
 	
-	@Column(length = 20, nullable = false)
+	@Column(unique = true, length = 20, nullable = false)
 	private String nick;
 
-	@Column(unique = true ,length = 100, nullable = false)
+	@Column(unique = true, length = 100, nullable = false)
 	private String email;
 	
 	@Column(length = 255)

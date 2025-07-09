@@ -63,11 +63,24 @@ body {
 }
 
 .nav-link {
-  font-size: 1rem !important; 
-  margin-right: 50px;
+	font-size: 1rem !important; 
+	margin-right: 50px;
 }
-.login {
-    margin-right: 50px;
+
+/* 로그인시 헤더 */
+.login-header {
+	margin-right: 10px;
+	display: inline;
+	font-size: 1rem;
+    color: rgba(0,0,0,.55);
+}
+
+.header-nick {
+	font-weight: bold;
+}
+
+.login-header p {
+	display: inline;
 }
 
 /* 히어로 이미지 영역 */

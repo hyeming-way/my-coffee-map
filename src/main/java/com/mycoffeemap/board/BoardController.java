@@ -67,13 +67,12 @@ public class BoardController {
         String storedFilename = null;
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
-                storedFilename = fileStorageService.storeFile(imageFile);
+                storedFilename = fileStorageService.storeFile(imageFile, "board"); // 또는 "profile" 등 상황에 맞게
             } catch (Exception e) {
                 e.printStackTrace();
                 return "redirect:/error";
             }
         }
-
 
         // 관련 Bean, Cafe 조회
         Bean bean = (beanId != null) ? beanRepository.findById(beanId).orElse(null) : null;

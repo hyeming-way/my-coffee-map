@@ -1,8 +1,5 @@
 package com.mycoffeemap.user;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,9 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.mycoffeemap.common.EmailService;
-import com.mycoffeemap.common.FileStorageService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,15 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 	
 	@Autowired
-	UserRepository userRepository;
+	UserService userService;
+	
+	@Autowired
+	private UserRepository userRepository;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private EmailService emailService;
-	@Autowired
-	private FileStorageService fileStorageService;
-	
-	
+
 	//로그인 화면 보여주기
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpSession session) {
@@ -72,119 +67,135 @@ public class UserController {
 	    	model.addAttribute("submitted", true);
 	        return "user/join"; 
 	    }	    
-	    
-	    String storedFilename = null;
-	    if (!imgFile.isEmpty()) {
-	    	storedFilename = fileStorageService.storeFile(imgFile);
-	    }
-	    
-	    //사용자 본인 인증용 토큰 생성
-	    String token = UUID.randomUUID().toString();
-	    
-	    //user 객체 생성 후 DB 저장
-	    User user = new User();
-	    user.setEmail(joinForm	.getEmail());
-	    user.setPass(passwordEncoder.encode(joinForm.getPass()));
-	    user.setNick(joinForm.getNick());
-	    user.setProfileImg(storedFilename);
-	    user.setVerificationToken(token);
-	    user.setTokenExpiry(LocalDateTime.now().plusHours(24));  //인증 메일 24시간 유효하도록 설정
-	    user.setEnabled(false);
-	    
-	    userRepository.save(user);
-	    log.info("✔ 사용자 정보 DB 저장 완료");
 	    	    
-	    //본인 인증 이메일 보내기	    
-	    String verifyUrl = "http://localhost:8070/user/verify?token=" + token;
-	    emailService.sendVerificationEmail(user.getEmail(), verifyUrl);
-	    log.info("✉ 사용자 본인 인증 이메일 보내기 완료");
-	    	    
+	    //사용자에게 본인 인증 이메일 보내기
+	    userService.registerUser(joinForm, imgFile); 
+	    
 	    return "user/mail-sended";
 	    
 	} //submit
 	
 	
+	//이메일 중복 검사
+	@GetMapping("/checkEmail")
+	@ResponseBody
+	public boolean checkEmail(@RequestParam("email") String email) {
+		return userService.isEmailAvailable(email);  // true : 사용 가능
+	}	
+	
+	
+	//닉네임 중복 검사
+	@GetMapping("/checkNick")
+	@ResponseBody
+	public boolean checkNick(@RequestParam("nick") String nick) {
+		return userService.isNickAvailable(nick);  // true : 사용 가능
+	}		
+	
+	
 	//사용자 이메일 인증
 	@GetMapping("/verify")
-	public String verifyUser(@RequestParam("token") String token, Model model) {
-		
-		Optional<User> optionalUser = userRepository.findByVerificationToken(token);
-		
-		//인증 링크가 유효하지 않을 경우
-		if (optionalUser.isEmpty()) {
-			model.addAttribute("message", "無効な認証リンクです。");
-			return "user/verify-fail"; //인증 실패 뷰 반환
-		}
-		
-		User user = optionalUser.get();
-		
-		//인증 링크가 만료 시간을 경과했을 경우
-		if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {		
-			model.addAttribute("message", "認証リンクの有効期限が切れています。");
-			return "user/verify-fail"; //인증 실패 뷰 반환
-		}
-		
-		//이메일 인증 완료 처리
-		user.setEnabled(true);
-		user.setVerificationToken(null);
-		user.setTokenExpiry(null);
-		userRepository.save(user);
-		
-		return "user/verify-success"; //인증 성공 뷰 반환
-		
-	} //verifyUser
+	public String verifyUser(@RequestParam("token") String token, Model model) {		
+		return userService.verifyUser(token, model);
+	} 
 	
 
 	//로그인 처리
 	@PostMapping("/login.do")
 	public String doLogin(@RequestParam("email") String email, @RequestParam("pass") String pass,
 	                      HttpSession session, Model model) {
-
 	    User user = userRepository.findByEmail(email);
-
 	    if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
-	        model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
+	    	model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
 	        return "user/login";
 	    }
 
 	    if (!user.isEnabled()) {
-	        model.addAttribute("loginError", "メール認証がまだ完了していません。");
-	        return "user/login";
+		    model.addAttribute("loginError", "メール認証がまだ完了していません。");
+		    return "user/login";
+		}
+
+		    session.setAttribute("user", user);
+
+		    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
+		    String redirectUrl = (String) session.getAttribute("prevPage");
+		    session.removeAttribute("prevPage");
+
+		    if (redirectUrl != null) {
+		        return "redirect:" + redirectUrl;
+		    }
+
+		    // 없으면 메인으로
+		    return "redirect:/mycoffeemap";
+		    
+		} //doLogin
+	
+	//로그아웃 처리
+	@GetMapping("/logout.do")
+	public String logout (HttpSession session) {
+	    session.invalidate(); 
+		return "fragments/main-content";
+	} //logout
+	
+	
+	//프로필 수정 폼 이동
+	@GetMapping("/profile")
+	public String profile (HttpSession session, Model model) {
+		
+		User user = (User)session.getAttribute("user");		
+		if (user == null) {
+			model.addAttribute("loginError", "このサービスを利用するには、ログインが必要です。");
+			return "user/login";
+		}else {
+			model.addAttribute("UpdateProfile", new UpdateProfile());
+			return "user/profile"; //프로필 폼 이동
+		}		
+	}
+	
+	
+	//프로필 수정
+	@PostMapping("/updateProfile")
+	public String updateProfile (@Valid @ModelAttribute("UpdateProfile") UpdateProfile updateProfile,
+								 @RequestParam("profileImg") String profileImg,
+						 		 @RequestParam("imgUpload") MultipartFile imgFile, HttpSession session,
+						 		 BindingResult bindingResult, Model model) {
+		
+		log.info("UserController의 updateProfile 메소드 실행");
+		
+		if (!updateProfile.getPass().isBlank()) {			
+			//비밀번호 재확인 서버단에서 한번 더 검증
+		    if (!updateProfile.getPass().equals(updateProfile.getPassCheck())) {
+		        bindingResult.rejectValue("passCheck", "error.passCheck", "パスワードが一致しません。");
+		        return "user/profile";
+		    }
+		}
+		
+		//서버단에서 유효성 검사
+	    if (bindingResult.hasErrors()) {
+	    	model.addAttribute("submitted", true);
+	        return "user/profile"; 
 	    }
-
-	    session.setAttribute("user", user);
-
-	    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
-	    String redirectUrl = (String) session.getAttribute("prevPage");
-	    session.removeAttribute("prevPage");
-
-	    if (redirectUrl != null) {
-	        return "redirect:" + redirectUrl;
-	    }
-
-	    // 없으면 메인으로
-	    return "redirect:/mycoffeemap";
 	    
-	} //doLogin
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	    User user = (User) session.getAttribute("user");
+	    
+	    //프로필 업데이트
+	    User updatedUser = userService.updateUserProfile(user.getId(), updateProfile, imgFile, profileImg);
+	    log.info("✔ 사용자 정보 DB 업데이트 완료");
+	    
+	    //세션 정보 업데이트
+	    session.setAttribute("user", updatedUser);
+	    
+	    model.addAttribute("updateMsg", "プロフィールを編集しました。");
+	         	    
+	    return "user/profile"; 
+	    
+	} //updateProfile
 	
 	
 	@GetMapping("/test")
 	public String test(Model model) {
 	    return "user/test"; 
 	}
-	
-	
-	
+		
 	
 	
 	
