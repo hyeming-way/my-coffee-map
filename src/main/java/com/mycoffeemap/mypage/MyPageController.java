@@ -75,7 +75,7 @@ public class MyPageController {
         // 데이터가 없을 경우 안내 메시지
         if (roast == null && (flavors == null || flavors.isEmpty())) {
             model.addAttribute("message", "이전에 선택한 커피 취향이 없습니다.");
-            return "beans/result-content"; // 또는 "my/no-preference"
+            return "beans/result";
         }
 
         // 추천 결과 조회
@@ -90,7 +90,7 @@ public class MyPageController {
         model.addAttribute("recommendedBeans", recommendedBeans);
         model.addAttribute("recommendedCafes", recommendedCafes);
 
-        return "beans/result-content";
+        return "beans/result";
     }
     
     // 내가 쓴 노트 목록

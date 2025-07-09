@@ -11,7 +11,7 @@
 
 <!-- CONTENT 영역 -->
 <div layout:fragment="content">
-    <div class="container mt-5 mb-5"> <!-- ✅ 하단 여백 추가 -->
+    <div class="container mt-5 mb-5"> <!-- 하단 여백 추가 -->
         <h3 class="mb-4">コーヒーノート 📚</h3>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -19,9 +19,12 @@
             <div class="col" th:each="board : ${boardList}">
                 <div class="card h-100 shadow-sm position-relative">
                     <!-- 이미지가 있으면 출력 -->
-                    <img th:if="${board.imageUrl != null}" th:src="${board.cafe != null} ? ${board.cafe.imageUrl} : '/images/default.png'"
-                         class="card-img-top" style="height: 180px; object-fit: cover;"
-                         onerror="this.src='/images/default.png'" alt="画像">
+					<img th:if="${board.imageUrl != null}"
+					     th:src="@{/boards/{filename}(filename=${board.imageUrl})}"
+					     class="card-img-top"
+					     style="height: 180px; object-fit: cover;"
+					     onerror="this.src='/images/default.png'"
+					     alt="画像" />
 
                     <div class="card-body">
                         <h5 class="card-title" th:text="${board.title}">タイトル</h5>

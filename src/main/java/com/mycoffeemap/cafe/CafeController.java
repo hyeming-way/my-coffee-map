@@ -97,5 +97,7 @@ public class CafeController {
 
         return "redirect:/mycoffeemap";
     }
+   
+
 
 }

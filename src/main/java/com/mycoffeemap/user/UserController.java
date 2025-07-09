@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mycoffeemap.common.EmailService;
 import com.mycoffeemap.common.FileStorageService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -38,18 +39,20 @@ public class UserController {
 	
 	//로그인 화면 보여주기
 	@GetMapping("/login")
-	public String login() {
-	    return "user/login"; 
-	}
-	
+	public String login(HttpServletRequest request, HttpSession session) {
+	    String referer = request.getHeader("Referer");
+	    if (referer != null && !referer.contains("/login")) {
+	        session.setAttribute("prevPage", referer);  // 로그인 직전 페이지 기억
+	    }
+	    return "user/login";
+	}	
 	
 	//회원가입 폼 화면 보여주기
 	@GetMapping("/join")
 	public String join(Model model) {
 		model.addAttribute("JoinForm", new JoinForm());
 	    return "user/join"; 
-	}
-	
+	}	
 	
 	//사용자가 회원가입 입력 폼에 값을 입력하고 '송신'버튼을 눌렀을 때 호출
 	@PostMapping("/join")
@@ -131,30 +134,37 @@ public class UserController {
 		
 	} //verifyUser
 	
-	
+
 	//로그인 처리
 	@PostMapping("/login.do")
-	public String doLogin (@RequestParam("email") String email, @RequestParam("pass") String pass,
-						   HttpSession session, Model model) {
-		
-		User user = userRepository.findByEmail(email);
-		
-		//이메일 또는 패스워드가 틀린 경우
-		if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
-			model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
-			return "user/login";
-		}
-		
-		//이메일 인증을 하지 않은 경우
-		if (!user.isEnabled()) {
-			model.addAttribute("loginError", "メール認証がまだ完了していません。");
-			return "user/login";
-		}
-		
-		session.setAttribute("user", user);
-			
-		return "fragments/main-content";
-		
+	public String doLogin(@RequestParam("email") String email, @RequestParam("pass") String pass,
+	                      HttpSession session, Model model) {
+
+	    User user = userRepository.findByEmail(email);
+
+	    if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
+	        model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
+	        return "user/login";
+	    }
+
+	    if (!user.isEnabled()) {
+	        model.addAttribute("loginError", "メール認証がまだ完了していません。");
+	        return "user/login";
+	    }
+
+	    session.setAttribute("user", user);
+
+	    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
+	    String redirectUrl = (String) session.getAttribute("prevPage");
+	    session.removeAttribute("prevPage");
+
+	    if (redirectUrl != null) {
+	        return "redirect:" + redirectUrl;
+	    }
+
+	    // 없으면 메인으로
+	    return "redirect:/mycoffeemap";
+	    
 	} //doLogin
 	
 	

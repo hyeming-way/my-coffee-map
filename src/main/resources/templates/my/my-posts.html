@@ -17,9 +17,12 @@
             <div class="col" th:each="post : ${myPosts}">
                 <div class="card h-100 shadow-sm">
                     <!-- 이미지 (있을 경우) -->
-                    <img th:if="${post.imageUrl != null}" th:src="@{'/uploads/' + ${post.imageUrl}}"
-                         class="card-img-top" style="height: 180px; object-fit: cover;"
-                         onerror="this.src='/images/default.png'" alt="画像">
+					<img th:if="${post.imageUrl != null}"
+					     th:src="@{/boards/{filename}(filename=${post.imageUrl})}"
+					     class="card-img-top"
+					     style="height: 180px; object-fit: cover;"
+					     onerror="this.src='/images/default.png'"
+					     alt="画像">
 
                     <div class="card-body">
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>

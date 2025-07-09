@@ -55,12 +55,14 @@
     <div class="container mt-5">
 
         <!-- 닉네임 + 프로필 이미지 -->
-        <div class="profile-section" th:if="${session.user != null}">
-<!--             <img th:src="@{/profiles/{filename}(filename=${session.user.profileImg})}" -->
-<!--                  alt="プロフィール画像" class="profile-img" -->
-<!--                  onerror="this.src='/images/profile/default.png'"> -->
-            <div class="fw-bold" th:text="${session.user.nick} + ' さん'">ユーザー</div>
-        </div>
+		<div class="profile-section" th:if="${session.user != null}">
+		    <img th:src="${session.user.profileImg != null} 
+		                  ? @{'/profiles/' + ${session.user.profileImg}} 
+		                  : @{/profiles/default-profile.png}"
+		         alt="プロフィール画像" class="profile-img"
+		         onerror="this.src='/profiles/default-profile.png'">
+		    <div class="fw-bold" th:text="${session.user.nick + ' さん'}">ユーザー</div>
+		</div>
 
         <!-- 타이틀 + 로고 -->
         <div class="d-flex align-items-center gap-2 mb-4">

@@ -74,6 +74,7 @@ public class BoardController {
             }
         }
 
+
         // 관련 Bean, Cafe 조회
         Bean bean = (beanId != null) ? beanRepository.findById(beanId).orElse(null) : null;
         Cafe cafe = (cafeId != null) ? cafeRepository.findById(cafeId).orElse(null) : null;

@@ -8,7 +8,83 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
     <style>
-	    .text-brown { color: #8B4513; } /* 진한 갈색 */
+	    .text-brown {
+	        color: #8B4513; /* 진한 갈색 */
+	    }
+	
+	    .btn-outline-primary {
+	        color: #8B4513;
+	        border-color: #c8a974;
+	    }
+	
+	    .btn-outline-primary:hover {
+	        background-color: #c8a974;
+	        border-color: #c8a974;
+	        color: white;
+	    }
+	
+	    .btn-outline-secondary {
+	        color: #5c4435;
+	        border-color: #c8a974;
+	    }
+	
+	    .btn-outline-secondary:hover {
+	        background-color: #c8a974;
+	        border-color: #c8a974;
+	        color: white;
+	    }
+	
+	    .btn-danger {
+	        background-color: #d86a6a;
+	        border-color: #d86a6a;
+	    }
+	
+	    .btn-danger:hover {
+	        background-color: #b34f4f;
+	        border-color: #b34f4f;
+	    }
+	
+	    .btn-outline-danger {
+	        color: #d86a6a;
+	        border-color: #d86a6a;
+	    }
+	
+	    .btn-outline-danger:hover {
+	        background-color: #d86a6a;
+	        color: white;
+	    }
+	
+	    .card-body h6.card-title {
+	        color: #5c4435;
+	    }
+	
+	    .card.bg-light {
+	        background-color: #f9f6f0 !important;
+	    }
+	
+	    textarea.form-control {
+	        border-radius: 6px;
+	        border-color: #c8a974;
+	    }
+	
+	    textarea.form-control:focus {
+	        box-shadow: 0 0 0 0.2rem rgba(200, 169, 116, 0.25);
+	        border-color: #c8a974;
+	    }
+	
+	    .fw-bold {
+	        color: #5c4435;
+	    }
+	
+	    .btn-sm {
+	        font-size: 0.85rem;
+	        padding: 0.25rem 0.5rem;
+	    }
+	
+	    .img-fluid.rounded {
+	        border: 1px solid #e3d6c5;
+	        box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
+	    }
 	</style>
 </head>
 
@@ -19,7 +95,7 @@
         <!-- 작성자 정보 -->
         <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="d-flex align-items-center">
-                <img th:src="${board.user.profileImg != null} ? ${board.user.profileImg} : '/images/profile/default.png'"
+                <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/profiles/default-profile.png}"
                      style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="プロフィール">
                 <span class="ms-2 fw-bold" th:text="${board.user.nick + ' さん'}">ニックネーム</span>
             </div>
@@ -35,14 +111,11 @@
         <div class="mb-3 text-muted small" th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">投稿日</div>
 
         <!-- 첨부 이미지 -->
-        <div class="mb-3" th:if="${board.imageUrl != null}">
-            <img th:src="${board.cafe != null} ? ${board.cafe.imageUrl} : '/images/default.png'" 
-	           	 class="img-fluid rounded"
-			     alt="添付画像"
-			     style="max-height: 400px; object-fit: contain; display: block; margin: 0 auto;" />
-<!--             <img th:src="@{'/uploads/' + ${board.imageUrl}}" class="img-fluid rounded" 
-					alt="添付画像" style="max-height: 400px; object-fit: contain; display: block; margin: 0 auto;" /> -->
-        </div>
+        <img th:src="@{/boards/{filename}(filename=${board.imageUrl})}"
+		     class="img-fluid rounded" alt="添付画像"
+		     style="max-height: 400px; object-fit: contain; display: block; margin: 0 auto;"
+		     onerror="this.src='/images/default.png'" />
+
 
         <!-- 본문 -->
         <div class="mb-4" th:text="${board.content}">本文</div>
@@ -53,20 +126,18 @@
 		        <div class="card-body">
 		            <h6 class="card-title fw-bold mb-3">関連情報</h6>
 		
+		            <!-- 관련 원두 -->
 		            <div th:if="${board.bean != null}" class="mb-2 d-flex align-items-center">
 		                <i class="bi bi-cup-straw me-2 text-brown"></i>
-		                <span class="fw-bold">関連ビーンズ：</span>
-		                <a th:href="@{/beans/search(roast=${board.bean.roastLevel}, flavor=${board.bean.flavorNotes})}"
-		                   th:text="${board.bean.name + '（' + board.bean.origin + '）'}"
-		                   class="ms-1 text-decoration-none">ビーンズ名</a>
+		                <span class="fw-bold">関連コーヒー豆：</span>
+		                <span class="ms-1 text-muted" th:text="${board.bean.name + '（' + board.bean.origin + '）'}">コーヒー豆名</span>
 		            </div>
 		
+		            <!-- 관련 카페 -->
 		            <div th:if="${board.cafe != null}" class="d-flex align-items-center">
 		                <i class="bi bi-geo-alt-fill me-2 text-danger"></i>
 		                <span class="fw-bold">関連カフェ：</span>
-		                <a th:href="@{/cafes/view/{id}(id=${board.cafe.id})}"
-		                   th:text="${board.cafe.name + '（' + board.cafe.address + '）'}"
-		                   class="ms-1 text-decoration-none">カフェ名</a>
+		                <span class="ms-1 text-muted" th:text="${board.cafe.name + '（' + board.cafe.address + '）'}">カフェ名</span>
 		            </div>
 		        </div>
 		    </div>
@@ -86,14 +157,14 @@
 		<div class="mb-4">
 		    <form th:action="@{/board/like}" method="post" th:if="${session.user != null}">
 		        <input type="hidden" name="boardId" th:value="${board.id}">
-		        <button type="submit" class="btn btn-sm"
-		                th:classappend="${liked} ? 'btn-danger' : 'btn-outline-danger'">
-		            <i class="bi bi-heart-fill" th:classappend="${liked} ? ' text-danger' : ' text-secondary'"></i>
+		        <button type="submit" class="btn btn-sm btn-outline-secondary">
+		            <i class="bi bi-heart-fill"
+		               th:classappend="${liked} ? ' text-danger' : ' text-secondary'"></i>
 		            <span th:text="${likeCount}">0</span>
 		        </button>
 		    </form>
 		
-		    <!-- 로그인 안 한 경우: 비활성 버튼 + 안내 -->
+		    <!-- 로그인 안 한 경우 -->
 		    <div th:if="${session.user == null}">
 		        <button class="btn btn-sm btn-outline-secondary" disabled>
 		            <i class="bi bi-heart-fill text-secondary"></i>
@@ -102,6 +173,7 @@
 		        <div class="text-muted small mt-1">※ログイン後「いいね！」できます。</div>
 		    </div>
 		</div>
+
 
         <!-- 댓글 작성 -->
 		<div class="mb-4">
@@ -133,7 +205,7 @@
 
         <!-- 목록으로 -->
         <div class="text-end mt-4 mb-5">
-		    <a th:href="@{/board/list}" class="btn btn-outline-secondary btn-sm">一覧に戻る</a>
+		    <a th:href="@{/board/list}" class="btn btn-outline-secondary btn-sm">リストに進む</a>
 		</div>
     </div>
 </div>

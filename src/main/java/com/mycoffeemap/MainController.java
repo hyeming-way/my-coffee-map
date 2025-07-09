@@ -24,4 +24,5 @@ public class MainController {
         model.addAttribute("recentPosts", recentPosts);
         return "fragments/main-content"; // 이 프래그먼트가 실제로 메인 뷰에서 렌더링되는 구조
     }
+    
 }
