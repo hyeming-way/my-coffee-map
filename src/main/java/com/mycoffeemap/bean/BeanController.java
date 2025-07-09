@@ -43,7 +43,7 @@ public class BeanController {
                 "Floral", "Nutty", "Fruity", "Spicy", "Chocolate","Earthy", "Caramel", "Smoky"
         ));
 
-        return "beans/search-content";
+        return "beans/search";
     }
 
     // 결과 보기
@@ -69,9 +69,8 @@ public class BeanController {
         session.setAttribute("selectedRoast", roast);
         session.setAttribute("selectedFlavor", flavor);
 
-        return "beans/result-content";
+        return "beans/result";
     }
-
 
     // 문자열을 RoastLevel enum으로 변환
     private RoastLevel parseRoastLevel(String roast) {
@@ -115,7 +114,7 @@ public class BeanController {
             "/images/beans/colombia.png"
         ));
 
-        return "beans/create-content";
+        return "beans/create-bean";
     }
 
 

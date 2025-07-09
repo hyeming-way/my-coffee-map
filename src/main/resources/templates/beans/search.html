@@ -3,11 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-<head>
+<!-- head 영역 -->
+<th:block layout:fragment="head">
     <title>あなたのコーヒーの好みを探す</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
-
     <style>
         .option-img {
             width: 100px;
@@ -36,16 +36,16 @@
             border-color: #c8a974;
         }
     </style>
-</head>
+</th:block>
 
-<body>
+<!-- 본문 영역 -->
 <div layout:fragment="content">
 
     <form th:action="@{/beans/result}" method="get">
         <div class="container mt-5">
             <h3 class="text-center mb-4">あなたの好みは？ ☕</h3>
 
-            <!-- ロースト選択 -->
+            <!-- 로스팅 선택 -->
             <div class="mb-5">
                 <label class="form-label fw-bold text-center d-block">ローストレベル 🔥</label>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <!-- フレーバー選択 -->
+            <!-- 향미 선택 -->
             <div class="mb-5">
                 <label class="form-label fw-bold text-center d-block">フレーバー（複数選択可）🌸</label>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <!-- 提出ボタン -->
+            <!-- 제출 버튼 -->
             <div class="text-center mb-5">
                 <button type="submit" class="btn btn-outline-danger btn-sm px-4">選択完了</button>
             </div>
@@ -101,5 +101,5 @@
     </form>
 
 </div>
-</body>
+
 </html>

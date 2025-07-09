@@ -58,4 +58,12 @@ public class Board {
 
     // 별점 (1~5, 선택)
     private Integer rating;
+    
+    @Transient
+    private int likeCount;
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
 }
