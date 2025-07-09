@@ -73,6 +73,9 @@ select {
 	box-shadow: none;
 }
 
+.update {
+	margin-bottom: 30px;
+}
 
 form span {
 	color: #ff6c57;
@@ -130,6 +133,17 @@ form span {
 	margin: 10px 0;
 }
 
+.user-delete {
+    text-align: center;
+}
+.user-delete a {
+	color: darkgray;
+	font-size: 15px;
+	text-decoration-line: none;
+}
+.user-delete a:hover {
+	color: #ff6c57;
+}
 
 
 

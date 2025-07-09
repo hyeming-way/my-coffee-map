@@ -51,7 +51,10 @@
 	    	<p id="nickError" class="join-error-msg"></p>
 	    </td></tr>
 	    <tr><td>
-	    	<input id="submitBtn" type="submit" value="編集" class="submit-btn">
+	    	<input id="submitBtn" type="submit" value="編集" class="submit-btn update">
+	    </td></tr>
+	    <tr><td class="user-delete">
+	    	<a href="#" onclick="deleteUser(this)">退会する</a>
 	    </td></tr>
 	    </table>
 	</form>
@@ -182,7 +185,14 @@
 			  if (hasError) { e.preventDefault(); }
 					  			
 			});
-				
+
+			window.deleteUser = function () {
+				alert("탈퇴하지마 ㅜ");		
+			}
+			
+			
+			
+			
 		}); //document.addEventListener('DOMContentLoaded')
 			
 	</script>	
