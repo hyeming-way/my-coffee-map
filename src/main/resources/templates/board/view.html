@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${board.title}">投稿詳細</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <style>
+	    .text-brown { color: #8B4513; } /* 진한 갈색 */
+	</style>
+</head>
+
+<div layout:fragment="content">
+    <div class="container mt-5" style="max-width: 800px;">
+        <h3 class="mb-3" th:text="${board.title}">タイトル</h3>
+
+        <!-- 작성자 정보 -->
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center">
+                <img th:src="${board.user.profileImg != null} ? ${board.user.profileImg} : '/images/profile/default.png'"
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="プロフィール">
+                <span class="ms-2 fw-bold" th:text="${board.user.nick + ' さん'}">ニックネーム</span>
+            </div>
+
+            <!-- 수정/삭제 버튼 -->
+            <div th:if="${session.user != null and session.user.id == board.user.id}">
+                <a th:href="@{/board/edit/{id}(id=${board.id})}" class="btn btn-sm btn-outline-primary me-1">編集</a>
+                <a th:href="@{/board/delete/{id}(id=${board.id})}" class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('削除しますか？');">削除</a>
+            </div>
+        </div>
+
+        <div class="mb-3 text-muted small" th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">投稿日</div>
+
+        <!-- 첨부 이미지 -->
+        <div class="mb-3" th:if="${board.imageUrl != null}">
+            <img th:src="${board.cafe != null} ? ${board.cafe.imageUrl} : '/images/default.png'" 
+	           	 class="img-fluid rounded"
+			     alt="添付画像"
+			     style="max-height: 400px; object-fit: contain; display: block; margin: 0 auto;" />
+<!--             <img th:src="@{'/uploads/' + ${board.imageUrl}}" class="img-fluid rounded" 
+					alt="添付画像" style="max-height: 400px; object-fit: contain; display: block; margin: 0 auto;" /> -->
+        </div>
+
+        <!-- 본문 -->
+        <div class="mb-4" th:text="${board.content}">本文</div>
+
+		<!-- 관련 정보 영역 -->
+		<div class="mb-4">
+		    <div class="card bg-light border-0 shadow-sm">
+		        <div class="card-body">
+		            <h6 class="card-title fw-bold mb-3">関連情報</h6>
+		
+		            <div th:if="${board.bean != null}" class="mb-2 d-flex align-items-center">
+		                <i class="bi bi-cup-straw me-2 text-brown"></i>
+		                <span class="fw-bold">関連ビーンズ：</span>
+		                <a th:href="@{/beans/search(roast=${board.bean.roastLevel}, flavor=${board.bean.flavorNotes})}"
+		                   th:text="${board.bean.name + '（' + board.bean.origin + '）'}"
+		                   class="ms-1 text-decoration-none">ビーンズ名</a>
+		            </div>
+		
+		            <div th:if="${board.cafe != null}" class="d-flex align-items-center">
+		                <i class="bi bi-geo-alt-fill me-2 text-danger"></i>
+		                <span class="fw-bold">関連カフェ：</span>
+		                <a th:href="@{/cafes/view/{id}(id=${board.cafe.id})}"
+		                   th:text="${board.cafe.name + '（' + board.cafe.address + '）'}"
+		                   class="ms-1 text-decoration-none">カフェ名</a>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
+        <!-- 별점 -->
+        <div class="mb-3">
+            <strong>評価：</strong>
+            <span th:if="${board.rating != null}">
+                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                    <i class="bi" th:classappend="${i <= board.rating} ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"></i>
+                </span>               
+            <span th:if="${board.rating == null}" class="text-muted small">評価なし</span>
+        </div>
+
+        <!-- 좋아요 -->
+		<div class="mb-4">
+		    <form th:action="@{/board/like}" method="post" th:if="${session.user != null}">
+		        <input type="hidden" name="boardId" th:value="${board.id}">
+		        <button type="submit" class="btn btn-sm"
+		                th:classappend="${liked} ? 'btn-danger' : 'btn-outline-danger'">
+		            <i class="bi bi-heart-fill" th:classappend="${liked} ? ' text-danger' : ' text-secondary'"></i>
+		            <span th:text="${likeCount}">0</span>
+		        </button>
+		    </form>
+		
+		    <!-- 로그인 안 한 경우: 비활성 버튼 + 안내 -->
+		    <div th:if="${session.user == null}">
+		        <button class="btn btn-sm btn-outline-secondary" disabled>
+		            <i class="bi bi-heart-fill text-secondary"></i>
+		            <span th:text="${likeCount}">0</span>
+		        </button>
+		        <div class="text-muted small mt-1">※ログイン後「いいね！」できます。</div>
+		    </div>
+		</div>
+
+        <!-- 댓글 작성 -->
+		<div class="mb-4">
+		    <form th:action="@{/comment/new}" method="post" th:if="${session.user != null}">
+		        <input type="hidden" name="boardId" th:value="${board.id}">
+		        <textarea name="content" class="form-control mb-2" rows="2" placeholder="コメントを入力してください" required></textarea>
+		        <button type="submit" class="btn btn-outline-secondary btn-sm">投稿</button>
+		    </form>
+		
+		    <!-- 로그인 안 한 경우 -->
+		    <div th:if="${session.user == null}" class="text-muted small">
+		        ※ログイン後コメントできます。
+		    </div>
+		</div>
+
+        <!-- 댓글 리스트 -->
+        <div th:if="${comments != null}">
+            <div th:each="comment : ${comments}" class="mb-3 border-bottom pb-2">
+                <div class="d-flex align-items-center mb-1">
+                    <img th:src="${comment.user.profileImg != null} ? ${comment.user.profileImg} : '/images/profile/default.png'"
+                         style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;" alt="プロフィール">
+                    <span class="ms-2 fw-bold" th:text="${comment.user.nick + ' さん'}">ニックネーム</span>
+                    <span class="ms-2 text-muted small"
+                          th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">投稿日</span>
+                </div>
+                <div th:text="${comment.content}">コメント内容</div>
+            </div>
+        </div>
+
+        <!-- 목록으로 -->
+        <div class="text-end mt-4 mb-5">
+		    <a th:href="@{/board/list}" class="btn btn-outline-secondary btn-sm">一覧に戻る</a>
+		</div>
+    </div>
+</div>
+</html>

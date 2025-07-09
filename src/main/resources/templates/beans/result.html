@@ -3,7 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-<head>
+<!-- head 영역 -->
+<th:block layout:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>おすすめ結果 - MyCoffeeMap</title>
@@ -42,9 +43,9 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
         }
     </style>
-</head>
+</th:block>
 
-<body>
+<!-- 본문 영역 -->
 <div layout:fragment="content">
     <div class="container mt-5">
 
@@ -54,31 +55,29 @@
                 <div class="card shadow-sm border-0" style="background-color: #fdfaf4; border-radius: 0.75rem;">
                     <div class="card-body text-center py-4">
                         <h5 class="card-title fw-bold mb-4" style="font-size: 1.25rem;">
-                            <i class="bi bi-pencil-square me-2"></i>あなたの選択 <!-- 당신의 선택 -->
+                            <i class="bi bi-pencil-square me-2"></i>あなたの選択
                         </h5>
-
                         <p class="mb-3">
-                            <span class="fw-semibold">☕ ロースト:</span> <!-- 로스팅 -->
+                            <span class="fw-semibold">🔥 ロースト:</span>
                             <span class="badge rounded-pill bg-warning text-dark ms-2 px-3 py-2"
                                   style="font-size: 0.9rem;"
-                                  th:text="${selectedRoast} ?: 'なし'">なし</span> <!-- 없음 -->
+                                  th:text="${selectedRoast} ?: 'なし'">なし</span>
                         </p>
-
                         <p class="mb-0">
-                            <span class="fw-semibold">🌸 フレーバー:</span> <!-- 플레이버 -->
+                            <span class="fw-semibold">🌸 フレーバー:</span>
                             <span th:if="${selectedFlavor != null}" th:each="f : ${selectedFlavor}"
                                   class="badge rounded-pill bg-info text-dark me-1 px-3 py-2"
                                   style="font-size: 0.85rem;"
-                                  th:text="${f}">フレーバー</span> <!-- 플레이버 -->
-                            <span th:if="${selectedFlavor == null}" class="text-muted">なし</span> <!-- 없음 -->
+                                  th:text="${f}">フレーバー</span>
+                            <span th:if="${selectedFlavor == null}" class="text-muted">なし</span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 추천원두 -->
-        <h4 class="mb-3">📍 おすすめのコーヒー豆</h4> <!-- 추천원두 -->
+        <!-- 추천 원두 -->
+        <h4 class="mb-3">📍 おすすめのコーヒー豆</h4>
         <div th:if="${recommendedBeans != null and !recommendedBeans.isEmpty()}">
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <div class="col" th:each="bean : ${recommendedBeans}">
@@ -88,10 +87,10 @@
 
                         <div class="card-img-overlay d-flex flex-column justify-content-end p-3"
                              style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
-                            <h5 class="card-title mb-1 text-shadow" th:text="${bean.name}">豆の名前</h5> <!-- 원두이름 -->
+                            <h5 class="card-title mb-1 text-shadow" th:text="${bean.name}">豆の名前</h5>
                             <p class="card-text small text-shadow mb-0">
-                                <strong>ロースト:</strong> <span th:text="${bean.roastLevel}"></span><br/> <!-- 로스팅 -->
-                                <strong>フレーバー:</strong> <span th:text="${bean.flavorNotes}"></span> <!-- 플레이버 -->
+                                <strong>ロースト:</strong> <span th:text="${bean.roastLevel}"></span><br/>
+                                <strong>フレーバー:</strong> <span th:text="${bean.flavorNotes}"></span>
                             </p>
                         </div>
 
@@ -99,28 +98,26 @@
                                     d-flex flex-column justify-content-center align-items-center description-hover"
                              style="background-color: rgba(0, 0, 0, 0.5); z-index: 2; pointer-events: none; border-radius: 0.5rem;">
                             <p class="text-center fw-light" style="font-size: 0.95rem; line-height: 1.4; white-space: pre-line;"
-                               th:text="${bean.description}">豆の説明</p> <!-- 원두이름 -->
+                               th:text="${bean.description}">豆の説明</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <p th:if="${recommendedBeans == null or recommendedBeans.isEmpty()}">
-            おすすめのコーヒー豆が見つかりません。<!-- 추천원두를 찾을수 없습니다. -->
+            おすすめのコーヒー豆が見つかりません。
         </p>
 
         <div class="text-end mt-3 mb-4">
             <a th:href="@{/beans/new}" class="btn btn-outline-dark btn-sm">
-                コーヒー豆を登録する <!-- 원두등록하기 -->
+                コーヒー豆を登録する
             </a>
         </div>
 
-        <!-- 추천카페 -->
-        <h4 class="mt-5 mb-3">🏠 この豆を使っているカフェ</h4> <!-- 이원두를 사용하는 카페 -->
-
+        <!-- 추천 카페 -->
+        <h4 class="mt-5 mb-3">🏠 この豆を使っているカフェ</h4>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
              th:if="${recommendedCafes != null and !recommendedCafes.isEmpty()}">
-
             <div class="col" th:each="cafe : ${recommendedCafes}">
                 <div class="card h-100 text-white position-relative overflow-hidden" style="border-radius: 0.5rem;">
                     <img th:src="@{${cafe.imageUrl}}" class="card-img" alt="カフェの画像"
@@ -128,9 +125,9 @@
 
                     <div class="card-img-overlay cafe-overlay d-flex flex-column justify-content-end p-2"
                          style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
-                        <h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem;" th:text="${cafe.name}">カフェ名</h6> <!-- 카페이름 -->
+                        <h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem;" th:text="${cafe.name}">カフェ名</h6>
                         <p class="card-text mb-0 text-truncate" style="font-size: 0.75rem;">
-                            <span th:text="${cafe.address}">住所</span> <!-- 주소 -->
+                            <span th:text="${cafe.address}">住所</span>
                         </p>
                     </div>
 
@@ -139,28 +136,27 @@
                          style="background-color: rgba(0, 0, 0, 0.6); z-index: 2; pointer-events: none; border-radius: 0.5rem;">
                         <p class="text-center fw-light"
                            style="font-size: 0.85rem; line-height: 1.4; white-space: pre-line;"
-                           th:text="${cafe.description}">カフェの説明</p> <!-- 카페설명 -->
+                           th:text="${cafe.description}">カフェの説明</p>
                     </div>
                 </div>
             </div>
         </div>
-
         <p th:if="${recommendedCafes == null or recommendedCafes.isEmpty()}">
-            おすすめのカフェが見つかりませんでした。<!-- 추천카페를 찾지 못했습니다. -->
+            おすすめのカフェが見つかりませんでした。
         </p>
         
         <div class="text-end mt-3 mb-4">
-            <a th:href="@{/cafes/new}" class="btn btn-outline-dark btn-sm">
-                カフェを登録する <!-- 카페등록하기 -->
-            </a>
-        </div>
+		    <a th:href="@{/cafes/new}" class="btn btn-outline-dark btn-sm">
+		        カフェを登録する
+		    </a>
+		</div>
 
         <!-- 버튼 -->
         <div class="text-center mt-5 mb-5">
-            <a th:href="@{/beans/search}" class="btn btn-outline-primary btn-sm">好みを選び直す</a> <!-- 취향 다시 분석 -->
-            <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm me-2">トップページへ戻る</a> <!-- 첫페이지로 돌아가기 -->
+            <a th:href="@{/beans/search}" class="btn btn-outline-primary btn-sm">好みを選び直す</a>
+            <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm me-2">トップページへ戻る</a>
         </div>
     </div>
 </div>
-</body>
+
 </html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<!-- HEAD -->
+<th:block layout:fragment="head">
+    <title>コーヒーノート作成</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</th:block>
+
+<!-- 본문 내용 -->
+<div layout:fragment="content">
+    <div class="container mt-5" style="max-width: 720px;">
+        <!-- 타이틀 영역 -->
+        <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+            <img th:src="@{/images/coffee_logo.svg}" alt="ロゴ" style="height: 36px; width: auto;">
+            <h3 class="mb-0 fw-bold">コーヒーノート作成</h3> <!-- 커피 노트 작성 -->
+        </div>
+
+        <form th:action="@{/board/new}" method="post" enctype="multipart/form-data">
+            <!-- 제목 -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">タイトル</label> <!-- 제목 -->
+                <input type="text" name="title" class="form-control" placeholder="例：本日飲んだエチオピアコーヒーの感想" required>
+            </div>
+
+            <!-- 본문 -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">内容</label> <!-- 본문 -->
+                <textarea name="content" class="form-control" rows="6" placeholder="味、風味、雰囲気など自由に書いてみてください。" required></textarea>
+            </div>
+
+            <!-- 별점 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">評価（星）</label> <!-- 별점 평가 -->
+                <div class="d-flex gap-2">
+                    <input type="hidden" name="rating" id="rating" value="0">
+                    <i class="fa-regular fa-star star" data-value="1"></i>
+                    <i class="fa-regular fa-star star" data-value="2"></i>
+                    <i class="fa-regular fa-star star" data-value="3"></i>
+                    <i class="fa-regular fa-star star" data-value="4"></i>
+                    <i class="fa-regular fa-star star" data-value="5"></i>
+                </div>
+            </div>
+
+            <!-- 관련 원두 -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">関連ビーンズ</label> <!-- 관련 원두 -->
+                <select name="beanId" class="form-select">
+                    <option value="">選択しない</option>
+                    <option th:each="bean : ${beanList}"
+                            th:value="${bean.id}"
+                            th:text="${bean.name + '（' + bean.origin + '）'}">エチオピア</option>
+                </select>
+            </div>
+
+            <!-- 관련 카페 -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">関連カフェ</label> <!-- 관련 카페 -->
+                <select name="cafeId" class="form-select">
+                    <option value="">選択しない</option>
+                    <option th:each="cafe : ${cafeList}"
+                            th:value="${cafe.id}"
+                            th:text="${cafe.name + '（' + cafe.address + '）'}">カフェ名</option>
+                </select>
+            </div>
+
+            <!-- 주소 입력 -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">カフェの位置（住所で検索）</label> <!-- 카페 위치 -->
+                <input type="text" id="address" class="form-control" placeholder="例：東京都 渋谷区…">
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="codeAddress()">地図で検索</button> <!-- 지도에서 찾기 -->
+            </div>
+
+            <!-- 지도 -->
+            <div id="map" style="height: 300px; width: 100%; border-radius: 8px;"></div>
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
+
+            <!-- 이미지 업로드 -->
+            <div class="mb-4 mt-4">
+                <label class="form-label fw-bold">画像添付</label> <!-- 이미지 첨부 -->
+                <input type="file" name="imageFile" class="form-control">
+            </div>
+
+            <!-- 제출 버튼 -->
+            <div class="text-center mt-4 mb-2">
+                <button type="submit" class="btn btn-outline-primary px-4">作成完了</button> <!-- 작성 완료 -->
+                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">キャンセル</a> <!-- 취소 -->
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SCRIPT -->
+<th:block layout:fragment="script">
+    <style>
+        .star {
+            font-size: 2rem;
+            color: #ffc107;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+    </style>
+
+    <script>
+        // 별점 처리
+        document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll(".star");
+            const ratingInput = document.getElementById("rating");
+
+            stars.forEach(star => {
+                star.addEventListener("click", function () {
+                    const value = parseInt(this.dataset.value);
+                    ratingInput.value = value;
+
+                    stars.forEach(s => {
+                        const sValue = parseInt(s.dataset.value);
+                        s.classList.remove("fa-solid", "fa-regular");
+                        s.classList.add(sValue <= value ? "fa-solid" : "fa-regular");
+                    });
+                });
+            });
+
+            // 주소 입력시 Enter 키 처리
+            document.getElementById("address")?.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    codeAddress();
+                }
+            });
+        });
+
+        // 지도 초기화
+        let map, geocoder, marker;
+
+        function initMap() {
+            const defaultLocation = { lat: 35.681236, lng: 139.767125 }; // 도쿄역
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 13,
+                center: defaultLocation
+            });
+
+            geocoder = new google.maps.Geocoder();
+
+            marker = new google.maps.Marker({
+                map: map,
+                position: defaultLocation,
+                draggable: true
+            });
+
+            document.getElementById("latitude").value = defaultLocation.lat;
+            document.getElementById("longitude").value = defaultLocation.lng;
+
+            marker.addListener("dragend", () => {
+                const pos = marker.getPosition();
+                document.getElementById("latitude").value = pos.lat();
+                document.getElementById("longitude").value = pos.lng();
+            });
+        }
+
+        // 주소 검색
+        function codeAddress() {
+            const address = document.getElementById("address").value;
+            geocoder.geocode({ address: address }, (results, status) => {
+                if (status === "OK") {
+                    const location = results[0].geometry.location;
+                    map.setCenter(location);
+                    marker.setPosition(location);
+                    document.getElementById("latitude").value = location.lat();
+                    document.getElementById("longitude").value = location.lng();
+                } else {
+                    alert("住所が見つかりません: " + status); // 주소를 찾을 수 없습니다
+                }
+            });
+        }
+
+        window.initMap = initMap;
+        window.codeAddress = codeAddress;
+    </script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</th:block>
+
+</html>

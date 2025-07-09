@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="head">
+    <title>自分の投稿一覧 - MyCoffeeMap</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</th:block>
+
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h4 class="mb-4">📝 自分の投稿一覧</h4> <!-- 내가 쓴 게시글 -->
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col" th:each="post : ${myPosts}">
+                <div class="card h-100 shadow-sm">
+                    <!-- 이미지 (있을 경우) -->
+                    <img th:if="${post.imageUrl != null}" th:src="@{'/uploads/' + ${post.imageUrl}}"
+                         class="card-img-top" style="height: 180px; object-fit: cover;"
+                         onerror="this.src='/images/default.png'" alt="画像">
+
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${post.title}">タイトル</h5>
+                        <p class="card-text text-muted" th:text="${#strings.abbreviate(post.content, 100)}">内容</p>
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between align-items-center small text-muted">
+                        <!-- 작성일 -->
+                        <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">作成日</span>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <!-- 별점 -->
+                            <span>
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <i class="bi" th:classappend="${i <= post.rating} ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"></i>
+                                </span>
+                            </span>
+
+                            <!-- 좋아요 수 -->
+                            <span>
+                                <i class="bi bi-heart-fill text-danger"></i>
+                                <span th:text="${post.likeCount}">0</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 상세 페이지로 이동 -->
+                    <a class="stretched-link" th:href="@{'/board/view/' + ${post.id}}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

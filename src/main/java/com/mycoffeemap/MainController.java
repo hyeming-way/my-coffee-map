@@ -1,21 +1,27 @@
 package com.mycoffeemap;
 
-
-import org.springframework.ui.Model;
-
-import java.util.ArrayList;
+import com.mycoffeemap.board.Board;
+import com.mycoffeemap.board.BoardRepository;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 @Controller
+@RequiredArgsConstructor
 public class MainController {
 
-	// http://localhost:8070/mycoffeemap
-	@GetMapping("/mycoffeemap")
-	public String index(Model model) {
-        model.addAttribute("recentPosts", new ArrayList<>()); // 또는 실제 서비스 연결
-        return "fragments/main-content"; // 프래그먼트 자체를 뷰로 리턴
+    private final BoardRepository boardRepository;
+
+    // http://localhost:8070/mycoffeemap
+    @GetMapping("/mycoffeemap")
+    public String index(Model model) {
+        List<Board> recentPosts = boardRepository.findTop5ByOrderByCreatedAtDesc();
+        model.addAttribute("recentPosts", recentPosts);
+        return "fragments/main-content"; // 이 프래그먼트가 실제로 메인 뷰에서 렌더링되는 구조
     }
 }

@@ -20,15 +20,13 @@
                 	<a class="nav-link" th:href="@{/user/login}">ログイン</a>
                 </li>
                 <!-- 로그인 -->
-                <li th:if="${session.user != null}" class="login-header">
-					<p>
-						ようこそ <span th:text="${session.user.nick}" class="header-nick"></span> さん！ 
-					</p>
-                </li>              
+                <li th:if="${session.user != null}" class="nav-item">
+                	ようこそ <span th:text="${session.user.nick}"></span> さん！ &nbsp;&nbsp;&nbsp;
+                </li>
+                	<!-- 마이페이지 -->
                  <li th:if="${session.user != null}" class="nav-item me-2">
-                 	<!-- 마이페이지 -->
-                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>
-                    <!-- 로그아웃 -->
+                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>                
+                	<!-- 로그아웃 -->                
                     <a class="btn btn-outline-danger btn-sm" th:href="@{/user/logout.do}">ログアウト</a>
                 </li>
             </ul>
