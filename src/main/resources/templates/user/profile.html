@@ -24,7 +24,9 @@
 				</label>
 				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
 	   		</div>
-	   		<button type="button" onclick="deleteImg()">プロフィール画像削除</button>
+	   		<div class="delete-wrap">
+	   			<button type="button" onclick="deleteImg()" class="btn btn-outline-secondary btn-sm">プロフィール画像削除</button>	   	
+	    	</div>
 	    </td></tr>
 	    <tr><td><p class="join-txt"><span>*</span>メールアドレス</p></td></tr>
 	    <tr><td>
@@ -49,7 +51,7 @@
 	    	<p id="nickError" class="join-error-msg"></p>
 	    </td></tr>
 	    <tr><td>
-	    	<input type="submit" value="編集" class="btn">
+	    	<input id="submitBtn" type="submit" value="編集" class="submit-btn">
 	    </td></tr>
 	    </table>
 	</form>
