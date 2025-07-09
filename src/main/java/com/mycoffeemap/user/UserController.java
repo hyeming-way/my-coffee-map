@@ -107,7 +107,7 @@ public class UserController {
 	
 		session.setAttribute("user", user);		
 		
-		return "fragments/main-content";
+		return "redirect:/mycoffeemap";
 		
 	} //doLogin
 	
@@ -116,7 +116,7 @@ public class UserController {
 	@GetMapping("/logout.do")
 	public String logout (HttpSession session) {
 	    session.invalidate(); 
-		return "fragments/main-content";
+	    return "redirect:/mycoffeemap";
 	} //logout
 	
 	

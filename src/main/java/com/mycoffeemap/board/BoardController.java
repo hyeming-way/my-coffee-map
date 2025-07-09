@@ -67,7 +67,7 @@ public class BoardController {
         String storedFilename = null;
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
-                storedFilename = fileStorageService.storeFile(imageFile);
+                storedFilename = fileStorageService.storeFile(imageFile, "board");
             } catch (Exception e) {
                 e.printStackTrace();
                 return "redirect:/error";
