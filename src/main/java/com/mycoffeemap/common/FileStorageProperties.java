@@ -22,5 +22,9 @@ public class FileStorageProperties {
             return Paths.get("/home/ubuntu/my_coffee_map/profiles");
         }
     }
+    
+    
+    //게시글 업로드 경로 메소드 추가해야함
+    
 	
 }

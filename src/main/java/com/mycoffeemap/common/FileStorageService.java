@@ -27,6 +27,7 @@
 				filename = UUID.randomUUID() + "." + ext;
 				
 				Path target = null;
+				
 				if(uploadPath.equals("profile")) {
 					target = props.getProfileUploadPath().resolve(filename);
 				}
