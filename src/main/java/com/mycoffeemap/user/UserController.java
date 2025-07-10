@@ -128,12 +128,13 @@ public class UserController {
 		    return "redirect:/mycoffeemap";
 		    
 		} //doLogin
+
 	
 	//로그아웃 처리
 	@GetMapping("/logout.do")
 	public String logout (HttpSession session) {
 	    session.invalidate(); 
-		return "redirect:/mycoffeemap";
+	    return "redirect:/mycoffeemap";
 	} //logout
 	
 	

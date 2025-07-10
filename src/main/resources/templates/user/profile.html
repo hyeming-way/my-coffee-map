@@ -24,7 +24,9 @@
 				</label>
 				<input type="file" id="imgUpload" name="imgUpload" accept="image/*" onchange="uploadImg(this)">
 	   		</div>
-	   		<button type="button" onclick="deleteImg()">プロフィール画像削除</button>
+	   		<div class="delete-wrap">
+	   			<button type="button" onclick="deleteImg()" class="btn btn-outline-secondary btn-sm">プロフィール画像削除</button>	   	
+	    	</div>
 	    </td></tr>
 	    <tr><td><p class="join-txt"><span>*</span>メールアドレス</p></td></tr>
 	    <tr><td>
@@ -49,7 +51,10 @@
 	    	<p id="nickError" class="join-error-msg"></p>
 	    </td></tr>
 	    <tr><td>
-	    	<input type="submit" value="編集" class="btn">
+	    	<input id="submitBtn" type="submit" value="編集" class="submit-btn update">
+	    </td></tr>
+	    <tr><td class="user-delete">
+	    	<a href="#" onclick="deleteUser(this)">退会する</a>
 	    </td></tr>
 	    </table>
 	</form>
@@ -180,7 +185,14 @@
 			  if (hasError) { e.preventDefault(); }
 					  			
 			});
-				
+
+			window.deleteUser = function () {
+				alert("탈퇴하지마 ㅜ");		
+			}
+			
+			
+			
+			
 		}); //document.addEventListener('DOMContentLoaded')
 			
 	</script>	
