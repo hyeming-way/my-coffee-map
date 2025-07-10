@@ -51,8 +51,8 @@ public class User {
 	private Timestamp joinDate;
 	
 	@Column(nullable = false)
-	private boolean deleted = false;
+	private boolean deleted = false;	//탈퇴여부
 	
-	private LocalDateTime deletedDate;
+	private LocalDateTime deletedDate;	//탈퇴일자
 	
 }

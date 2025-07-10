@@ -3,6 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
+<meta name="csrf-token" th:content="${_csrf.token}" />
+<meta name="csrf-header" th:content="${_csrf.headerName}" />
 <title>Login</title>
 <link th:href="@{/css/user/login.css}" rel="stylesheet">
 </head>
@@ -25,15 +27,111 @@
 		    <tr>
 		        <td class="join">
 		        	<a href="/user/join">新規会員登録</a><br>
-		        	<a href="#">パスワードを忘れた方</a>
+		        	<a href="#" onclick="updatePass()">パスワードを忘れた方</a>
 		        </td>
 		    </tr>
 		    </table>
 		</form>
 		
+		<!-- 비밀번호 재설정 모달창 -->
+		<div class="modal fade top" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content content">
+		      <div class="modal-header">
+		        <p class="modal-title" id="resetPasswordModalLabel">ご登録されたメールアドレスに<br>パスワード再設定のご案内が送信されます。</p>
+		        <button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+		      </div>
+		      <div class="modal-body">
+		        <input type="email" class="form-control" id="resetEmail" placeholder="メールアドレスを入力してください。">
+		        <small id="emailErrorMsg" class="text-danger d-none"></small>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">キャンセル</button>
+		        <button type="button" class="btn btn-primary" onclick="sendResetMail()">パスワード再設定のメールを送信する</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
 		<script th:if="${loginError != null}">
-			alert('[[${loginError}]]');
+			alert("[[${loginError}]]");
 		</script>	
+		<script>		
+
+			  // 비밀번호 재설정 모달 열기
+			  function updatePass() {
+			    const modalEl = document.getElementById("resetPasswordModal");
+			    const modal = new bootstrap.Modal(modalEl);
+			    modal.show();
+			  }
+			  			  
+			  const resetModal = document.getElementById("resetPasswordModal");
+			  
+			  //모달창 닫기
+			  resetModal.addEventListener("hidden.bs.modal", function () {	
+				const errorMsg = document.getElementById("emailErrorMsg");				
+			    //input값, 에러메세지 초기화
+			    document.getElementById("resetEmail").value = "";    
+			    errorMsg.textContent = "";
+			    errorMsg.classList.add("d-none");
+			  });
+			  
+
+			  // 메일 전송 처리			  
+			  function sendResetMail() {
+			  	const email = document.getElementById("resetEmail").value.trim();
+			  	const errorMsg = document.getElementById("emailErrorMsg");
+			  	errorMsg.classList.add("d-none");
+			  	
+				//csrf 공격 방어를 위해 토큰값 가져옴
+				const csrfHeader = document.querySelector('meta[name="csrf-header"]').content || 'X-CSRF-TOKEN';
+				const csrfToken = document.querySelector('meta[name="csrf-token"]').content || '';	
+			    
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;	
+				
+			    if (!email) {
+			      alert("メールアドレスを入力してください。");
+			      return;
+			    }
+			    
+			    if(!emailRegex.test(email)) { //이메일 유효성 검사
+			  		errorMsg.textContent = "メールアドレスの形式が正しくありません。";
+			  		document.getElementById("emailErrorMsg").classList.remove("d-none");
+			  		return;
+			  	} 
+			        
+			    fetch("/user/updatePass", {
+			    	method: "POST",
+			    	credentials: 'same-origin',
+			    	headers: {
+			    		[csrfHeader]: csrfToken,
+			    		"Content-Type": "application/json"
+			        },
+			        body: JSON.stringify({ email })
+			      })
+				.then(async res => {
+				    const message = await res.text();
+				    if (res.ok) {
+				        alert(message);				        
+				        document.activeElement.blur(); //모달창 닫기 전 포커스 없애기        
+					    const modalEl = document.getElementById("resetPasswordModal");
+					    const modal = bootstrap.Modal.getInstance(modalEl);
+					    modal.hide();
+					    } else if (res.status === 404) {
+					        document.getElementById("emailErrorMsg").textContent = message;
+					        document.getElementById("emailErrorMsg").classList.remove("d-none");
+					    }
+				})
+			      .catch(err => {
+			        console.error("통신 오류:", err);
+			        alert("エラーが発生しました。もう一度お試しください。");
+			      });
+			    		   
+			  } //sendResetMail()
+			
+
+		
+		</script>
 	</div>
 </body>
 </html>

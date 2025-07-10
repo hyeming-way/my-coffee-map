@@ -54,3 +54,51 @@ a {
 .join a:hover {
 	color: #ff6c57;
 }
+
+/* 모달창 */
+.modal-close {
+	position: relative;
+	top: -2.3rem;
+	right: -0.9rem;
+}
+
+.modal-close:focus {
+	box-shadow: none;		
+}
+
+.modal-header {
+	border-bottom: none;
+}
+
+.modal-footer {
+	border-top: none;
+}
+
+.modal-title{
+	font-size: 16px;
+	margin-top: 15px;
+}
+
+.top {
+	top: 100px;
+}
+
+.content {
+	padding: 1rem;
+}
+
+.form-control:focus {
+	border-color: #ff6c57;
+	box-shadow: none;
+}
+
+.btn:focus {
+	box-shadow: none;	
+	background-color: #ff6c57;
+	color: #fff;
+}
+
+
+
+
+

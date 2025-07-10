@@ -1,6 +1,8 @@
 package com.mycoffeemap.user;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,8 +189,34 @@ public class UserService {
 	    }		
 	} //deleteUser
 
+	
+	//비밀번호 재설정
+	public boolean updatePass(String email) {
+
+		//이메일 조회
+		User user = userRepository.findByEmailAndDeletedFalse(email);			
+		if(user == null) return false;
+		
+		//사용자 본인 인증용 토큰 생성
+		String token = UUID.randomUUID().toString();
+    	
+	    user.setVerificationToken(token);
+	    user.setTokenExpiry(LocalDateTime.now().plusMinutes(30));  //비밀번호 재설정 30분 유효하도록 설정
+	    
+	    userRepository.save(user);
+	    log.info("✔ 비밀번호 재설정 토큰 DB 저장 완료");
+	    
+	    //비밀번호 재설정 이메일 보내기	    
+	    String verifyUrl = "http://localhost:8070/user/updatePass?token=" + token;
+	    emailService.sendUpdatePassEmail(user.getEmail(), verifyUrl);
+	    log.info("✉ 비밀번호 재설정 이메일 보내기 완료");
+		
+		return true;
+	} //updatePass
 
 
+
+	
 	
 	
 	

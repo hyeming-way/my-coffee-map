@@ -1,7 +1,10 @@
 package com.mycoffeemap.user;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -194,6 +198,26 @@ public class UserController {
 	    
 	    return ResponseEntity.ok("탈퇴 완료");
 	}
+	
+	
+	//비밀번호 재설정
+	@PostMapping("/updatePass")
+	@ResponseBody
+	public ResponseEntity<String> updatePass(@RequestBody Map<String, String> body) {
+	   
+		String email = body.get("email");
+		
+	    boolean result = userService.updatePass(email); 
+	    
+	    if(!result) {
+	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("※入力されたメールアドレスのアカウントが見つかりませんでした。");
+	    }
+
+	    return ResponseEntity.ok("パスワード再設定用のメールを送信しました！メールを確認してください。");
+	}
+	
+	
+	
 	
 	
 	
