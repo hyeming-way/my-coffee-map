@@ -166,7 +166,7 @@
 		
 		            <!-- 카드 하단: 프로필 + 작성자 + 날짜 -->
 					<div class="card-footer small text-muted d-flex align-items-center gap-2">
-					    <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/profiles/default-profile.png}"
+					    <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/images/icon/basic_profile.jpg}"
 					         class="rounded-circle"
 					         alt="프로필 이미지"
 					         style="width: 32px; height: 32px; object-fit: cover;" />

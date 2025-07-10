@@ -33,7 +33,7 @@
 
                     <!-- 작성자 정보 -->
                     <div class="card-footer small text-muted d-flex align-items-center gap-2">
-                        <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/profiles/default-profile.png}"
+                        <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/images/icon/basic_profile.jpg}"
                              class="rounded-circle"
                              alt="プロフィール画像"
                              style="width: 30px; height: 30px; object-fit: cover;" />

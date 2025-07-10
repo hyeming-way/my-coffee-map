@@ -58,7 +58,7 @@
 		<div class="profile-section" th:if="${session.user != null}">
 		    <img th:src="${session.user.profileImg != null} 
 		                  ? @{'/profiles/' + ${session.user.profileImg}} 
-		                  : @{/profiles/default-profile.png}"
+		                  : @{/images/icon/basic_profile.jpg}"
 		         alt="プロフィール画像" class="profile-img"
 		         onerror="this.src='/profiles/default-profile.png'">
 		    <div class="fw-bold" th:text="${session.user.nick + ' さん'}">ユーザー</div>
