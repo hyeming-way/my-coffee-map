@@ -29,7 +29,10 @@ public class FileStorageService {
 			Path target = null;
 
 			if (uploadPath.equals("profile")) {
-				target = props.getProfileUploadPath().resolve(filename);
+			    target = props.getProfileUploadPath().resolve(filename);
+			    
+			} else if (uploadPath.equals("board")) {
+			    target = props.getBoardUploadPath().resolve(filename);
 			}
 
 			Files.createDirectories(target.getParent());

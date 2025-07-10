@@ -1,38 +1,24 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>MyCoffeeMap</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/main.css}" rel="stylesheet">
-</head>
-<body>
 <!-- templates/fragments/header.html -->
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
+            <!-- 좌측 로고 -->
             <a class="navbar-brand" href="/mycoffeemap">
                 <img class="header-logo" th:src="@{/images/coffee_logo_text1.svg}" alt="MyCoffeeMap ロゴ">
-            </a>      
-            <ul class="navbar-nav ms-auto">
-            	<!-- 미로그인 -->
-                <li th:if="${session.user == null}">
-                	<a class="nav-link" th:href="@{/user/login}">ログイン</a>
+            </a>
+            <!-- 우측 메뉴 -->
+            <ul class="navbar-nav">
+                <li th:if="${session.user == null}" class="nav-item">
+                    <a class="nav-link" th:href="@{/user/login}">ログイン</a>
                 </li>
-                <!-- 로그인 -->
                 <li th:if="${session.user != null}" class="nav-item">
-                	ようこそ <span th:text="${session.user.nick}"></span> さん！ &nbsp;&nbsp;&nbsp;
+                    ようこそ <span th:text="${session.user.nick}"></span> さん！
                 </li>
-                	<!-- 마이페이지 -->
-                 <li th:if="${session.user != null}" class="nav-item me-2">
-                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>                
-                	<!-- 로그아웃 -->                
+                <li th:if="${session.user != null}" class="nav-item me-2">
+                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/my}">マイページ</a>
                     <a class="btn btn-outline-danger btn-sm" th:href="@{/user/logout.do}">ログアウト</a>
                 </li>
             </ul>
         </div>
     </nav>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>

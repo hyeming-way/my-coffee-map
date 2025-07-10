@@ -45,6 +45,12 @@ body {
     padding-bottom: 0.5rem;
 }
 
+.navbar .container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .navbar-brand {
     padding-left: 1rem;
 }
@@ -107,13 +113,21 @@ body {
 /* 푸터 */
 .footer-custom {
     background-color: #f8f5f0;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding: 1rem 2rem;
 }
 
 .footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
     font-size: 0.85rem;
     color: #666;
+}
+
+.footer-info > div {
+    width: 48%;
+    padding: 0.25rem;
 }
 
 .footer-divider {
@@ -128,6 +142,13 @@ body {
 }
 
 /* 반응형 대응 */
+@media (max-width: 768px) {
+    .footer-info > div {
+        width: 100%;
+        text-align: left !important;
+    }
+}
+
 @media (max-width: 768px) {
     .login {
         margin-right: 1rem;

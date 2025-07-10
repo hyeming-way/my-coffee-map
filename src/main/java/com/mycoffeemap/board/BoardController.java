@@ -33,7 +33,7 @@ public class BoardController {
     private final FileStorageService fileStorageService;
     
     
-    // 커피 노트 작성
+    // 커피 노트 작성 폼
     @GetMapping("/board/new")
     public String showCreateForm(Model model, HttpSession session) {    	
         User loginUser = (User) session.getAttribute("user");
@@ -48,15 +48,16 @@ public class BoardController {
         return "board/new"; 
     }
     
+    // 커피 노트 작성
     @PostMapping("/board/new")
     public String createBoard(
-            @RequestParam String title,
-            @RequestParam String content,
-            @RequestParam(required = false) Long beanId,
-            @RequestParam(required = false) Long cafeId,
-            @RequestParam(required = false) MultipartFile imageFile,
-            @RequestParam(required = false) Integer rating, // 별점 값 받기
-            HttpSession session
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(name = "beanId", required = false) Long beanId,
+            @RequestParam(name = "cafeId", required = false) Long cafeId,
+            @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
+            @RequestParam(name = "rating", required = false) Integer rating,
+            HttpSession session   
     ) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {

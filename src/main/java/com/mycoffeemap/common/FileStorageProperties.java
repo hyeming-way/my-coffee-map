@@ -23,7 +23,17 @@ public class FileStorageProperties {
     }
     
     
-    //게시글 업로드 경로 메소드 추가해야함
+    // 게시글 이미지 저장 경로
+    public Path getBoardUploadPath() {
+    	
+        if (os.contains("win")) {
+        	// 윈도우 경로
+            return Paths.get("C:/my_coffee_map/boards");            
+        } else {
+        	// 리눅스 경로
+            return Paths.get("/home/ubuntu/my_coffee_map/boards");
+        }
+    }
     
 	
 }

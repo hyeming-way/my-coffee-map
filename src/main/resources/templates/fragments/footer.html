@@ -1,29 +1,27 @@
 <!-- fragments/footer.html -->
 <div th:fragment="footer">
     <footer class="footer-custom text-secondary small">
-        <div class="container">
+        <div class="container-fluid">
 
             <!-- 소개 + 연락처 -->
-            <div class="row align-items-center text-center text-md-start mb-2 footer-info">
-            
+            <div class="row footer-info align-items-center">
                 <!-- 소개 -->
                 <div class="col-md-6 mb-2 mb-md-0">
-                    <strong class="text-dark">My Coffee Map</strong><br>
-                    <span>あなたのコーヒーの好みを分析し、ぴったりのコーヒー豆とカフェをご紹介します。<br>さらに、あなただけのコーヒーノートも作ってみませんか？</span>
-                    <!-- 당신의 커피 취향을 분석하여, 딱 맞는 원두와 카페를 추천해드립니다. 그리고 당신만의 커피 노트도 작성해보세요. --> 
+                    <strong class="text-dark">My Coffee Map Info</strong><br>
+                    <span>あなたのコーヒーの好みを分析して、ぴったりのコーヒー豆とカフェを紹介します。そして、あなただけのコーヒーノートも作成してみてください。</span>
                 </div>
 
                 <!-- 연락처 -->
-                <div class="col-md-6 text-md-end">
-                    メール: <a href="#" class="text-decoration-none text-secondary">info@mycoffeemap.com</a><br>
-                    インスタグラム: <a href="#" class="text-decoration-none text-secondary">@mycoffeemap</a>
+                <div class="col-md-6 text-end text-md-end">
+                    <div class="fw-bold text-dark mb-1">ご意見・ご質問はこちら</div>
+                    <div>
+                        メール: <a href="mailto:info@mycoffeemap.com" class="text-decoration-none text-secondary">info@mycoffeemap.com</a> |
+                        インスタグラム: <a href="#" class="text-decoration-none text-secondary">@mycoffeemap</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- 구분선 -->
             <hr class="footer-divider">
-
-            <!-- 저작권 -->
             <div class="text-center footer-copyright">
                 &copy; 2025 My Coffee Map. All rights reserved.
             </div>
