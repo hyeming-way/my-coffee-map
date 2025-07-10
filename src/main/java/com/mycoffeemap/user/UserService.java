@@ -109,7 +109,7 @@ public class UserService {
     //로그인 처리
 	public User login(String email, String pass, Model model) {
 
-		User user = userRepository.findByEmail(email);
+		User user = userRepository.findByEmailAndDeletedFalse(email);
 
 		//이메일 또는 패스워드가 틀린 경우
 		if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
@@ -173,6 +173,22 @@ public class UserService {
 	    return userRepository.save(user); 
 	    
 	} //updateUserProfile
+
+	
+	//유저 탈퇴처리
+	public void deleteUser(Integer id) {
+	    Optional<User> optionalUser = userRepository.findById(id);
+	    
+	    if (optionalUser.isPresent()) {
+	        User user = optionalUser.get();
+	        user.setDeleted(true);
+	        user.setDeletedDate(LocalDateTime.now());
+	        userRepository.save(user);
+	    }		
+	} //deleteUser
+
+
+
 	
 	
 	

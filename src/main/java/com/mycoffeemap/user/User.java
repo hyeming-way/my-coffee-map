@@ -50,4 +50,9 @@ public class User {
 	@CreationTimestamp
 	private Timestamp joinDate;
 	
+	@Column(nullable = false)
+	private boolean deleted = false;
+	
+	private LocalDateTime deletedDate;
+	
 }

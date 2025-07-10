@@ -1,6 +1,8 @@
 package com.mycoffeemap.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -25,12 +26,6 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
-	
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	//로그인 화면 보여주기
 	@GetMapping("/login")
@@ -103,29 +98,23 @@ public class UserController {
 	@PostMapping("/login.do")
 	public String doLogin(@RequestParam("email") String email, @RequestParam("pass") String pass,
 	                      HttpSession session, Model model) {
-	    User user = userRepository.findByEmail(email);
-	    if (user == null || !passwordEncoder.matches(pass, user.getPass())) {
-	    	model.addAttribute("loginError", "メールアドレスまたはパスワードが違います。");
-	        return "user/login";
-	    }
+	    
+		User user = userService.login(email, pass, model);
+		
+		String errorMsg = (String) model.getAttribute("loginError");
+		
+		if(errorMsg != null) return "user/login";
 
-	    if (!user.isEnabled()) {
-		    model.addAttribute("loginError", "メール認証がまだ完了していません。");
-		    return "user/login";
-		}
+	    session.setAttribute("user", user);
 
-		    session.setAttribute("user", user);
+	    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
+	    String redirectUrl = (String) session.getAttribute("prevPage");
+	    session.removeAttribute("prevPage");
 
-		    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
-		    String redirectUrl = (String) session.getAttribute("prevPage");
-		    session.removeAttribute("prevPage");
+	    if (redirectUrl != null) return "redirect:" + redirectUrl;
 
-		    if (redirectUrl != null) {
-		        return "redirect:" + redirectUrl;
-		    }
-
-		    // 없으면 메인으로
-		    return "redirect:/mycoffeemap";
+	    // 없으면 메인으로
+	    return "redirect:/mycoffeemap";
 		    
 		} //doLogin
 
@@ -190,6 +179,24 @@ public class UserController {
 	    return "user/profile"; 
 	    
 	} //updateProfile
+	
+	
+	//탈퇴처리
+	@PostMapping("/deleteUser")
+	@ResponseBody
+	public ResponseEntity<String> deleteUser(HttpSession session) {
+	    User user = (User) session.getAttribute("user");
+
+	    
+	    
+	    userService.deleteUser(user.getId());
+	    session.invalidate();	    
+	    
+	    return ResponseEntity.ok("탈퇴 완료");
+	}
+	
+	
+	
 	
 	
 	@GetMapping("/test")

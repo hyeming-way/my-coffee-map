@@ -3,6 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
+<meta name="csrf-token" th:content="${_csrf.token}" />
+<meta name="csrf-header" th:content="${_csrf.headerName}" />
 <title>my profile</title>
 <link th:href="@{/css/user/join.css}" rel="stylesheet">
 </head>
@@ -186,8 +188,36 @@
 					  			
 			});
 
+								
+			//csrf 공격 방어를 위해 토큰값 가져옴
+			const csrfHeader = document.querySelector('meta[name="csrf-header"]').content || 'X-CSRF-TOKEN';
+			const csrfToken = document.querySelector('meta[name="csrf-token"]').content || '';		
+			
+			//탈퇴처리	
 			window.deleteUser = function () {
-				alert("탈퇴하지마 ㅜ");		
+			    if (confirm('本当に退会しますか？この操作は取り消せません。')) {	    	
+			    	fetch('/user/deleteUser', {
+		    				method : 'POST',
+		    				credentials: 'same-origin',
+		    			    headers: {
+		    			        [csrfHeader]: csrfToken,
+		    			        'Content-Type': 'application/json'
+		    			    	}
+		    				}
+	    			).then(response => {
+	    				if (response.status === 401) {
+	    					location.href = "/user/login";
+	    				} else if (response.ok) {
+    		            	alert('退会が完了しました。これまでのご利用、誠にありがとうございました。');
+    		            	location.href = "/mycoffeemap";
+    		            } else {
+    		                alert("エラーが発生しました。もう一度お試しください。");
+    		            }
+    		        }).catch(error => {
+    		            console.error("탈퇴 중 에러 발생:", error);
+    		            alert("エラーが発生しました。もう一度お試しください。");
+    		        });	    		      
+			    }
 			}
 			
 			
