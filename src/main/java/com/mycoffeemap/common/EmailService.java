@@ -72,7 +72,7 @@ public class EmailService {
 							   + "<p style='display: flex; justify-content: center;'><a href='" + verificationUrl + "' style='display:inline-block; padding:10px 20px; "
 							   + "color: #ff6c57; background-color:#fdeae0; text-decoration:none; border-radius:5px;'>"
 							   + "▶ パスワードを再設定する</a></p>"
-							   + "<p style='display: flex; justify-content: center;'>※ このリンクの有効期限は <strong>30分</strong> です。</p><br><hr>"
+							   + "<p style='display: flex; justify-content: center;'>※ このリンクの有効期限は <strong>1時間</strong> です。</p><br><hr>"
 							   + "<p>ご不明な点がありましたら、お気軽にお問い合わせください ☕</p>"
 							   + "<a href='http://localhost:8070/mycoffeemap' style='text-decoration: none; color: #ff6c57;'>▶ MY COFFEE MAP サイトリンク</a>"
 							   + "</div>";

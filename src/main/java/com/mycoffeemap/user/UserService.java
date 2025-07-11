@@ -80,6 +80,7 @@ public class UserService {
     
 	
     //사용자 이메일 인증
+    @Transactional
     public String verifyUser(String token, Model model) {
     	
         Optional<User> optionalUser = userRepository.findByVerificationToken(token);
@@ -135,6 +136,7 @@ public class UserService {
 	
 	
 	//본인 인증 이메일 재전송
+	@Transactional
 	public void resendVerification(User user) {
 
         String newToken = UUID.randomUUID().toString();
@@ -178,6 +180,7 @@ public class UserService {
 
 	
 	//유저 탈퇴처리
+	@Transactional
 	public void deleteUser(Integer id) {
 	    Optional<User> optionalUser = userRepository.findById(id);
 	    
@@ -190,8 +193,9 @@ public class UserService {
 	} //deleteUser
 
 	
-	//비밀번호 재설정
-	public boolean updatePass(String email) {
+	//비밀번호 재설정 메일 전송
+	@Transactional
+	public boolean updatePassSendMail(String email) {
 
 		//이메일 조회
 		User user = userRepository.findByEmailAndDeletedFalse(email);			
@@ -201,21 +205,79 @@ public class UserService {
 		String token = UUID.randomUUID().toString();
     	
 	    user.setVerificationToken(token);
-	    user.setTokenExpiry(LocalDateTime.now().plusMinutes(30));  //비밀번호 재설정 30분 유효하도록 설정
+	    user.setTokenExpiry(LocalDateTime.now().plusHours(1));  //비밀번호 재설정 1시간 유효하도록 설정
 	    
 	    userRepository.save(user);
 	    log.info("✔ 비밀번호 재설정 토큰 DB 저장 완료");
 	    
 	    //비밀번호 재설정 이메일 보내기	    
-	    String verifyUrl = "http://localhost:8070/user/updatePass?token=" + token;
+	    String verifyUrl = "http://localhost:8070/user/updatePassForm?token=" + token;
 	    emailService.sendUpdatePassEmail(user.getEmail(), verifyUrl);
 	    log.info("✉ 비밀번호 재설정 이메일 보내기 완료");
 		
 		return true;
-	} //updatePass
+		
+	} //updatePassSendMail
 
 
+    //비밀번호 재설정 폼 보여주기
+	@Transactional
+    public String updatePassForm(String token, Model model) {
+    
+    	Optional<User> optionalUser = userRepository.findByVerificationToken(token);
+    	
+        //인증 링크가 유효하지 않을 경우
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("message", "無効なリンクです。");
+            return "user/verify-fail";
+        }
+    	
+        User user = optionalUser.get();
+        
+        //인증 링크가 만료 시간을 경과했을 경우
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            model.addAttribute("message", "リンクの有効期限が切れています。");
+            return "user/verify-fail";
+        }
 
+        return "user/update-pass";
+    		
+    } //updatePassForm
+
+
+	//비밀번호 재설정
+	public String updatePass(String token, String pass, Model model) {
+		
+		log.info("토큰값 : " + token);
+		
+		//토큰 유효성 검사
+		Optional<User> optionalUser = userRepository.findByVerificationToken(token);
+		
+        //유효하지 않을 경우
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("message", "無効なリクエストです。");
+            return "user/verify-fail";
+        }
+    	
+        User user = optionalUser.get();
+        
+        //만료 시간을 경과했을 경우
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            model.addAttribute("message", "リクエストの有効期限が切れています。");
+            return "user/verify-fail";
+        }
+        
+        user.setPass(passwordEncoder.encode(pass));
+        user.setTokenExpiry(null);
+        user.setVerificationToken(null);
+        
+        userRepository.save(user);      
+        log.info("✔ 비밀번호가 재설정되었습니다.");
+        
+        model.addAttribute("updatePass", "パスワードの再設定が完了しました。");
+
+        return "user/login";
+	} 
 	
 	
 	

@@ -1,12 +1,12 @@
 package com.mycoffeemap.user;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +31,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
+	
 	//로그인 화면 보여주기
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpSession session) {
@@ -39,14 +40,54 @@ public class UserController {
 		if(user != null) return "redirect:/mycoffeemap";
 		
 	    String referer = request.getHeader("Referer");
-	    if (referer != null 
-	    		&& !referer.contains("/login")
-	    		&& !referer.contains("/verify")
-	    		&& !referer.contains("/join")) {
-	        session.setAttribute("prevPage", referer);  // 로그인 직전 페이지 기억
+	    
+	    if (referer != null) {
+	        List<String> excludePaths = Arrays.asList(
+	        	//직전 페이지로 돌아가면 안 되는 맵핑주소
+	            "/login", "/verify", "/updatePassForm", "/updatePass", "/join"
+	        );
+
+	        boolean isExcluded = excludePaths.stream().anyMatch(referer::contains);
+
+	        // 로그인 직전 페이지 기억
+	        if (!isExcluded) session.setAttribute("prevPage", referer);	        
 	    }
 	    return "user/login";
 	}	
+	
+	
+	//로그인 처리
+	@PostMapping("/login.do")
+	public String doLogin(@RequestParam("email") String email, @RequestParam("pass") String pass,
+	                      HttpSession session, Model model) {
+	    
+		User user = userService.login(email, pass, model);
+		
+		String errorMsg = (String) model.getAttribute("loginError");
+		
+		if(errorMsg != null) return "user/login";
+
+	    session.setAttribute("user", user);
+
+	    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
+	    String redirectUrl = (String) session.getAttribute("prevPage");
+	    session.removeAttribute("prevPage");
+
+	    if (redirectUrl != null) return "redirect:" + redirectUrl;
+
+	    // 없으면 메인으로
+	    return "redirect:/mycoffeemap";
+		    
+	} //doLogin
+	
+	
+	//로그아웃 처리
+	@GetMapping("/logout.do")
+	public String logout (HttpSession session) {
+	    session.invalidate(); 
+	    return "redirect:/mycoffeemap";
+	} //logout
+	
 	
 	//회원가입 폼 화면 보여주기
 	@GetMapping("/join")
@@ -54,6 +95,7 @@ public class UserController {
 		model.addAttribute("JoinForm", new JoinForm());
 	    return "user/join"; 
 	}	
+	
 	
 	//사용자가 회원가입 입력 폼에 값을 입력하고 '송신'버튼을 눌렀을 때 호출
 	@PostMapping("/join")
@@ -69,11 +111,8 @@ public class UserController {
 	        return "user/join";
 	    }
 		//서버단에서 유효성 검사
-	    if (bindingResult.hasErrors()) {
-	    	model.addAttribute("submitted", true);
-	        return "user/join"; 
-	    }	    
-	    	    
+	    if (bindingResult.hasErrors()) return "user/join"; 
+	       	    
 	    //사용자에게 본인 인증 이메일 보내기
 	    userService.registerUser(joinForm, imgFile); 
 	   	        
@@ -103,40 +142,7 @@ public class UserController {
 	public String verifyUser(@RequestParam("token") String token, Model model) {		
 		return userService.verifyUser(token, model);
 	} 
-	
 
-	//로그인 처리
-	@PostMapping("/login.do")
-	public String doLogin(@RequestParam("email") String email, @RequestParam("pass") String pass,
-	                      HttpSession session, Model model) {
-	    
-		User user = userService.login(email, pass, model);
-		
-		String errorMsg = (String) model.getAttribute("loginError");
-		
-		if(errorMsg != null) return "user/login";
-
-	    session.setAttribute("user", user);
-
-	    // 이전 페이지가 있다면 해당 페이지로 리다이렉트
-	    String redirectUrl = (String) session.getAttribute("prevPage");
-	    session.removeAttribute("prevPage");
-
-	    if (redirectUrl != null) return "redirect:" + redirectUrl;
-
-	    // 없으면 메인으로
-	    return "redirect:/mycoffeemap";
-		    
-		} //doLogin
-
-	
-	//로그아웃 처리
-	@GetMapping("/logout.do")
-	public String logout (HttpSession session) {
-	    session.invalidate(); 
-	    return "redirect:/mycoffeemap";
-	} //logout
-	
 	
 	//프로필 수정 폼 이동
 	@GetMapping("/profile")
@@ -171,10 +177,7 @@ public class UserController {
 		}
 		
 		//서버단에서 유효성 검사
-	    if (bindingResult.hasErrors()) {
-	    	model.addAttribute("submitted", true);
-	        return "user/profile"; 
-	    }
+	    if (bindingResult.hasErrors()) return "user/profile"; 
 	    
 	    User user = (User) session.getAttribute("user");
 	    
@@ -196,10 +199,9 @@ public class UserController {
 	@PostMapping("/deleteUser")
 	@ResponseBody
 	public ResponseEntity<String> deleteUser(HttpSession session) {
+		
 	    User user = (User) session.getAttribute("user");
-
-	    
-	    
+    
 	    userService.deleteUser(user.getId());
 	    session.invalidate();	    
 	    
@@ -207,14 +209,14 @@ public class UserController {
 	}
 	
 	
-	//비밀번호 재설정
-	@PostMapping("/updatePass")
+	//비밀번호 재설정 메일 전송
+	@PostMapping("/updatePassSendMail")
 	@ResponseBody
-	public ResponseEntity<String> updatePass(@RequestBody Map<String, String> body) {
+	public ResponseEntity<String> updatePassSendMail(@RequestBody Map<String, String> body) {
 	   
 		String email = body.get("email");
 		
-	    boolean result = userService.updatePass(email); 
+	    boolean result = userService.updatePassSendMail(email); 
 	    
 	    if(!result) {
 	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("※入力されたメールアドレスのアカウントが見つかりませんでした。");
@@ -222,6 +224,39 @@ public class UserController {
 
 	    return ResponseEntity.ok("パスワード再設定用のメールを送信しました！メールを確認してください。");
 	}
+	
+	
+	//비밀번호 재설정 폼 보여주기
+	@GetMapping("/updatePassForm")
+	public String updatePassForm(@RequestParam("token") String token, Model model) {				    
+		model.addAttribute("UpdatePass", new UpdatePass());
+		model.addAttribute("token", token);
+		return userService.updatePassForm(token, model);
+	}
+	
+	
+	//비밀번호 재설정
+	@PostMapping("/updatePass")
+	public String updatePass(@Valid @ModelAttribute("UpdatePass") UpdatePass updatePass,
+							 @RequestParam("token") String token, @RequestParam("pass") String pass, 
+							 BindingResult bindingResult, Model model) {
+				
+		//비밀번호 재확인 서버단에서 한번 더 검증
+	    if (!updatePass.getPass().equals(updatePass.getPassCheck())) {
+	        bindingResult.rejectValue("passCheck", "error.passCheck", "パスワードが一致しません。");
+	        return "user/update-pass";
+	    }	   
+	    
+		//서버단에서 유효성 검사
+	    if (bindingResult.hasErrors()) return "user/update-pass";
+	    	    
+	    //비밀번호 재설정 후 다음 페이지 경로 저장
+	    String nextPage = userService.updatePass(token, pass, model);
+	    
+	    return nextPage;
+
+	 }	  
+		
 	
 	
 	

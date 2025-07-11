@@ -145,6 +145,15 @@ form span {
 	color: #ff6c57;
 }
 
+/* 비밀번호 재설정 */
+.update-pass-table {
+	height: 100%;
+}
+
+.update-pass-error {
+	margin-bottom: 0;
+}
+
 
 
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+<meta name="csrf-token" th:content="${_csrf.token}" />
+<meta name="csrf-header" th:content="${_csrf.headerName}" />
+<title>reset pass</title>
+<link th:href="@{/css/user/join.css}" rel="stylesheet">
+</head>
+<body>
+	<div layout:fragment="content">
+		<form th:action="@{/user/updatePass}" th:object="${UpdatePass}" method="post" id="joinForm">
+		    <input type="hidden" name="token" th:value="${token}" />
+		    <table class="update-pass-table">
+			    <tr><td>
+			    	<h2>パスワード再設定</h2>
+			    </td></tr>
+			    <tr><td><p class="join-txt"><span>*</span>新しいパスワード</p></td></tr>
+			    <tr><td>
+			    	<input type="password" th:field="*{pass}" class="text"  id="pass">
+			    	<p id="passError" class="join-error-msg update-pass-error"></p>
+			    </td></tr>
+			    <tr><td><p class="join-txt"><span>*</span>パスワード確認</p></td></tr>
+			    <tr><td>
+			    	<input type="password" th:field="*{passCheck}" class="text"  id="passCheck">
+			    	<p id="passCheckError" class="join-error-msg update-pass-error"></p>
+			    </td></tr>
+			    <tr><td>
+		    		<input type="submit" value="再設定" class="submit-btn">
+		    	</td></tr>
+		    </table>
+		</form>
+		
+		<script>			
+			const pass = document.getElementById("pass");
+			const passCheck = document.getElementById("passCheck");
+			
+			pass.addEventListener("input", validatePass);
+			passCheck.addEventListener("input", validatePassCheck);
+			
+			//패스워드 유효성 검사
+			function validatePass() {
+			  const pw = pass.value.trim();
+			  const error = document.getElementById("passError");
+			
+			  if (!pw) {
+			    error.textContent = "パスワードを入力してください。";
+			  } else if (pw.length < 8 || pw.length > 20) {
+			    error.textContent = "パスワードは8〜20文字で入力してください。";
+			  } else {
+			    error.textContent = "";
+			  }		
+			  validatePassCheck();
+			}
+			
+			//패스워드 재확인 유효성 검사
+			function validatePassCheck() {
+			  const pw = pass.value.trim();
+			  const pwCheck = passCheck.value.trim();
+			  const error = document.getElementById("passCheckError");
+			
+			  if (pw !== pwCheck) {
+			    error.textContent = "パスワードが一致しません。";
+			  } else if (!pwCheck) {
+			    error.textContent = "パスワードを確認してください。";
+			  }else {
+			    error.textContent = "";
+			  }
+			}
+			
+			//submit
+			const form = document.getElementById("joinForm");
+				form.addEventListener("submit", function (e) {
+				  validatePass();
+				  validatePassCheck();
+				
+				  const hasError = document.querySelectorAll(".join-error-msg") ? 
+						  			Array.from(document.querySelectorAll(".join-error-msg")).some(p => p.textContent !== "") : false;
+						  			//.some() : 배열 안에 조건을 만족하는 요소가 하나라도 있으면 true를 반환 
+				
+				  if (hasError) { e.preventDefault(); }
+						  							  		
+				});
+				
+		</script>
+	</div>
+</body>
+</html>
