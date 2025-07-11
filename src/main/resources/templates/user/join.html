@@ -201,16 +201,18 @@
 					  			Array.from(document.querySelectorAll(".join-error-msg")).some(p => p.textContent !== "") : false;
 					  			//.some() : 배열 안에 조건을 만족하는 요소가 하나라도 있으면 true를 반환 
 			
-			  if (hasError) { e.preventDefault(); }
-					  			
-			  const submitBtn = document.querySelector(".submit-btn");
-			  const joinMsg = document.querySelector(".join-msg");
-			  const loadingMsg = document.querySelector(".loading-msg");
-			  
-			  submitBtn.style.display = "none";
-			  joinMsg.style.display = "none";
-			  loadingMsg.style.display = "block";
-					  			
+			  if (hasError) {
+				  e.preventDefault(); 
+			  } else {
+				  const submitBtn = document.querySelector(".submit-btn");
+				  const joinMsg = document.querySelector(".join-msg");
+				  const loadingMsg = document.querySelector(".loading-msg");
+				  
+				  submitBtn.style.display = "none";
+				  joinMsg.style.display = "none";
+				  loadingMsg.style.display = "block";
+			  }
+		  			
 			});
 				
 		}); //document.addEventListener('DOMContentLoaded'
