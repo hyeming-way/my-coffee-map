@@ -30,26 +30,25 @@ public class EmailService {
 			//helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 			helper.setFrom(new InternetAddress("gpal7356@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 					
-			String htmlContent = "<div style='font-family:sans-serif; font-size:14px;'>"
+			String htmlContent = "<div style='width: 500px; font-family: sans-serif; font-size: 14px; margin: 50px 0; padding: 10px;'>"
 							   + "<p>MY COFFEE MAPにご登録いただきありがとうございます！</p><br>"
-							   + "<p>下のリンクをクリックして、メールアドレスの認証を完了してください👇</p>"
-							   + "<p><a href='" + verificationUrl + "' style='display:inline-block; padding:10px 20px; "
+							   + "<p>下のリンクをクリックして、メールアドレスの認証を完了してください👇</p><br>"
+							   + "<p style='display: flex; justify-content: center;'><a href='" + verificationUrl + "' style='display:inline-block; padding:10px 20px; "
 							   + "color: #ff6c57; background-color:#fdeae0; text-decoration:none; border-radius:5px;'>"							   
 							   + "▶ メール認証リンクはこちら</a></p>"
-							   + "<p>※ リンクの有効期限は <strong>24時間</strong> です。</p><br><hr>"
+							   + "<p style='display: flex; justify-content: center;'>※ リンクの有効期限は <strong>24時間</strong> です。</p><br><hr>"
 							   + "<p>ご不明な点がありましたら、気軽にご連絡ください ☕</p>"
-							   + "<p>MY COFFEE MAP TEAM<br>"
-							   + "<a href='http://localhost:8070/mycoffeemap'>▶ MY COFFEE MAP サイト リンク</a></p>"
+							   + "<a href='http://localhost:8070/mycoffeemap' style='text-decoration: none; color: #ff6c57;'>▶ MY COFFEE MAP サイト リンク</a>"
 							   + "</div>";
-
+		    		 
 			helper.setText(htmlContent, true);
-			
+		    	
 			mailSender.send(message);	
 		} catch (Exception e) {
 			log.error("⚠ 이메일 생성 실패");
 			e.printStackTrace();
 		}
-		
+
 	} //sendVerificationEmail
 	
 	
@@ -67,18 +66,17 @@ public class EmailService {
 			//helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 			helper.setFrom(new InternetAddress("gpal7356@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 			
-			String htmlContent = "<div style='font-family:sans-serif; font-size:14px;'>"
+			String htmlContent = "<div style='width: 500px; font-family: sans-serif; font-size: 14px; margin: 50px 0; padding: 10px;'>"
 							   + "<p>MY COFFEE MAPをご利用いただきありがとうございます。</p><br>"
-							   + "<p>以下のリンクをクリックして、パスワードの再設定を行ってください👇</p>"
-							   + "<p><a href='" + verificationUrl + "' style='display:inline-block; padding:10px 20px; "
+							   + "<p>以下のリンクをクリックして、パスワードの再設定を行ってください👇</p><br>"
+							   + "<p style='display: flex; justify-content: center;'><a href='" + verificationUrl + "' style='display:inline-block; padding:10px 20px; "
 							   + "color: #ff6c57; background-color:#fdeae0; text-decoration:none; border-radius:5px;'>"
 							   + "▶ パスワードを再設定する</a></p>"
-							   + "<p>※ このリンクの有効期限は <strong>30分</strong> です。</p><br><hr>"
+							   + "<p style='display: flex; justify-content: center;'>※ このリンクの有効期限は <strong>30分</strong> です。</p><br><hr>"
 							   + "<p>ご不明な点がありましたら、お気軽にお問い合わせください ☕</p>"
-							   + "<p>MY COFFEE MAP TEAM<br>"
-							   + "<a href='http://localhost:8070/mycoffeemap'>▶ MY COFFEE MAP サイトリンク</a></p>"
+							   + "<a href='http://localhost:8070/mycoffeemap' style='text-decoration: none; color: #ff6c57;'>▶ MY COFFEE MAP サイトリンク</a>"
 							   + "</div>";
-
+			
 			helper.setText(htmlContent, true);
 			
 			mailSender.send(message);	
