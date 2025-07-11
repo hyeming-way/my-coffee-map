@@ -34,8 +34,15 @@ public class UserController {
 	//로그인 화면 보여주기
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpSession session) {
+		
+		User user =  (User)session.getAttribute("user");		
+		if(user != null) return "redirect:/mycoffeemap";
+		
 	    String referer = request.getHeader("Referer");
-	    if (referer != null && !referer.contains("/login")) {
+	    if (referer != null 
+	    		&& !referer.contains("/login")
+	    		&& !referer.contains("/verify")
+	    		&& !referer.contains("/join")) {
 	        session.setAttribute("prevPage", referer);  // 로그인 직전 페이지 기억
 	    }
 	    return "user/login";
@@ -52,7 +59,7 @@ public class UserController {
 	@PostMapping("/join")
 	public String submit(@Valid @ModelAttribute("JoinForm") JoinForm joinForm,
 						 @RequestParam("imgUpload") MultipartFile imgFile,
-	                     BindingResult bindingResult, Model model) {
+	                     BindingResult bindingResult, Model model, HttpSession session) {
 		
 		log.info("UserController의 submit 메소드 실행");
 		
@@ -69,7 +76,7 @@ public class UserController {
 	    	    
 	    //사용자에게 본인 인증 이메일 보내기
 	    userService.registerUser(joinForm, imgFile); 
-	    
+	   	        
 	    return "user/mail-sended";
 	    
 	} //submit
