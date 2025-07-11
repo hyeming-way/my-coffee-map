@@ -46,8 +46,11 @@
 		        <small id="emailErrorMsg" class="text-danger d-none"></small>
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">キャンセル</button>
-		        <button type="button" class="btn btn-primary" onclick="sendResetMail()">パスワード再設定のメールを送信する</button>
+		        <button type="button" id="cancelBtn" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">キャンセル</button>
+		        <button type="button" id="sendBtn" class="btn btn-primary" onclick="sendResetMail()">パスワード再設定のメールを送信する</button>		      		      
+		      </div>
+		      <div id="loadingWrap" class="loading-wrap">
+		      	<p class="loading-msg"><img id="loadingGif" th:src="@{/images/icon/loading-cup.gif}" alt="Loading..."> <span>少々お待ちください。</span></p>
 		      </div>
 		    </div>
 		  </div>
@@ -99,6 +102,15 @@
 			  		return;
 			  	} 
 			        
+			    const cancelBtn = document.getElementById("cancelBtn");
+			    const sendBtn = document.getElementById("sendBtn");
+			    const loadingWrap = document.getElementById("loadingWrap");
+			    
+			    cancelBtn.style.display = "none";
+			    sendBtn.style.display = "none";
+			    loadingWrap.style.display = "block";
+
+			    
 			    fetch("/user/updatePassSendMail", {
 			    	method: "POST",
 			    	credentials: 'same-origin',
@@ -124,7 +136,12 @@
 			      .catch(err => {
 			        console.error("통신 오류:", err);
 			        alert("エラーが発生しました。もう一度お試しください。");
-			      });
+			      })
+			      .finally(() => {
+			    	  sendBtn.style.display = "";
+			    	  cancelBtn.style.display = "";
+			    	  loadingWrap.style.display = "none";
+			    	});
 			    		   
 			  } //sendResetMail()
 			

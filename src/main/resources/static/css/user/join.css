@@ -154,6 +154,20 @@ form span {
 	margin-bottom: 0;
 }
 
+/* 로딩이미지 */
+.loading-msg {
+	display: none;
+	justify-self: center;
+	color: #333;
+}
+
+#loadingGif {
+	width: 50px;
+	display: flex;
+	justify-self: center;
+	margin-bottom: 5px;
+}
+
 
 
 

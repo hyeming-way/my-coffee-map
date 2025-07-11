@@ -98,4 +98,18 @@ a {
 	color: #fff;
 }
 
+/* 로딩이미지 */
+.loading-wrap {
+	display: none;
+}
 
+.loading-msg {
+	justify-self: center;
+}
+
+#loadingGif {
+	width: 50px;
+	display: flex;
+	justify-self: center;
+	margin-bottom: 5px;
+}

@@ -46,6 +46,10 @@
 	    </td></tr>
 	    <tr><td>
 	    	<input type="submit" value="送信" class="submit-btn">
+	    	<p class="loading-msg">
+	    		<img id="loadingGif" th:src="@{/images/icon/loading-cup.gif}" alt="Loading..."> 
+	    		<span style="color: #333;">少々お待ちください。</span>
+	    	</p>
 	    </td></tr>
 	    <tr><td>    
 	    	<p class="join-msg"><span>*</span>は必須項目です。すべて入力してください。</p>
@@ -187,7 +191,7 @@
 			
 		//submit
 		const form = document.getElementById("joinForm");
-			form.addEventListener("submit", function (e) {
+			form.addEventListener("submit", function (e) {		  
 			  validateEmail();
 			  validatePass();
 			  validatePassCheck();
@@ -198,6 +202,14 @@
 					  			//.some() : 배열 안에 조건을 만족하는 요소가 하나라도 있으면 true를 반환 
 			
 			  if (hasError) { e.preventDefault(); }
+					  			
+			  const submitBtn = document.querySelector(".submit-btn");
+			  const joinMsg = document.querySelector(".join-msg");
+			  const loadingMsg = document.querySelector(".loading-msg");
+			  
+			  submitBtn.style.display = "none";
+			  joinMsg.style.display = "none";
+			  loadingMsg.style.display = "block";
 					  			
 			});
 				
