@@ -27,8 +27,7 @@ public class EmailService {
 			
 			helper.setSubject("【MY COFFEE MAP】メール認証のお願い");	
 			
-			//helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
-			helper.setFrom(new InternetAddress("gpal7356@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
+			helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 					
 			String htmlContent = "<div style='width: 500px; font-family: sans-serif; font-size: 14px; margin: 50px 0; padding: 10px;'>"
 							   + "<p>MY COFFEE MAPにご登録いただきありがとうございます！</p><br>"
@@ -63,8 +62,7 @@ public class EmailService {
 			
 			helper.setSubject("【MY COFFEE MAP】パスワード再設定のご案内");	
 			
-			//helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
-			helper.setFrom(new InternetAddress("gpal7356@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
+			helper.setFrom(new InternetAddress("your_email@gmail.com", "MY COFFEE MAP TEAM", "UTF-8"));
 			
 			String htmlContent = "<div style='width: 500px; font-family: sans-serif; font-size: 14px; margin: 50px 0; padding: 10px;'>"
 							   + "<p>MY COFFEE MAPをご利用いただきありがとうございます。</p><br>"

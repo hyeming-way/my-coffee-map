@@ -17,10 +17,9 @@ input[type="text"], input[type="password"] {
     background-color: rgb(233,233,233);
 }
 input::placeholder {
-  font-size: 14px;
+    font-size: 14px;
 }
 input:focus {
-
 	border: 1px solid #ff6c57;
 }
 
@@ -43,7 +42,6 @@ a {
     font-size: 12px;
     color: darkgray;
     text-decoration-line: none;
-   
 }
 .join {
     text-align: center;

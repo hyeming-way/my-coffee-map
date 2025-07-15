@@ -44,7 +44,7 @@ public class UserController {
 	    if (referer != null) {
 	        List<String> excludePaths = Arrays.asList(
 	        	//직전 페이지로 돌아가면 안 되는 맵핑주소
-	            "/login", "/verify", "/updatePassForm", "/updatePass", "/join"
+	            "/login", "/verify", "/updatePassForm", "/updatePass", "/join", "/test"
 	        );
 
 	        boolean isExcluded = excludePaths.stream().anyMatch(referer::contains);
@@ -267,7 +267,7 @@ public class UserController {
 	
 	@GetMapping("/test")
 	public String test(Model model) {
-	    return "user/test"; 
+	    return "user/verify-fail"; 
 	}
 		
 	

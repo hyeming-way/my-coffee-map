@@ -1,0 +1,61 @@
+@charset "UTF-8";
+.wrap {
+	width: 100%;
+	margin: 100px;
+	max-width: 800px;
+	background-color: white;
+	color: rgba(0, 0, 0, 0.686);
+	justify-self: center;
+	justify-items: center;
+}
+
+.icon {
+	display: flex;
+	margin: 10px 0 40px;
+}
+
+.msg {
+	font-size: 24px;
+	margin: 0;
+}
+
+.verify-btn {
+	display: flex;
+    width: 140px;
+    height: 32px;
+    color: #ff6c57;
+    font-size: 15px;
+    border: 0;
+    border-radius: 15px;
+    outline: none;
+    background-color: #fdeae0;
+    margin: 50px;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.verify-btn:hover {
+	background-color: #ff6c57;
+	color: #fff;
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.error-icon {
+	width: 40px;
+	display: flex;
+	margin: 10px;
+}
+
+.error {
+	display: flex;
+	align-items: center;
+}
+
+.btn-wrap {
+	margin-top: 50px;
+}
+
+.fail {
+	margin: 10px;
+}
