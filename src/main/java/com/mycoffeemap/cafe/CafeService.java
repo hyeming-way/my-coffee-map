@@ -31,7 +31,7 @@ public class CafeService {
     }
 
     // 내가 등록한 카페 목록 조회
-    public List<Cafe> findByUserId(Integer userId) {
+    public List<Cafe> findByUserId(Long userId) {
         return cafeRepository.findByUserId(userId);
     }
 

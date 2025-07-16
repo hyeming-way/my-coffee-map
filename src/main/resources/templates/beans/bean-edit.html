@@ -1,0 +1,47 @@
+<!-- templates/beans/bean-edit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>コーヒー豆の編集</title>
+</head>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">コーヒー豆の編集</h3>
+        <form th:action="@{/beans/edit/{id}(id=${bean.id})}" method="post" th:object="${bean}" class="needs-validation">
+            <div class="mb-3">
+                <label class="form-label">名前</label>
+                <input type="text" th:field="*{name}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">原産地</label>
+                <input type="text" th:field="*{origin}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">ロースト</label>
+                <select th:field="*{roastLevel}" class="form-select">
+                    <option th:each="level : ${T(com.mycoffeemap.bean.Bean.RoastLevel).values()}" th:value="${level}" th:text="${level}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">フレーバー</label>
+                <input type="text" th:field="*{flavorNotes}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">説明</label>
+                <textarea th:field="*{description}" class="form-control"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">画像URL</label>
+                <input type="text" th:field="*{imageUrl}" class="form-control">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">保存</button>
+		        <a th:href="@{/my/beans}" class="btn btn-secondary">キャンセル</a>
+		        <button type="submit" th:formaction="@{/beans/delete/{id}(id=${bean.id})}" 
+		                class="btn btn-danger"
+		                onclick="return confirm('本当に削除しますか？')">削除</button>
+            </div>
+        </form>
+    </div>
+</div>
+</html>

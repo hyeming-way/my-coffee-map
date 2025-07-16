@@ -4,52 +4,58 @@
       layout:decorate="~{layout}">
 
 <head>
-    <title>登録したカフェ一覧</title> <!-- 내 카페 목록 -->
+    <title>登録したカフェ一覧</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 
 <div layout:fragment="content">
     <div class="container mt-5">
-        <!-- 제목 -->
-        <h3 class="mb-4 text-center">🏠 登録したカフェ</h3> <!-- 내가 등록한 카페 -->
+        <h3 class="mb-4 text-center">🏠 登録したカフェ</h3>
 
-        <!-- 카드 목록 -->
-        <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${myCafes != null and !myCafes.isEmpty()}">
-            <div class="col" th:each="cafe : ${myCafes}">
-                <div class="card h-100 text-white position-relative overflow-hidden">
-                    <!-- 카페 이미지 -->
-                    <img th:src="@{${cafe.imageUrl}}" class="card-img" alt="カフェ画像"
-                         style="height: 150px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
-
-                    <!-- 이름, 주소 표시 -->
-                    <div class="card-img-overlay d-flex flex-column justify-content-end p-2"
-                         style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
-                        <h5 class="card-title mb-1 text-truncate" th:text="${cafe.name}">カフェ名</h5>
-                        <p class="card-text mb-0" style="font-size: 0.75rem;">
-                            <strong>住所:</strong> <span th:text="${cafe.address}">住所</span>
-                        </p>
-                    </div>
-
-                    <!-- 설명 Hover 영역 -->
-                    <div class="position-absolute top-0 start-0 w-100 h-100 text-white p-3
-                                d-flex flex-column justify-content-center align-items-center cafe-description-hover"
-                         style="background-color: rgba(0, 0, 0, 0.6); opacity: 0; transition: 0.3s; pointer-events: none; border-radius: 0.5rem;">
-                        <p class="text-center fw-light" style="font-size: 0.85rem; white-space: pre-line;" th:text="${cafe.description}">
-                            カフェの説明
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <!-- 카페 목록 테이블 -->
+        <div th:if="${myCafes != null and !myCafes.isEmpty()}">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>イメージ</th>
+                        <th>名前</th>
+                        <th>住所</th>
+                        <th>説明</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cafe : ${myCafes}">
+                        <td>
+                            <img th:src="@{${cafe.imageUrl}}" alt="画像" style="width: 80px; height: 60px; object-fit: cover;">
+                        </td>
+                        <td th:text="${cafe.name}">カフェ名</td>
+                        <td th:text="${cafe.address}">住所</td>
+                        <td th:text="${cafe.description}">カフェ説明</td>
+                        <td>
+						    <!-- 수정 버튼 -->
+						    <a th:href="@{/cafes/edit/{id}(id=${cafe.id})}" class="btn btn-sm btn-outline-primary">編集</a>
+						
+						    <!-- 삭제 버튼 -->
+						    <form th:action="@{/cafes/delete/{id}(id=${cafe.id})}" method="post" style="display:inline-block;"
+						          onsubmit="return confirm('削除しますか？');">
+						        <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+						    </form>
+						</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- 카페가 없을 경우 -->
+        <!-- 비어 있을 경우 -->
         <p class="text-center" th:if="${myCafes == null or myCafes.isEmpty()}">
             登録されたカフェはありません。
         </p>
 
-        <!-- 등록 버튼 -->
+        <!-- 버튼 -->
         <div class="text-center mt-4">
-            <a th:href="@{/cafes/new}" class="btn btn-outline-primary btn-sm">カフェを登録する</a> <!-- 카페 등록하기 -->
+            <a th:href="@{/cafes/new}" class="btn btn-outline-primary btn-sm">カフェを登録する</a>
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
         </div>
     </div>
 </div>

@@ -65,5 +65,14 @@ public class Board {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
+    
+    // 카페 위치의 위도 (Google Maps에서 검색한 위치정보
+    @Column
+    private Double latitude;
+
+    // 카페 위치의 경도 (Google Maps에서 검색한 위치정보)
+    @Column
+    private Double longitude;
+
 
 }

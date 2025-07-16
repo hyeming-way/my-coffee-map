@@ -61,6 +61,6 @@ tasks.named('test') {
 }
 
 // 컴파일 시 파라미터 이름 정보 유지 (Spring에서 @RequestParam 자동 추출 가능)
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += ['-parameters']
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters"
 }

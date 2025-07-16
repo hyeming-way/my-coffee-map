@@ -13,33 +13,49 @@
         <!-- 제목 -->
         <h3 class="mb-4 text-center">📌 登録したコーヒー豆</h3> <!-- 내가 등록한 원두 -->
 
-        <!-- 원두 목록 카드 -->
-        <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${myBeans != null and !myBeans.isEmpty()}">
-            <div class="col" th:each="bean : ${myBeans}">
-                <div class="card h-100 text-white position-relative overflow-hidden">
-                    <img th:src="@{${bean.imageUrl}}" class="card-img" alt="豆の画像"
-                         style="height: 150px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
-
-                    <div class="card-img-overlay d-flex flex-column justify-content-end p-2"
-                         style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); border-radius: 0.5rem 0.5rem 0 0;">
-                        <h5 class="card-title mb-1 text-truncate" th:text="${bean.name}">豆の名前</h5>
-                        <p class="card-text mb-0" style="font-size: 0.8rem;">
-                            <strong>ロースト:</strong> <span th:text="${bean.roastLevel}">MEDIUM</span><br/>
-                            <strong>フレーバー:</strong> <span th:text="${bean.flavorNotes}">Nutty, Fruity</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <!-- 원두 목록 테이블 -->
+        <div th:if="${myBeans != null and !myBeans.isEmpty()}">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>イメージ</th>
+                        <th>名前</th>
+                        <th>原産地</th>
+                        <th>ロースト</th>
+                        <th>フレーバー</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bean : ${myBeans}">
+                        <td>
+                            <img th:src="@{${bean.imageUrl}}" alt="画像" style="width: 80px; height: 60px; object-fit: cover;">
+                        </td>
+                        <td th:text="${bean.name}">コーヒー名</td>
+                        <td th:text="${bean.origin}">グアテマラ</td>
+                        <td th:text="${bean.roastLevel}">MEDIUM</td>
+                        <td th:text="${bean.flavorNotes}">Nutty, Fruity</td>
+                        <td>
+                            <a th:href="@{'/beans/edit/' + ${bean.id}}" class="btn btn-sm btn-outline-primary">編集</a>
+                            <form th:action="@{'/beans/delete/' + ${bean.id}}" method="post" style="display:inline-block;" 
+                                  onsubmit="return confirm('削除しますか？');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- 빈 경우 메시지 -->
         <p class="text-center" th:if="${myBeans == null or myBeans.isEmpty()}">
-            登録されたコーヒー豆はありません。 <!-- 등록한 원두가 없습니다. -->
+            登録されたコーヒー豆はありません。
         </p>
 
-        <!-- 등록 버튼 -->
+        <!-- 버튼 -->
         <div class="text-center mt-4">
-            <a th:href="@{/beans/new}" class="btn btn-outline-primary btn-sm">新しく登録する</a> <!-- 원두 등록하기 -->
+            <a th:href="@{/beans/new}" class="btn btn-outline-primary btn-sm">新しく登録する</a>
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
         </div>
     </div>
 </div>

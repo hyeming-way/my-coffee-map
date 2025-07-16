@@ -47,7 +47,7 @@ public class Bean {
 	// 원두 산지
 	private String origin;
 
-	// 로스팅 레벤
+	// 로스팅 레벨
 	@Enumerated(EnumType.STRING)
 	private RoastLevel roastLevel;
 

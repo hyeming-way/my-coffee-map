@@ -4,6 +4,7 @@ import com.mycoffeemap.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -37,4 +38,9 @@ public class Comment {
     // 작성일
     @CreationTimestamp
     private LocalDateTime createdAt; 
+    
+    // 수정일
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 }
