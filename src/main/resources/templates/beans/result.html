@@ -109,9 +109,10 @@
         </p>
 
         <div class="text-end mt-3 mb-4">
-            <a th:href="@{/beans/new}" class="btn btn-outline-dark btn-sm">
-                コーヒー豆を登録する
-            </a>
+            <a th:href="@{/beans/new}" class="btn btn-sm rounded-pill"
+			   style="border: 1px solid #f7b7a3; color: #d46a6a; background-color: #fff5f2;">
+			    <i class="bi bi-plus-circle me-1"></i> コーヒー豆を登録する
+			</a>
         </div>
 
         <!-- 추천 카페 -->
@@ -146,15 +147,23 @@
         </p>
         
         <div class="text-end mt-3 mb-4">
-		    <a th:href="@{/cafes/new}" class="btn btn-outline-dark btn-sm">
-		        カフェを登録する
-		    </a>
+		    <a th:href="@{/cafes/new}" class="btn btn-sm rounded-pill"
+			   style="border: 1px solid #f7b7a3; color: #d46a6a; background-color: #fff5f2;">
+			    <i class="bi bi-plus-circle me-1"></i> カフェを登録する
+			</a>
 		</div>
 
         <!-- 버튼 -->
         <div class="text-center mt-5 mb-5">
-            <a th:href="@{/beans/search}" class="btn btn-outline-primary btn-sm">好みを選び直す</a>
-            <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm me-2">トップページへ戻る</a>
+            <!-- 好みを選び直す (취향 다시 찾기) -->
+			<a th:href="@{/beans/search}" class="btn btn-outline-primary btn-sm">
+			    <i class="bi bi-funnel"></i> 好みを選び直す</a>
+			<!-- ノートリストに進む  -->
+			<a th:href="@{/board/list}" class="btn btn-sm btn-outline-secondary">
+	        		<i class="bi bi-card-list"></i> ノートリストに進む</a>			
+			<!-- トップページへ戻る (메인 페이지로 돌아가기) -->
+			<a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm me-2">
+			    <i class="bi bi-house"></i> トップページに戻る</a>
         </div>
     </div>
 </div>

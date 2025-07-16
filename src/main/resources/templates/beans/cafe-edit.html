@@ -1,9 +1,23 @@
-<!-- templates/beans/cafe-edit.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>カフェの編集</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <style>
+        #imagePreview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
 </head>
+<body>
 <div layout:fragment="content">
     <div class="container mt-5">
         <h3 class="mb-4 text-center">カフェの編集</h3>
@@ -18,20 +32,64 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">説明</label>
-                <textarea th:field="*{description}" class="form-control"></textarea>
+                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
             </div>
             <div class="mb-3">
-                <label class="form-label">画像URL</label>
-                <input type="text" th:field="*{imageUrl}" class="form-control">
+                <label class="form-label">イメージURL</label>
+                <input type="text" th:field="*{imageUrl}" class="form-control" id="imageUrlInput">
+                <img id="imagePreview"
+                     th:src="@{${cafe.imageUrl}}"
+                     alt="イメージプレビュー">
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">保存</button>
-		        <a th:href="@{/my/cafes}" class="btn btn-secondary">キャンセル</a>
-		        <button type="submit" th:formaction="@{/cafes/delete/{id}(id=${cafe.id})}" 
-		                class="btn btn-danger"
-		                onclick="return confirm('本当に削除しますか？')">削除</button>
+
+            <!-- 버튼 영역 -->
+            <div class="text-center mt-4 mb-5">
+                <!-- 저장 -->
+                <button type="submit" class="btn btn-sm rounded-pill px-4 py-2 me-2"
+                        style="background-color: #c8a974; color: #fffaf3; border: 1px solid #c8a974;">
+                    <i class="bi bi-save me-2"></i> 保存
+                </button>
+
+                <!-- 취소 -->
+                <a th:href="@{/my/cafes}" class="btn btn-sm rounded-pill px-4 py-2 me-2"
+                   style="background-color: #e0e0e0; color: #3e2c23; border: 1px solid #d0d0d0;">
+                    <i class="bi bi-x-circle me-2"></i> キャンセル
+                </a>
+
+                <!-- 삭제 -->
+                <button type="submit"
+                        th:formaction="@{/cafes/delete/{id}(id=${cafe.id})}"
+                        class="btn btn-sm rounded-pill px-4 py-2"
+                        style="background-color: #dc8686; color: #fffaf3; border: 1px solid #dc8686;"
+                        onclick="return confirm('本当に削除しますか？')">
+                    <i class="bi bi-trash me-2"></i> 削除
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- 이미지 미리보기 스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("imageUrlInput");
+        const preview = document.getElementById("imagePreview");
+
+        const updatePreview = () => {
+            const url = input.value.trim();
+            if (url && url.startsWith("http")) {
+                preview.src = url;
+                preview.style.display = "block";
+            } else {
+                preview.style.display = "none";
+            }
+        };
+
+        if (input && preview) {
+            input.addEventListener("input", updatePreview);
+            updatePreview(); // 초기값 반영
+        }
+    });
+</script>
+</body>
 </html>

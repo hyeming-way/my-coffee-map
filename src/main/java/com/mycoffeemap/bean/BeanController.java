@@ -143,33 +143,41 @@ public class BeanController {
     public String showEditForm(@PathVariable("id") Long id, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("user");
         Bean bean = beanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
+
         if (!bean.getUser().getId().equals(loginUser.getId())) {
             return "redirect:/mycoffeemap"; // 권한 없음
         }
+
+        // 기본 데이터 세팅
         model.addAttribute("bean", bean);
-        return "beans/bean-edit"; // edit.html
+
+        // 로스팅 레벨 목록
+        model.addAttribute("roastLevels", Bean.RoastLevel.values());
+
+        // 플레이버 선택지 (임의 예시)
+        List<String> flavorOptions = List.of("Floral", "Nutty", "Fruity", "Spicy", "Chocolate", "Earthy", "Caramel", "Smoky");
+        model.addAttribute("flavorOptions", flavorOptions);
+
+        // 이미지 선택지 (URL 문자열 리스트)
+        List<String> imageOptions = List.of(
+        		"/images/beans/yirgacheffe.png",
+                "/images/beans/guatemala.png",
+                "/images/beans/peru.png",
+                "/images/beans/mandheling.png",
+                "/images/beans/mexico.png",
+                "/images/beans/costarica.png",
+                "/images/beans/geisha.png",
+                "/images/beans/kenya.png",
+                "/images/beans/Kona.png",
+                "/images/beans/rwanda.png",
+                "/images/beans/tanzania.png",
+                "/images/beans/colombia.png"
+        );
+        model.addAttribute("imageOptions", imageOptions);
+
+        return "beans/bean-edit";
     }
 
-    // 사용자 등록 원두 수정 처리
-    @PostMapping("/edit/{id}")
-    public String updateBean(@PathVariable("id") Long id, @ModelAttribute Bean updatedBean, HttpSession session) {
-        User loginUser = (User) session.getAttribute("user");
-        Bean bean = beanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
-        if (!bean.getUser().getId().equals(loginUser.getId())) {
-            return "redirect:/mycoffeemap"; // 권한 없음
-        }
-
-        // 필드 업데이트
-        bean.setName(updatedBean.getName());
-        bean.setOrigin(updatedBean.getOrigin());
-        bean.setRoastLevel(updatedBean.getRoastLevel());
-        bean.setFlavorNotes(updatedBean.getFlavorNotes());
-        bean.setDescription(updatedBean.getDescription());
-        bean.setImageUrl(updatedBean.getImageUrl());
-
-        beanRepository.save(bean);
-        return "redirect:/my/beans";
-    }
 
     // 사용자 등록 원두 삭제 처리
     @PostMapping("/delete/{id}")

@@ -1,47 +1,166 @@
-<!-- templates/beans/bean-edit.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>コーヒー豆の編集</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <style>
+        #imagePreview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .option-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .image-label, .flavor-label {
+            padding: 4px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .btn-check:checked + .image-label,
+        .btn-check:checked + .flavor-label {
+            border-color: #c8a974;
+            box-shadow: 0 0 0 2px rgba(200, 169, 116, 0.3);
+        }
+
+        .image-label:hover,
+        .flavor-label:hover {
+            border-color: #c8a974;
+        }
+
+        .flavor-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+    </style>
 </head>
+<body>
 <div layout:fragment="content">
     <div class="container mt-5">
         <h3 class="mb-4 text-center">コーヒー豆の編集</h3>
         <form th:action="@{/beans/edit/{id}(id=${bean.id})}" method="post" th:object="${bean}" class="needs-validation">
+
+            <!-- 이름 -->
             <div class="mb-3">
                 <label class="form-label">名前</label>
                 <input type="text" th:field="*{name}" class="form-control" required>
             </div>
+
+            <!-- 원산지 -->
             <div class="mb-3">
                 <label class="form-label">原産地</label>
                 <input type="text" th:field="*{origin}" class="form-control">
             </div>
+
+            <!-- 로스팅 -->
             <div class="mb-3">
                 <label class="form-label">ロースト</label>
                 <select th:field="*{roastLevel}" class="form-select">
-                    <option th:each="level : ${T(com.mycoffeemap.bean.Bean.RoastLevel).values()}" th:value="${level}" th:text="${level}"></option>
-                </select>
+				    <option th:each="level : ${roastLevels}" th:value="${level}" th:text="${level}"></option>
+				</select>
             </div>
-            <div class="mb-3">
-                <label class="form-label">フレーバー</label>
-                <input type="text" th:field="*{flavorNotes}" class="form-control">
+
+            <!-- 플레이버 (다중 선택) -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">フレーバー（複数選択可）🌸</label>
+                <div class="flavor-group">
+                    <div class="text-center" th:each="flavor, iterStat : ${flavorOptions}">
+                        <input type="checkbox" class="btn-check" name="flavorNotes"
+                               th:id="'flavor' + ${iterStat.index}" th:value="${flavor}"
+                               th:checked="${bean.flavorNotes != null and bean.flavorNotes.contains(flavor)}">
+                        <label class="flavor-label" th:for="'flavor' + ${iterStat.index}">
+                            <img th:src="@{'/images/flavor/' + ${flavor.toLowerCase()} + '.png'}" class="option-img" alt="フレーバー">
+                            <div class="small mt-1" th:text="${flavor}">フレーバー</div>
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">説明</label>
-                <textarea th:field="*{description}" class="form-control"></textarea>
+
+            <!-- 이미지 선택 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">コーヒー豆のイメージ選択</label>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="text-center" th:each="img : ${imageOptions}">
+                        <input type="radio" class="btn-check" name="imageUrl"
+                               th:id="'img' + ${img.hashCode()}" th:value="${img}"
+                               th:checked="${bean.imageUrl == img}" autocomplete="off">
+                        <label class="image-label" th:for="'img' + ${img.hashCode()}">
+                            <img th:src="@{${img}}" class="option-img" alt="イメージ">
+                        </label>
+                    </div>
+                </div>
             </div>
+
+            <!-- 이미지 미리보기 -->
             <div class="mb-3">
                 <label class="form-label">画像URL</label>
-                <input type="text" th:field="*{imageUrl}" class="form-control">
+                <input type="text" th:field="*{imageUrl}" class="form-control" id="imageUrlInput">
+                <img id="imagePreview" th:src="@{${bean.imageUrl}}" alt="イメージプレビュー">
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">保存</button>
-		        <a th:href="@{/my/beans}" class="btn btn-secondary">キャンセル</a>
-		        <button type="submit" th:formaction="@{/beans/delete/{id}(id=${bean.id})}" 
-		                class="btn btn-danger"
-		                onclick="return confirm('本当に削除しますか？')">削除</button>
+
+            <!-- 버튼 -->
+            <div class="text-center mt-4 mb-5">
+                <!-- 저장 -->
+                <button type="submit" class="btn btn-sm rounded-pill px-4 py-2 me-2"
+                        style="background-color: #c8a974; color: #fffaf3; border: 1px solid #c8a974;">
+                    <i class="bi bi-save me-2"></i> 保存
+                </button>
+
+                <!-- 취소 -->
+                <a th:href="@{/my/beans}" class="btn btn-sm rounded-pill px-4 py-2 me-2"
+                   style="background-color: #e0e0e0; color: #3e2c23; border: 1px solid #d0d0d0;">
+                    <i class="bi bi-x-circle me-2"></i> キャンセル
+                </a>
+
+                <!-- 삭제 -->
+                <button type="submit"
+                        th:formaction="@{/beans/delete/{id}(id=${bean.id})}"
+                        class="btn btn-sm rounded-pill px-4 py-2"
+                        style="background-color: #dc8686; color: #fffaf3; border: 1px solid #dc8686;"
+                        onclick="return confirm('本当に削除しますか？')">
+                    <i class="bi bi-trash me-2"></i> 削除
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- 이미지 미리보기 스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("imageUrlInput");
+        const preview = document.getElementById("imagePreview");
+
+        const updatePreview = () => {
+            const url = input.value.trim();
+            if (url && url.startsWith("http")) {
+                preview.src = url;
+                preview.style.display = "block";
+            } else {
+                preview.style.display = "none";
+            }
+        };
+
+        if (input && preview) {
+            input.addEventListener("input", updatePreview);
+            updatePreview(); // 초기 상태에서도 반영
+        }
+    });
+</script>
+</body>
 </html>

@@ -4,11 +4,14 @@
       layout:decorate="~{layout}">
 
 <!-- head 영역 -->
+<!-- head 영역 -->
 <th:block layout:fragment="head">
     <title>カフェ登録</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
     <style>
+        /* 이미지 라디오 스타일 */
         .option-img {
             width: 80px;
             height: 80px;
@@ -33,8 +36,34 @@
         .image-label:hover {
             border-color: #c8a974;
         }
+
+        /* 등록/취소 버튼 hover 효과 */
+        .btn-save {
+            background-color: #c8a974;
+            color: #fffaf3;
+            border: 1px solid #c8a974;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background-color: #b8945f;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background-color: #e0e0e0;
+            color: #3e2c23;
+            border: 1px solid #d0d0d0;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: #d6d6d6;
+            color: #3e2c23;
+        }
     </style>
 </th:block>
+
 
 <!-- content 영역 -->
 <div layout:fragment="content">
@@ -102,10 +131,17 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <div class="text-center mt-5 mb-5">
-                <button type="submit" class="btn btn-outline-success px-4">登録する</button>
-                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">キャンセル</a>
-            </div>
+			<div class="text-center mt-5 mb-5">
+			    <!-- 등록 버튼 -->
+			    <button type="submit" class="btn btn-sm rounded-pill px-4 py-2 btn-save">
+				    <i class="bi bi-save me-2"></i> 登録する
+				</button>
+			
+			    <!-- 취소 버튼 -->
+			    <a th:href="@{/my}" class="btn btn-sm rounded-pill px-4 py-2 ms-2 btn-cancel">
+				    <i class="bi bi-x-circle me-2"></i> キャンセル
+				</a>
+			</div>
         </form>
     </div>
 </div>
