@@ -10,7 +10,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final BoardLikeRepository boardLikeRepository; // 💡 추가
+    private final BoardLikeRepository boardLikeRepository;
 
     public void save(Board board) {
         boardRepository.save(board);

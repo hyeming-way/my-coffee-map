@@ -23,6 +23,7 @@ public class CafeController {
     private final BeanRepository beanRepository;
     private final CafeBeanRepository cafeBeanRepository;
 
+    // 사용자 카페 등록 폼
     @GetMapping("/new")
     public String showCreateCafeForm(Model model, HttpSession session) {
         // 로그인 체크
@@ -56,15 +57,16 @@ public class CafeController {
         return "beans/create-cafe";
     }
 
-
+    // 사용자 카페 등록
     @PostMapping("/new")
     public String createCafe(
-            @RequestParam String name,
-            @RequestParam String address,
-            @RequestParam String description,
-            @RequestParam String imageUrl,
-            @RequestParam Long beanId,
-            @RequestParam CafeBean.UseType useType, HttpSession session
+            @RequestParam("name") String name,
+            @RequestParam("address") String address,
+            @RequestParam("description") String description,
+            @RequestParam("imageUrl") String imageUrl,
+            @RequestParam("beanId") Long beanId,
+            @RequestParam("useType") CafeBean.UseType useType,
+            HttpSession session
     ) {
          // 로그인 검사
          User loginUser = (User) session.getAttribute("user");
@@ -84,6 +86,8 @@ public class CafeController {
                 .user(loginUser)
                 .build();
 
+        cafe.setUser(loginUser);
+        
         Cafe savedCafe = cafeRepository.save(cafe);
 
         CafeBean cafeBean = CafeBean.builder()
@@ -92,12 +96,55 @@ public class CafeController {
                 .useType(useType)
                 .linkedAt(LocalDateTime.now())
                 .build();
-
+               
         cafeBeanRepository.save(cafeBean);
 
         return "redirect:/mycoffeemap";
     }
-   
+    
+    // 사용자 수정 폼
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Cafe cafe = cafeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 카페 없음"));
+        if (!cafe.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+        model.addAttribute("cafe", cafe);
+        return "beans/cafe-edit";
+    }
+
+    // 사용자 수정 처리
+    @PostMapping("/edit/{id}")
+    public String updateCafe(@PathVariable("id") Long id, @ModelAttribute Cafe updatedCafe, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Cafe cafe = cafeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 카페 없음"));
+        if (!cafe.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+
+        // 필드 업데이트
+        cafe.setName(updatedCafe.getName());
+        cafe.setAddress(updatedCafe.getAddress());
+        cafe.setDescription(updatedCafe.getDescription());
+        cafe.setImageUrl(updatedCafe.getImageUrl());
+
+        cafeRepository.save(cafe);
+        return "redirect:/my/cafes";
+    }
+
+    // 사용자 삭제 처리
+    @PostMapping("/delete/{id}")
+    public String deleteCafe(@PathVariable("id") Long id, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Cafe cafe = cafeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 카페 없음"));
+        if (!cafe.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+
+        cafeRepository.delete(cafe);
+        return "redirect:/my/cafes";
+    } 
 
 
 }

@@ -1,6 +1,7 @@
 package com.mycoffeemap.bean;
 
 import com.mycoffeemap.bean.Bean.RoastLevel;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,7 @@ public class BeanService {
     }
 
     // 내가 등록한 원두 목록 조회
-    public List<Bean> findByUserId(Integer userId) {
+    public List<Bean> findByUserId(Long userId) {
         return beanRepository.findByUserId(userId);
     }
 } 

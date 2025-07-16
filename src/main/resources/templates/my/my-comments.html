@@ -1,0 +1,71 @@
+<!-- templates/my/my-comments.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>マイコメント - My Coffee Map</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+
+<div layout:fragment="content">
+    <div class="container mt-5" style="max-width: 800px;">
+        <h3 class="mb-4 fw-bold text-brown">💬 私のコメント</h3>
+
+        <!-- 코멘트가 없는 경우 -->
+        <div th:if="${myComments.isEmpty()}">
+            <p class="text-muted">まだコメントを投稿していません。</p>
+        </div>
+
+        <!-- 코멘트 리스트 -->
+        <div th:each="comment : ${myComments}" class="mb-4 p-3 border rounded bg-light">
+            <!-- 연결된 게시글 제목 -->
+            <h6 class="mb-2">
+                投稿：
+                <a th:href="@{/board/{id}(id=${comment.board.id})}" 
+                   th:text="${comment.board.title}" 
+                   class="text-decoration-none fw-bold text-dark">
+                   投稿タイトル
+                </a>
+            </h6>
+
+            <!-- 댓글 내용 -->
+            <p class="mb-1" th:text="${comment.content}">コメント内容</p>
+
+            <!-- 작성일 및 수정여부 -->
+	        <small>
+			    <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span>			    
+			    <span th:if="${comment.updatedAt != null and comment.updatedAt != comment.createdAt}" class="text-muted small">
+			        ✏️ 編集: 
+			        <span th:text="${#temporals.format(comment.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+			    </span>
+			</small>
+
+            <!-- 수정/삭제 폼 -->
+            <div class="mt-2">
+                <form th:action="@{/comment/edit}" method="post" class="d-inline w-100">
+                    <input type="hidden" name="commentId" th:value="${comment.id}" />
+                    <input type="hidden" name="boardId" th:value="${comment.board.id}" />
+                    <div class="input-group input-group-sm mb-1">
+                        <input type="text" name="content" class="form-control" th:value="${comment.content}" required />
+                        <button type="submit" class="btn btn-outline-primary">更新</button>
+                    </div>
+                </form>
+
+                <form th:action="@{/board/comment/{id}/delete(id=${comment.id})}" 
+                      method="post" class="d-inline"
+                      onsubmit="return confirm('本当に削除しますか？');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 마이페이지로 -->
+        <div class="text-end mt-4">
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
+        </div>
+    </div>
+</div>
+</html>

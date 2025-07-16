@@ -14,5 +14,5 @@ public interface CafeRepository extends JpaRepository<Cafe, Long> {
     List<Cafe> findByCafeBeansBean(Bean bean);
 
     // 내가 등록한 카페 목록 조회
-    List<Cafe> findByUserId(Integer userId);
+    List<Cafe> findByUserId(Long userId);
 }

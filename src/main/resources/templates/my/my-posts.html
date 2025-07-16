@@ -3,26 +3,62 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-<th:block layout:fragment="head">
-    <title>自分の投稿一覧 - MyCoffeeMap</title>
+<head>
+    <title>自分のコーヒーノート- MyCoffeeMap</title>
     <link th:href="@{/css/main.css}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</th:block>
+    
+    <style>
+        .card {
+            border: 1px solid #CBB68F;
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .pagination .page-link {
+            background-color: #DDB892;
+            border: none;
+            color: #fff;
+        }
+        .pagination .page-link:hover {
+            background-color: #b58b65;
+        }
+        .pagination .active .page-link {
+            background-color: #A97451;
+            color: #fff;
+        }
+        .rating .bi {
+            color: #ffc107;
+            font-size: 1rem;
+        }
+        .btn-coffee {
+	        background-color: #CBB68F;
+	        border: none;
+	        color: #fff;
+	    }
+	
+	    .btn-coffee:hover {
+	        background-color: #a88e65;
+	        color: #fff;
+	    }
+    </style>
+</head>
 
 <div layout:fragment="content">
     <div class="container mt-5">
-        <h4 class="mb-4">📝 自分の投稿一覧</h4> <!-- 내가 쓴 게시글 -->
+        <h4 class="mb-4">📝 自分のコーヒーノート</h4>
 
         <div class="row row-cols-1 row-cols-md-2 g-4">
             <div class="col" th:each="post : ${myPosts}">
-                <div class="card h-100 shadow-sm">
-                    <!-- 이미지 (있을 경우) -->
-					<img th:if="${post.imageUrl != null}"
-					     th:src="@{/boards/{filename}(filename=${post.imageUrl})}"
-					     class="card-img-top"
-					     style="height: 180px; object-fit: cover;"
-					     onerror="this.src='/images/default.png'"
-					     alt="画像">
+                <div class="card h-100 shadow-sm position-relative">
+                    <!-- 이미지 -->
+                    <img th:if="${post.imageUrl != null}"
+                         th:src="@{/boards/{filename}(filename=${post.imageUrl})}"
+                         class="card-img-top"
+                         style="height: 180px; object-fit: cover;"
+                         onerror="this.src='/images/default.png'"
+                         alt="画像">
 
                     <div class="card-body">
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -30,8 +66,12 @@
                     </div>
 
                     <div class="card-footer d-flex justify-content-between align-items-center small text-muted">
-                        <!-- 작성일 -->
-                        <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">作成日</span>
+                        <!-- 작성일 / 수정일 -->
+						<span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd') 
+						             + (post.updatedAt != null and post.updatedAt != post.createdAt 
+						                ? '  /  ✏️ ' + #temporals.format(post.updatedAt, 'yyyy.MM.dd') + ' 修正' 
+						                : '')}">
+						</span>
 
                         <div class="d-flex align-items-center gap-3">
                             <!-- 별점 -->
@@ -50,9 +90,42 @@
                     </div>
 
                     <!-- 상세 페이지로 이동 -->
-                    <a class="stretched-link" th:href="@{'/board/view/' + ${post.id}}"></a>
+                    <a class="stretched-link" th:href="@{/board/{id}(id=${post.id})}"></a>
                 </div>
             </div>
+        </div>
+        
+        <!-- 페이징 -->
+		<div class="mt-4 d-flex justify-content-center">
+		    <nav th:if="${totalPages > 1}">
+		        <ul class="pagination">
+		            <!-- 이전 페이지 -->
+		            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+		                <a class="page-link"
+		                   th:href="@{'/my/posts?page=' + ${currentPage > 0 ? currentPage - 1 : 0} + '&size=6'}">«</a>
+		            </li>
+		
+		            <!-- 페이지 번호 -->
+		            <li class="page-item" 
+		                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+		                th:classappend="${i == currentPage} ? 'active'">
+		                <a class="page-link"
+		                   th:href="@{'/my/posts?page=' + ${i} + '&size=6'}"
+		                   th:text="${i + 1}">1</a>
+		            </li>
+		
+		            <!-- 다음 페이지 -->
+		            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+		                <a class="page-link"
+		                   th:href="@{'/my/posts?page=' + ${currentPage + 1} + '&size=6'}">»</a>
+		            </li>
+		        </ul>
+		    </nav>
+		</div>
+
+        <!-- 마이페이지로 돌아가기 -->
+        <div class="text-end mt-4">
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
         </div>
     </div>
 </div>

@@ -58,14 +58,20 @@
     <div class="container mt-5">
         <h3 class="mb-4 text-center">コーヒー豆の登録</h3> <!-- 원두 등록 -->
 
-        <form th:action="@{/new}" th:object="${bean}" method="post">
+        <form th:action="@{/beans/new}" th:object="${bean}" method="post">
 
             <!-- 원두 이름 -->
             <div class="mb-3">
-                <label class="form-label">豆の名前</label>
+                <label class="form-label">コーヒー豆の名前</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="例：グアテマラ アンティグア" required>
             </div>
-
+            
+            <!-- 원산지 -->
+			<div class="mb-3">
+			    <label class="form-label">原産地</label>
+			    <input type="text" th:field="*{origin}" class="form-control" placeholder="例：Ethiopia" required>
+			</div>
+            
             <!-- 원두 설명 -->
             <div class="mb-3">
                 <label class="form-label">説明</label>
@@ -122,7 +128,7 @@
 
             <!-- 이미지 선택 -->
             <div class="mb-4">
-                <label class="form-label fw-bold">イメージ選択</label>
+                <label class="form-label fw-bold">コーヒー豆のイメージ選択</label>
                 <div class="d-flex flex-wrap gap-3">
                     <div class="text-center" th:each="img : ${imageOptions}">
                         <input type="radio" class="btn-check" name="imageUrl"

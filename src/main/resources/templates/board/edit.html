@@ -5,38 +5,118 @@
 
 <!-- HEAD -->
 <th:block layout:fragment="head">
-    <title>コーヒーノート作成</title>
+    <title>コーヒーノート編集</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+	    .text-brown {
+	        color: #8B4513; /* 진한 갈색 */
+	    }
+	
+	    .btn-outline-primary {
+	        color: #8B4513;
+	        border-color: #c8a974;
+	    }
+	
+	    .btn-outline-primary:hover {
+	        background-color: #c8a974;
+	        border-color: #c8a974;
+	        color: white;
+	    }
+	
+	    .btn-outline-secondary {
+	        color: #5c4435;
+	        border-color: #c8a974;
+	    }
+	
+	    .btn-outline-secondary:hover {
+	        background-color: #c8a974;
+	        border-color: #c8a974;
+	        color: white;
+	    }
+	
+	    .btn-danger {
+	        background-color: #d86a6a;
+	        border-color: #d86a6a;
+	    }
+	
+	    .btn-danger:hover {
+	        background-color: #b34f4f;
+	        border-color: #b34f4f;
+	    }
+	
+	    .btn-outline-danger {
+	        color: #d86a6a;
+	        border-color: #d86a6a;
+	    }
+	
+	    .btn-outline-danger:hover {
+	        background-color: #d86a6a;
+	        color: white;
+	    }
+	
+	    .card-body h6.card-title {
+	        color: #5c4435;
+	    }
+	
+	    .card.bg-light {
+	        background-color: #f9f6f0 !important;
+	    }
+	
+	    textarea.form-control {
+	        border-radius: 6px;
+	        border-color: #c8a974;
+	    }
+	
+	    textarea.form-control:focus {
+	        box-shadow: 0 0 0 0.2rem rgba(200, 169, 116, 0.25);
+	        border-color: #c8a974;
+	    }
+	
+	    .fw-bold {
+	        color: #5c4435;
+	    }
+	
+	    .btn-sm {
+	        font-size: 0.85rem;
+	        padding: 0.25rem 0.5rem;
+	    }
+	
+	    .img-fluid.rounded {
+	        border: 1px solid #e3d6c5;
+	        box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
+	    }
+	</style>    
 </th:block>
 
 <!-- 본문 내용 -->
 <div layout:fragment="content">
     <div class="container mt-5" style="max-width: 720px;">
-        <!-- 타이틀 영역 -->
+        <!-- 타이틀 -->
         <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
-            <img th:src="@{/images/coffee_logo.svg}" alt="ロゴ" style="height: 36px; width: auto;">
-            <h3 class="mb-0 fw-bold">コーヒーノート作成</h3> <!-- 커피 노트 작성 -->
+            <img th:src="@{/images/coffee_logo.svg}" alt="ロゴ" style="height: 36px;">
+            <h3 class="mb-0 fw-bold">コーヒーノート編集</h3>
         </div>
 
-        <form th:action="@{/board/new}" method="post" enctype="multipart/form-data">
+        <form th:action="@{'/board/edit/' + ${board.id}}" method="post" enctype="multipart/form-data">
             <!-- 제목 -->
             <div class="mb-3">
-                <label class="form-label fw-bold">タイトル</label> <!-- 제목 -->
-                <input type="text" name="title" class="form-control" placeholder="例：本日飲んだエチオピアコーヒーの感想" required>
+                <label class="form-label fw-bold">タイトル</label>
+                <input type="text" name="title" class="form-control" th:value="${board.title}" required>
             </div>
 
-            <!-- 본문 -->
+            <!-- 내용 -->
             <div class="mb-3">
-                <label class="form-label fw-bold">内容</label> <!-- 본문 -->
-                <textarea name="content" class="form-control" rows="6" placeholder="味、風味、雰囲気など自由に書いてみてください。" required></textarea>
+                <label class="form-label fw-bold">内容</label>
+                <textarea name="content" class="form-control" rows="6" th:text="${board.content}" required></textarea>
             </div>
 
             <!-- 별점 -->
             <div class="mb-4">
-                <label class="form-label fw-bold">評価（星）</label> <!-- 별점 평가 -->
+                <label class="form-label fw-bold">評価（星）</label>
                 <div class="d-flex gap-2">
-                    <input type="hidden" name="rating" id="rating" value="0">
+                    <input type="hidden" name="rating" id="rating" th:value="${board.rating}">
                     <i class="fa-regular fa-star star" data-value="1"></i>
                     <i class="fa-regular fa-star star" data-value="2"></i>
                     <i class="fa-regular fa-star star" data-value="3"></i>
@@ -47,48 +127,55 @@
 
             <!-- 관련 원두 -->
             <div class="mb-3">
-                <label class="form-label fw-bold">関連コーヒー豆</label> <!-- 관련 원두 -->
+                <label class="form-label fw-bold">関連コーヒー豆</label>
                 <select name="beanId" class="form-select">
                     <option value="">選択しない</option>
                     <option th:each="bean : ${beanList}"
                             th:value="${bean.id}"
-                            th:text="${bean.name + '（' + bean.origin + '）'}">エチオピア</option>
+                            th:text="${bean.name + '（' + bean.origin + '）'}"
+                            th:selected="${board.bean != null and board.bean.id == bean.id}">
+                    </option>
                 </select>
             </div>
 
             <!-- 관련 카페 -->
             <div class="mb-3">
-                <label class="form-label fw-bold">関連カフェ</label> <!-- 관련 카페 -->
+                <label class="form-label fw-bold">関連カフェ</label>
                 <select name="cafeId" class="form-select">
                     <option value="">選択しない</option>
                     <option th:each="cafe : ${cafeList}"
                             th:value="${cafe.id}"
-                            th:text="${cafe.name + '（' + cafe.address + '）'}">カフェ名</option>
+                            th:text="${cafe.name + '（' + cafe.address + '）'}"
+                            th:selected="${board.cafe != null and board.cafe.id == cafe.id}">
+                    </option>
                 </select>
             </div>
 
-            <!-- 주소 입력 -->
+            <!-- 지도 주소 입력 -->
             <div class="mb-3">
-                <label class="form-label fw-bold">カフェの位置（住所で検索）</label> <!-- 카페 위치 -->
+                <label class="form-label fw-bold">カフェの位置（住所で検索）</label>
                 <input type="text" id="address" class="form-control" placeholder="例：東京都 渋谷区…">
-                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="codeAddress()">地図で検索</button> <!-- 지도에서 찾기 -->
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="codeAddress()">地図で検索</button>
             </div>
 
-            <!-- 지도 -->
+            <!-- 지도 영역 -->
             <div id="map" style="height: 300px; width: 100%; border-radius: 8px;"></div>
-            <input type="hidden" name="latitude" id="latitude">
-            <input type="hidden" name="longitude" id="longitude">
+            <input type="hidden" name="latitude" id="latitude" th:value="${board.latitude}">
+            <input type="hidden" name="longitude" id="longitude" th:value="${board.longitude}">
 
-            <!-- 이미지 업로드 -->
+            <!-- 이미지 -->
             <div class="mb-4 mt-4">
-                <label class="form-label fw-bold">画像添付</label> <!-- 이미지 첨부 -->
+                <label class="form-label fw-bold">画像添付</label>
                 <input type="file" name="imageFile" class="form-control">
+                <div th:if="${board.imageUrl != null}" class="mt-2">
+                    <img th:src="@{/boards/{filename}(filename=${board.imageUrl})}" class="img-fluid rounded" alt="既存画像" style="max-height: 200px;">
+                </div>
             </div>
 
-            <!-- 제출 버튼 -->
+            <!-- 수정완료 -->
             <div class="text-center mt-4 mb-2">
-                <button type="submit" class="btn btn-outline-primary px-4">作成完了</button> <!-- 작성 완료 -->
-                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">キャンセル</a> <!-- 취소 -->
+                <button type="submit" class="btn btn-outline-primary px-4">編集完了</button>
+                <a th:href="@{'/board/' + ${board.id}}" class="btn btn-outline-secondary ms-2">キャンセル</a>
             </div>
         </form>
     </div>
@@ -114,7 +201,16 @@
         document.addEventListener("DOMContentLoaded", function () {
             const stars = document.querySelectorAll(".star");
             const ratingInput = document.getElementById("rating");
+            const selectedRating = parseInt(ratingInput.value);
 
+            // 초기 별점 반영
+            stars.forEach(s => {
+                const sValue = parseInt(s.dataset.value);
+                s.classList.remove("fa-solid", "fa-regular");
+                s.classList.add(sValue <= selectedRating ? "fa-solid" : "fa-regular");
+            });
+
+            // 클릭 시 변경
             stars.forEach(star => {
                 star.addEventListener("click", function () {
                     const value = parseInt(this.dataset.value);
@@ -128,7 +224,7 @@
                 });
             });
 
-            // 주소 입력시 Enter 키 처리
+            // 주소 입력 Enter 처리
             document.getElementById("address")?.addEventListener("keydown", function (e) {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -141,7 +237,10 @@
         let map, geocoder, marker;
 
         function initMap() {
-            const defaultLocation = { lat: 35.681236, lng: 139.767125 }; // 도쿄역
+            const lat = parseFloat(document.getElementById("latitude").value) || 35.681236;
+            const lng = parseFloat(document.getElementById("longitude").value) || 139.767125;
+            const defaultLocation = { lat, lng };
+
             map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 13,
                 center: defaultLocation
@@ -155,9 +254,6 @@
                 draggable: true
             });
 
-            document.getElementById("latitude").value = defaultLocation.lat;
-            document.getElementById("longitude").value = defaultLocation.lng;
-
             marker.addListener("dragend", () => {
                 const pos = marker.getPosition();
                 document.getElementById("latitude").value = pos.lat();
@@ -165,10 +261,9 @@
             });
         }
 
-        // 주소 검색
         function codeAddress() {
             const address = document.getElementById("address").value;
-            geocoder.geocode({ address: address }, (results, status) => {
+            geocoder.geocode({ address }, (results, status) => {
                 if (status === "OK") {
                     const location = results[0].geometry.location;
                     map.setCenter(location);
@@ -176,7 +271,7 @@
                     document.getElementById("latitude").value = location.lat();
                     document.getElementById("longitude").value = location.lng();
                 } else {
-                    alert("住所が見つかりません: " + status); // 주소를 찾을 수 없습니다
+                    alert("住所が見つかりません: " + status);
                 }
             });
         }

@@ -33,4 +33,8 @@ public class BoardLike {
 
     // 좋아요시간
     private LocalDateTime likedAt; 
+    
+    @Transient // DB에는 저장되지 않음
+    private int likeCount;
+
 }

@@ -5,53 +5,177 @@
 
 <!-- HEAD 영역 -->
 <th:block layout:fragment="head">
-    <title>コーヒーノート一覧</title>
+    <title>コーヒーノートリスト</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+        .card {
+            border: 1px solid #CBB68F;
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .pagination .page-link {
+            background-color: #DDB892;
+            border: none;
+            color: #fff;
+        }
+        .pagination .page-link:hover {
+            background-color: #b58b65;
+        }
+        .pagination .active .page-link {
+            background-color: #A97451;
+            color: #fff;
+        }
+        .rating .bi {
+            color: #ffc107;
+            font-size: 1rem;
+        }
+        .btn-coffee {
+	        background-color: #CBB68F;
+	        border: none;
+	        color: #fff;
+	    }
+	
+	    .btn-coffee:hover {
+	        background-color: #a88e65;
+	        color: #fff;
+	    }
+    </style>
 </th:block>
 
 <!-- CONTENT 영역 -->
 <div layout:fragment="content">
-    <div class="container mt-5 mb-5"> <!-- 하단 여백 추가 -->
+    <div class="container mt-5 mb-5">
         <h3 class="mb-4">コーヒーノート 📚</h3>
 
+        <!-- 검색 폼 -->
+        <form th:action="@{/board/list}" method="get" class="row mb-4 g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">コーヒー豆で検索</label>
+                <select class="form-select" name="beanId">
+                    <option th:value="' '" th:selected="${beanId == null}">すべての豆</option>
+                    <option th:each="bean : ${beanList}"
+                            th:value="${bean.id}"
+                            th:text="${bean.name}"
+                            th:selected="${bean.id == beanId}">コーヒー豆</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">カフェで検索</label>
+                <select class="form-select" name="cafeId">
+                    <option th:value="' '" th:selected="${cafeId == null}">すべてのカフェ</option>
+                    <option th:each="cafe : ${cafeList}"
+                            th:value="${cafe.id}"
+                            th:text="${cafe.name}"
+                            th:selected="${cafe.id == cafeId}">カフェ</option>
+                </select>
+            </div>
+            
+            <!-- 검색 버튼 + 전체 리스트로 돌아가기 버튼 -->
+			<div class="col-md-4 d-flex gap-2">
+			    <button type="submit" class="btn btn-sm w-50"
+			        style="background-color: #cbb68f; border: none; color: #fff;">
+			        🔍 検索
+			    </button>
+			
+			    <a th:href="@{/board/list}"
+			       th:if="${beanId != null or cafeId != null}"
+			       class="btn btn-sm w-50"
+			       style="background-color: #eee0c9; border: none; color: #5c3b1e;">
+			        🔁 リセット
+			    </a>
+			</div>
+        </form>
+
+        <!-- 게시글 카드 목록 -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- 각 게시글 카드 반복 -->
-            <div class="col" th:each="board : ${boardList}">
+            <div class="col" th:each="board : ${boardPage.content}">
                 <div class="card h-100 shadow-sm position-relative">
-                    <!-- 이미지가 있으면 출력 -->
-					<img th:if="${board.imageUrl != null}"
-					     th:src="@{/boards/{filename}(filename=${board.imageUrl})}"
-					     class="card-img-top"
-					     style="height: 180px; object-fit: cover;"
-					     onerror="this.src='/images/default.png'"
-					     alt="画像" />
+                    <!-- 이미지 출력 -->
+                    <img th:if="${board.imageUrl != null}"
+                         th:src="@{/boards/{filename}(filename=${board.imageUrl})}"
+                         class="card-img-top"
+                         style="height: 180px; object-fit: cover;"
+                         onerror="this.src='/images/default.png'"
+                         alt="画像" />
 
                     <div class="card-body">
                         <h5 class="card-title" th:text="${board.title}">タイトル</h5>
                         <p class="card-text" th:text="${#strings.abbreviate(board.content, 80)}">内容の要約</p>
-                    </div>
 
-                    <!-- 작성자 정보 -->
-                    <div class="card-footer small text-muted d-flex align-items-center gap-2">
-                        <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/profiles/default-profile.png}"
-                             class="rounded-circle"
-                             alt="プロフィール画像"
-                             style="width: 30px; height: 30px; object-fit: cover;" />
-                        <div>
-                            <div th:text="${board.user.nick}">ニックネーム</div>
-                            <div class="text-muted" th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd')}">日付</div>
+                        <!-- 별점 -->
+                        <div class="rating mt-2">
+                            <i class="bi" th:each="i : ${#numbers.sequence(1, 5)}"
+                               th:classappend="${i <= board.rating} ? 'bi-star-fill' : 'bi-star'"></i>
                         </div>
                     </div>
 
-                    <!-- 상세보기 링크 -->
+                    <!-- 카드 하단 -->
+					<div class="card-footer small text-muted d-flex justify-content-between align-items-center">
+					    
+					    <!-- 왼쪽: 프로필 + 닉네임 + 작성일/수정일 -->
+					    <div class="d-flex align-items-center gap-2">
+					        <img th:src="${board.user.profileImg != null} ? @{'/profiles/' + ${board.user.profileImg}} : @{/images/icon/basic_profile.jpg}"
+					             class="rounded-circle"
+					             style="width: 30px; height: 30px; object-fit: cover;"
+					             alt="プロフィール画像" />
+					        <div>
+					            <div th:text="${board.user.nick}">ニックネーム</div>
+					            <div class="text-muted small">
+					                <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd')} + ' 作成'"></span>
+					                <span th:if="${board.updatedAt != null and board.updatedAt != board.createdAt}"
+					                      th:text="' / ' + ${#temporals.format(board.updatedAt, 'yyyy.MM.dd')} + ' 修正'"></span>
+					            </div>
+					        </div>
+					    </div>
+					
+					    <!-- 오른쪽: 좋아요 -->
+					    <div class="text-danger d-flex align-items-center gap-1">
+					        <i class="bi bi-heart-fill"></i>
+					        <span th:text="${board.likeCount}">0</span>
+					    </div>
+					</div>
+
+                    <!-- 상세 페이지 링크 -->
                     <a class="stretched-link" th:href="@{'/board/' + ${board.id}}"></a>
                 </div>
             </div>
         </div>
 
-        <!-- 메인화면으로 돌아가기 버튼 -->
+        <!-- 페이지가 1개 이상일 때만 페이지네이션 표시 -->
+		<div class="mt-4 d-flex justify-content-center" th:if="${boardPage.totalPages > 0}">
+		    <nav>
+		        <ul class="pagination pagination-sm">
+		            <!-- 이전 버튼 -->
+		            <li class="page-item" th:classappend="${boardPage.first} ? 'disabled'">
+		                <a class="page-link"
+		                   th:href="@{'/board/list?page=' + ${boardPage.number - 1} + ${@urlUtil.buildQueryParams(beanId, cafeId)} }">«</a>
+		            </li>
+		
+		            <!-- 페이지 번호 -->
+		            <li class="page-item" th:each="i : ${#numbers.sequence(0, boardPage.totalPages - 1)}"
+		                th:classappend="${boardPage.number == i} ? 'active'">
+		                <a class="page-link"
+		                   th:href="@{'/board/list?page=' + ${i} + ${@urlUtil.buildQueryParams(beanId, cafeId)} }"
+		                   th:text="${i + 1}">1</a>
+		            </li>
+		
+		            <!-- 다음 버튼 -->
+		            <li class="page-item" th:classappend="${boardPage.last} ? 'disabled'">
+		                <a class="page-link"
+		                   th:href="@{'/board/list?page=' + ${boardPage.number + 1} + ${@urlUtil.buildQueryParams(beanId, cafeId)} }">»</a>
+		            </li>
+		        </ul>
+		    </nav>
+		</div>	    
+
+        <!-- 메인화면 버튼 -->
         <div class="text-end mt-5">
-            <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary btn-sm">🏠 ホームに戻る</a>
+            <a th:href="@{/mycoffeemap}" class="btn btn-sm"
+               style="border: 1px solid #CBB68F; color: #000;">🏠 ホームに戻る</a>
         </div>
     </div>
 </div>

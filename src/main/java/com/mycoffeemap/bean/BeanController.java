@@ -21,6 +21,8 @@ public class BeanController {
 
     private final BeanService beanService;
     private final CafeService cafeService;
+    private final BeanRepository beanRepository;
+    private final BeanPreferenceService beanPreferenceService;
 
     // 커피 취향 검색 폼
     @GetMapping("/search")
@@ -32,21 +34,18 @@ public class BeanController {
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
         model.addAttribute("recommendedBeans", recommendedBeans);
-
+        
         List<Cafe> recommendedCafes = cafeService.findByBeans(recommendedBeans);
         model.addAttribute("recommendedCafes", recommendedCafes);
 
         model.addAttribute("selectedRoast", roast);
         model.addAttribute("selectedFlavor", flavor);
-
-        model.addAttribute("flavorOptions", List.of(
-                "Floral", "Nutty", "Fruity", "Spicy", "Chocolate","Earthy", "Caramel", "Smoky"
-        ));
+        model.addAttribute("flavorOptions", List.of("Floral", "Nutty", "Fruity", "Spicy", "Chocolate", "Earthy", "Caramel", "Smoky"));
 
         return "beans/search";
     }
 
-    // 결과 보기
+    // 결과 보기 및 취향 저장
     @GetMapping("/result")
     public String result(
             @RequestParam(name = "roast", required = false) String roast,
@@ -57,9 +56,15 @@ public class BeanController {
         RoastLevel roastLevel = parseRoastLevel(roast);
         List<Bean> recommendedBeans = beanService.findByPreference(roastLevel, flavor);
         model.addAttribute("recommendedBeans", recommendedBeans);
-
+        
         List<Cafe> recommendedCafes = cafeService.findByBeans(recommendedBeans);
         model.addAttribute("recommendedCafes", recommendedCafes);
+
+        // 로그인한 사용자일 경우, 취향 저장
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser != null) {
+            beanPreferenceService.saveOrUpdate(loginUser, roastLevel, flavor);
+        }
 
         // 모델에 저장
         model.addAttribute("selectedRoast", roast);
@@ -71,19 +76,8 @@ public class BeanController {
 
         return "beans/result";
     }
-
-    // 문자열을 RoastLevel enum으로 변환
-    private RoastLevel parseRoastLevel(String roast) {
-        try {
-            return (roast != null && !roast.isBlank())
-                    ? RoastLevel.valueOf(roast.toUpperCase())
-                    : null;
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
     
-    // 원두 등록 폼
+    // 사용자 등록 원두 등록 폼
     @GetMapping("/new")
     public String showCreateForm(Model model, HttpSession session) {
         model.addAttribute("bean", new Bean());
@@ -118,15 +112,76 @@ public class BeanController {
     }
 
 
-    // 원두 등록 처리
+    // 사용자 등록 원두 등록 처리
     @PostMapping("/new")
     public String createBean(@ModelAttribute Bean bean, HttpSession session) {
         User loginUser = (User) session.getAttribute("user");
         if (loginUser == null) {
             return "redirect:/login"; // 또는 에러 처리
         }
+        
+        // 작성자 설정
+        bean.setUser(loginUser);
+        
         beanService.save(bean);
         return "redirect:/mycoffeemap";
+    }
+    
+    // 문자열을 RoastLevel enum으로 변환
+    private RoastLevel parseRoastLevel(String roast) {
+        try {
+            return (roast != null && !roast.isBlank())
+                    ? RoastLevel.valueOf(roast.toUpperCase())
+                    : null;
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+    
+    // 사용자 등록 원두 수정 폼
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Bean bean = beanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
+        if (!bean.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+        model.addAttribute("bean", bean);
+        return "beans/bean-edit"; // edit.html
+    }
+
+    // 사용자 등록 원두 수정 처리
+    @PostMapping("/edit/{id}")
+    public String updateBean(@PathVariable("id") Long id, @ModelAttribute Bean updatedBean, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Bean bean = beanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
+        if (!bean.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+
+        // 필드 업데이트
+        bean.setName(updatedBean.getName());
+        bean.setOrigin(updatedBean.getOrigin());
+        bean.setRoastLevel(updatedBean.getRoastLevel());
+        bean.setFlavorNotes(updatedBean.getFlavorNotes());
+        bean.setDescription(updatedBean.getDescription());
+        bean.setImageUrl(updatedBean.getImageUrl());
+
+        beanRepository.save(bean);
+        return "redirect:/my/beans";
+    }
+
+    // 사용자 등록 원두 삭제 처리
+    @PostMapping("/delete/{id}")
+    public String deleteBean(@PathVariable("id") Long id, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        Bean bean = beanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 원두 없음"));
+        if (!bean.getUser().getId().equals(loginUser.getId())) {
+            return "redirect:/mycoffeemap"; // 권한 없음
+        }
+
+        beanRepository.delete(bean);
+        return "redirect:/my/beans";
     }
 
 }
