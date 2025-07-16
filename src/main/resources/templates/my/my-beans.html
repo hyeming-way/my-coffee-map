@@ -4,16 +4,41 @@
       layout:decorate="~{layout}">
 
 <head>
-    <title>登録した豆一覧</title> <!-- 내 원두 목록 -->
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>登録した豆一覧</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <style>
+	    .btn-edit {
+	        background-color: #c19a6b;
+	        color: #fff;
+	        border: 1px solid #c19a6b;
+	    }
+	
+	    .btn-edit:hover {
+	        background-color: #d8b48e;
+	        border-color: #d8b48e;
+	        color: #fff;
+	    }
+	
+	    .btn-delete {
+	        background-color: #a0522d;
+	        color: #fff;
+	        border: 1px solid #a0522d;
+	    }
+	
+	    .btn-delete:hover {
+	        background-color: #bc6e3c;
+	        border-color: #bc6e3c;
+	        color: #fff;
+	    }
+	</style>
 </head>
 
 <div layout:fragment="content">
     <div class="container mt-5">
-        <!-- 제목 -->
-        <h3 class="mb-4 text-center">📌 登録したコーヒー豆</h3> <!-- 내가 등록한 원두 -->
+        <h3 class="mb-4 text-center">📌 登録したコーヒー豆</h3>
 
-        <!-- 원두 목록 테이블 -->
         <div th:if="${myBeans != null and !myBeans.isEmpty()}">
             <table class="table table-bordered table-hover align-middle text-center">
                 <thead class="table-light">
@@ -36,26 +61,32 @@
                         <td th:text="${bean.roastLevel}">MEDIUM</td>
                         <td th:text="${bean.flavorNotes}">Nutty, Fruity</td>
                         <td>
-                            <a th:href="@{'/beans/edit/' + ${bean.id}}" class="btn btn-sm btn-outline-primary">編集</a>
-                            <form th:action="@{'/beans/delete/' + ${bean.id}}" method="post" style="display:inline-block;" 
-                                  onsubmit="return confirm('削除しますか？');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
-                            </form>
-                        </td>
+						    <a th:href="@{'/beans/edit/' + ${bean.id}}" class="btn btn-sm btn-edit me-1">
+						        <i class="bi bi-pencil-square"></i> 編集
+						    </a>
+						    <form th:action="@{'/beans/delete/' + ${bean.id}}" method="post" style="display:inline-block;"
+						          onsubmit="return confirm('削除しますか？');">
+						        <button type="submit" class="btn btn-sm btn-delete">
+						            <i class="bi bi-trash3-fill"></i> 削除
+						        </button>
+						    </form>
+						</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- 빈 경우 메시지 -->
         <p class="text-center" th:if="${myBeans == null or myBeans.isEmpty()}">
             登録されたコーヒー豆はありません。
         </p>
 
-        <!-- 버튼 -->
         <div class="text-center mt-4">
-            <a th:href="@{/beans/new}" class="btn btn-outline-primary btn-sm">新しく登録する</a>
-            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
+            <a th:href="@{/beans/new}" class="btn btn-outline-primary btn-sm me-2">
+                <i class="bi bi-plus-circle"></i> 新しく登録する
+            </a>
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-person-circle"></i> マイページに戻る
+            </a>
         </div>
     </div>
 </div>

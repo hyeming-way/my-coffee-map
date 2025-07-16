@@ -7,6 +7,7 @@
 <th:block layout:fragment="head">
     <title>あなたのコーヒーの好みを探す</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
     <style>
         .option-img {
@@ -35,6 +36,18 @@
         .flavor-label:hover {
             border-color: #c8a974;
         }
+        
+        .select-btn {
+		    background-color: #f7b7a3;
+		    color: #fffaf3;
+		    border: 1px solid #f7b7a3;
+		    transition: background-color 0.3s ease, color 0.3s ease;
+		}
+		
+		.select-btn:hover {
+		    background-color: #e89d8c; 
+		    color: #4e3b31;
+        
     </style>
 </th:block>
 
@@ -94,9 +107,11 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <div class="text-center mb-5">
-                <button type="submit" class="btn btn-outline-danger btn-sm px-4">選択完了</button>
-            </div>
+			<div class="text-center mb-5">
+			    <button type="submit" class="btn btn-sm rounded-pill px-4 py-2 select-btn">
+			        <i class="bi bi-check-circle me-2"></i> 選択完了
+			    </button>
+			</div>
         </div>
     </form>
 

@@ -123,9 +123,12 @@
 		    </nav>
 		</div>
 
-        <!-- 마이페이지로 돌아가기 -->
+        <!-- 노트쓰기/마이페이지로 돌아가기 -->
         <div class="text-end mt-4">
-            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">マイページに戻る</a>
+        	<a th:href="@{/board/new}" class="btn btn-sm btn-outline-primary">
+		            <i class="bi bi-pencil-square"></i> ノート作成</a>
+            <a th:href="@{/my}" class="btn btn-sm btn-outline-secondary">
+				    <i class="bi bi-person-circle"></i> マイページに戻る</a>
         </div>
     </div>
 </div>

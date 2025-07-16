@@ -173,10 +173,25 @@
             </div>
 
             <!-- 수정완료 -->
-            <div class="text-center mt-4 mb-2">
-                <button type="submit" class="btn btn-outline-primary px-4">編集完了</button>
-                <a th:href="@{'/board/' + ${board.id}}" class="btn btn-outline-secondary ms-2">キャンセル</a>
-            </div>
+			<div class="text-center mt-4 mb-2">
+			    <!-- 완료 버튼 (카푸치노 브라운, 타원형) -->
+			    <button type="submit" class="btn btn-sm px-4" style="
+			        background-color: #c8a974; 
+			        color: white; 
+			        border: none;
+			        border-radius: 999px;">
+			        <i class="fa-solid fa-check me-2"></i>編集完了
+			    </button>
+			
+			    <!-- 취소 버튼 (라떼 브라운, 타원형) -->
+			    <a th:href="@{'/board/' + ${board.id}}" class="btn btn-sm ms-2 px-4" style="
+			        background-color: #e3d6c5; 
+			        color: #5c4435; 
+			        border: none;
+			        border-radius: 999px;">
+			        <i class="fa-solid fa-xmark me-2"></i>キャンセル
+			    </a>
+			</div>
         </form>
     </div>
 </div>

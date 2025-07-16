@@ -6,7 +6,8 @@
 <!-- HEAD 영역 -->
 <th:block layout:fragment="head">
     <title>コーヒーノートリスト</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
 
     <style>
@@ -172,10 +173,12 @@
 		    </nav>
 		</div>	    
 
-        <!-- 메인화면 버튼 -->
+        <!-- 노트쓰기 / 메인화면 버튼 -->
         <div class="text-end mt-5">
-            <a th:href="@{/mycoffeemap}" class="btn btn-sm"
-               style="border: 1px solid #CBB68F; color: #000;">🏠 ホームに戻る</a>
+         	<a th:href="@{/board/new}" class="btn btn-sm btn-outline-primary">
+		            <i class="bi bi-pencil-square"></i> ノート作成</a>
+            <a th:href="@{/mycoffeemap}" class="btn btn-sm" style="border: 1px solid #CBB68F; color: #000;">
+				    <i class="bi bi-house-door"></i> ホームに戻る</a>
         </div>
     </div>
 </div>

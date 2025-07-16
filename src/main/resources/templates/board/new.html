@@ -86,10 +86,25 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <div class="text-center mt-4 mb-2">
-                <button type="submit" class="btn btn-outline-primary px-4">作成完了</button> <!-- 작성 완료 -->
-                <a th:href="@{/mycoffeemap}" class="btn btn-outline-secondary ms-2">キャンセル</a> <!-- 취소 -->
-            </div>
+			<div class="text-center mt-4 mb-2">
+			    <!-- 작성 완료 버튼 (카푸치노 브라운) -->
+			    <button type="submit" class="btn btn-sm px-4" style="
+			        background-color: #c8a974;
+			        color: white;
+			        border: none;
+			        border-radius: 999px;">
+			        <i class="fa-solid fa-pen-to-square me-2"></i>作成完了
+			    </button>
+			
+			    <!-- 취소 버튼 (라떼 베이지) -->
+			    <a th:href="@{/mycoffeemap}" class="btn btn-sm ms-2 px-4" style="
+			        background-color: #e3d6c5;
+			        color: #5c4435;
+			        border: none;
+			        border-radius: 999px;">
+			        <i class="fa-solid fa-xmark me-2"></i>キャンセル
+			    </a>
+			</div>
         </form>
     </div>
 </div>
