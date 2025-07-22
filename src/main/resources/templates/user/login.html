@@ -13,7 +13,7 @@
 		<form th:action="@{/user/login.do}" method="post" id="loginForm">
 		    <table>
 		    <tr>
-		        <td><h2>ログイン</h2></td>
+		        <td><h2 class="login">ログイン</h2></td>
 		    </tr>
 		    <tr>
 		        <td><input type="text" name="email" placeholder="メールアドレス"></td>
@@ -29,6 +29,17 @@
 		        	<a href="/user/join">新規会員登録</a><br>
 		        	<a href="#" onclick="updatePass()">パスワードを忘れた方</a>
 		        </td>
+		    </tr>	    
+		    <tr>
+		    	<td>
+		    		<hr class="line">
+		    		<p class="social-login">ソーシャルログイン</p>
+		    		<div class="social-login-wrap">
+			    		<a class="social-login-icon" href="/oauth2/authorization/google">
+			    			<img class="google-icon" th:src="@{/images/icon/google_icon.svg}" alt="google login icon">
+			    		</a>
+		    		</div>
+		    	</td>
 		    </tr>
 		    </table>
 		</form>

@@ -48,6 +48,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     // implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     
+    // oauth2
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.security:spring-security-oauth2-core'
+    
     // 메일
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     

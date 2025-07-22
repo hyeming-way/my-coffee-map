@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	//닉네임 중복 검사
 	boolean existsByNick(String nick);
 
+	//소셜 로그인 유저 조회
+	Optional<User> findBySocialTypeAndSocialIdAndDeletedFalse(String socialType, String socialId);
 
-	
+
 }
