@@ -57,6 +57,7 @@
 - **サーバー：** Apache Tomcat 9.0, AWS  
 - **OS：** Windows 11, 10  
 - **ローカル接続URL：** [http://localhost:8070/mycoffeemap](http://localhost:8070/mycoffeemap)
+- **AWSデプロイURL：** [http://mycoffeemap.kro.kr:8070](http://mycoffeemap.kro.kr:8070)
 
 ### 💻 バックエンド
 - Java 21  
