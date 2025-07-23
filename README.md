@@ -54,6 +54,7 @@
 - **서버:** Apache Tomcat 9.0, AWS
 - **운영 체제:** Windows 11, 10
 - **로컬 접속 주소:** [http://localhost:8070/mycoffeemap](http://localhost:8070/mycoffeemap)
+- **AWS 배포 주소:** [http://mycoffeemap.kro.kr:8070](http://mycoffeemap.kro.kr:8070)
 
 ### 💻 Backend
 - Java 21  
