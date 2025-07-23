@@ -24,8 +24,9 @@ public class MainController {
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
 
+    // http://localhost:8070/
     // http://localhost:8070/mycoffeemap
-    @GetMapping("/mycoffeemap")
+    @GetMapping({"/mycoffeemap", "/"})
     public String index(Model model, HttpServletRequest request) {
         List<Board> recentPosts = boardRepository.findTop5ByOrderByCreatedAtDesc();
 
