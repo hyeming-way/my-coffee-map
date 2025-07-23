@@ -206,8 +206,7 @@
 ![프로필수정](./screenshots/profile_update.PNG)
 
 ### 💌 본인 인증 및 비밀번호 재설정 메일
-![본인인증메일](./screenshots/check-mail.PNG)
-![비밀번호재설정메일](./screenshots/pass-mail.PNG)
+![메일](./screenshots/mail.png)
 
 ---
 
