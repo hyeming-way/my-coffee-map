@@ -172,6 +172,15 @@
 ### 🏠 メインページ
 ![メイン](./screenshots/main.png)
 
+### ☑ ログインページ
+![ログイン](./screenshots/login.PNG)
+
+### 🎉 会員登録ページ
+![会員登録](./screenshots/join.PNG)
+
+### 🔒 パスワード再設定ページ
+![パスワード再設定](./screenshots/pass_reset.PNG)
+
 ### 🎯 好み選択
 ![好み選択](./screenshots/preference.png)
 
@@ -192,6 +201,12 @@
 
 ### 👤 マイページ
 ![マイページ](./screenshots/mypage.png)
+
+### ✨ プロフィール編集ページ
+![プロフィール編集](./screenshots/profile_update.PNG)
+
+### 💌 本人認証およびパスワード再設定メール
+![メール](./screenshots/mail.png)
 
 ---
 
