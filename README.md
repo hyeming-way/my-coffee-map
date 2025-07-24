@@ -32,7 +32,7 @@
 프로젝트 실행에 필요한 모든 자료가 포함된 압축 파일입니다.
 (프로젝트 소스코드, 이미지 리소스, PPT, DB 더미데이터 포함)
 
-🔗 [mycoffeemap-resources.zip 다운로드](https://github.com/hyeming-way/my-coffee-map/releases/download/0.0.1/mycoffeemap-resources.zip)
+🔗 [mycoffeemap-resources.zip 다운로드](https://github.com/hyeming-way/my-coffee-map/releases/download/0.0.1/3.my_coffee_map.zip)
 
 압축 해제 후 '테스트 설정_test_setting.txt'파일을 꼭 확인해주세요!
 
