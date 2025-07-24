@@ -1,11 +1,10 @@
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+CREATE DATABASE  IF NOT EXISTS `mycoffeemap` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `mycoffeemap`;
+-- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: mycoffeemap
 -- ------------------------------------------------------
--- Server version	8.0.40
-
-CREATE DATABASE IF NOT EXISTS mycoffeemap;
-USE mycoffeemap;
+-- Server version	8.0.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -19,6 +18,35 @@ USE mycoffeemap;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `bean_likes`
+--
+
+DROP TABLE IF EXISTS `bean_likes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bean_likes` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `liked_at` datetime(6) DEFAULT NULL,
+  `bean_id` bigint NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKbocfj2rgchoq98bo6akk9tb5q` (`user_id`,`bean_id`),
+  KEY `FK292xsxphlem58hlo6v1e5y7sj` (`bean_id`),
+  CONSTRAINT `FK292xsxphlem58hlo6v1e5y7sj` FOREIGN KEY (`bean_id`) REFERENCES `beans` (`id`),
+  CONSTRAINT `FKj1dbbmcllrsox3uu5jy1ih8w1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bean_likes`
+--
+
+LOCK TABLES `bean_likes` WRITE;
+/*!40000 ALTER TABLE `bean_likes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bean_likes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `bean_preference`
 --
 
@@ -28,7 +56,7 @@ DROP TABLE IF EXISTS `bean_preference`;
 CREATE TABLE `bean_preference` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `created_at` datetime(6) DEFAULT NULL,
-  `roast_level` enum('DARK','LIGHT','MEDIUM') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `roast_level` enum('DARK','LIGHT','MEDIUM') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
@@ -55,7 +83,7 @@ DROP TABLE IF EXISTS `bean_preference_flavor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bean_preference_flavor` (
   `bean_preference_id` bigint NOT NULL,
-  `flavor` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `flavor` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `FK5qm03god0pyxo9a2ugmy0p9vi` (`bean_preference_id`),
   CONSTRAINT `FK5qm03god0pyxo9a2ugmy0p9vi` FOREIGN KEY (`bean_preference_id`) REFERENCES `bean_preference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -79,12 +107,12 @@ DROP TABLE IF EXISTS `beans`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `beans` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `description` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `flavor_notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `origin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `roast_level` enum('DARK','LIGHT','MEDIUM') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `flavor_notes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `origin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `roast_level` enum('DARK','LIGHT','MEDIUM') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKnitishruixdgrvm6h5nhjbftx` (`user_id`),
@@ -142,11 +170,11 @@ CREATE TABLE `boards` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,
-  `image_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `rating` int DEFAULT NULL,
-  `title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `bean_id` bigint DEFAULT NULL,
   `cafe_id` bigint DEFAULT NULL,
@@ -211,11 +239,11 @@ DROP TABLE IF EXISTS `cafes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cafes` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime(6) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK4jxkfavkvrmuik1r0h70c4wh4` (`user_id`),
@@ -283,6 +311,8 @@ CREATE TABLE `users` (
   `verification_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `deleted` bit(1) NOT NULL,
   `deleted_date` datetime(6) DEFAULT NULL,
+  `social_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `social_type` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK6dotkott2kjsp8vw4d0m25fb7` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -294,7 +324,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'user1@test.com','user1','$2a$10$dnveZoce7hsHuuPK9XMdu.Fl//ukiCB3aLQzBqHdXz5L/qLi5spB6','3627e6f8-4251-4b80-9db4-e35106a5d444.PNG','2025-07-08 09:51:18.179018',_binary '',NULL,NULL,_binary '\0',NULL),(2,'user2@test.com','user2','$2a$10$eRDgxsr8/w8clVeblCEJ.O9WeQqojShgBujaMV0dN1ePEOZZEw21S',NULL,'2025-07-08 09:52:22.542872',_binary '',NULL,NULL,_binary '\0',NULL),(3,'user3@test.com','user3','$2a$10$nLcF7utC4ai.99h1x./1yOCiVJgoQ69hyqw/mfH5Wr6sX1jhS1Hn2','d38efabf-90a3-4321-9013-e335d409cd43.PNG','2025-07-08 09:54:27.433382',_binary '',NULL,NULL,_binary '\0',NULL),(4,'user4@test.com','user4','$2a$10$/DOrE9prOKOpsOh3Lnz/jeNCUbjjGv2NAfhSwVl4/OmpTcUili/RW','4688aba5-8d7e-42c7-80ce-9057badfbae9.PNG','2025-07-08 09:55:58.981585',_binary '',NULL,NULL,_binary '\0',NULL),(5,'user5@test.com','user5','$2a$10$HMAAyCHcJNrOXBT5FXwvCORXuouao6iLtf58IJOiIsWODdhHmt1LG','1f1d4bed-621c-402f-9e5b-7b64817773cf.PNG','2025-07-08 09:57:05.391717',_binary '',NULL,NULL,_binary '\0',NULL);
+INSERT INTO `users` VALUES (1,'user1@test.com','user1','$2a$10$dnveZoce7hsHuuPK9XMdu.Fl//ukiCB3aLQzBqHdXz5L/qLi5spB6','3627e6f8-4251-4b80-9db4-e35106a5d444.PNG','2025-07-08 09:51:18.179018',_binary '',NULL,NULL,_binary '\0',NULL,NULL,NULL),(2,'user2@test.com','user2','$2a$10$eRDgxsr8/w8clVeblCEJ.O9WeQqojShgBujaMV0dN1ePEOZZEw21S',NULL,'2025-07-08 09:52:22.542872',_binary '',NULL,NULL,_binary '\0',NULL,NULL,NULL),(3,'user3@test.com','user3','$2a$10$nLcF7utC4ai.99h1x./1yOCiVJgoQ69hyqw/mfH5Wr6sX1jhS1Hn2','d38efabf-90a3-4321-9013-e335d409cd43.PNG','2025-07-08 09:54:27.433382',_binary '',NULL,NULL,_binary '\0',NULL,NULL,NULL),(4,'user4@test.com','user4','$2a$10$/DOrE9prOKOpsOh3Lnz/jeNCUbjjGv2NAfhSwVl4/OmpTcUili/RW','4688aba5-8d7e-42c7-80ce-9057badfbae9.PNG','2025-07-08 09:55:58.981585',_binary '',NULL,NULL,_binary '\0',NULL,NULL,NULL),(5,'user5@test.com','user5','$2a$10$HMAAyCHcJNrOXBT5FXwvCORXuouao6iLtf58IJOiIsWODdhHmt1LG','1f1d4bed-621c-402f-9e5b-7b64817773cf.PNG','2025-07-08 09:57:05.391717',_binary '',NULL,NULL,_binary '\0',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -307,4 +337,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-21 11:49:24
+-- Dump completed on 2025-07-24 12:19:47
